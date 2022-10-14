@@ -1,0 +1,20 @@
+{
+    "name": "dis-dev/cli",
+    "description": "Permet de gérer les arguments via une application Cli ainsi que de personnaliser facilement l'output du Cli",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "DisDev\\Cli\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Rayan",
+            "email": "rlevert@group-dis.com"
+        }
+    ],
+    "require": {}
+}
