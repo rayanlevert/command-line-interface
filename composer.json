@@ -13,6 +13,11 @@
             "DisDev\\Cli\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "DisDev\\Cli\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Rayan",
