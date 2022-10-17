@@ -115,7 +115,7 @@ class Argument
      *
      * @param  bool|string $value Si string, essaie de caster, si bool on check qui soit en noValue
      *
-     * @throws \DisDev\Cli\Arguments\Exception Si $value n'est pas correct selon le type de cast demandé
+     * @throws \DisDev\Cli\Arguments\ParseException Si $value n'est pas correct selon le type de cast demandé
      */
     final public function setValueParsed(bool|string $value): void
     {
@@ -136,13 +136,13 @@ class Argument
         // Throw une exception si la valeur n'est pas du bon type
         if ($this->castTo === 'integer') {
             if (!is_numeric($value)) {
-                throw new Exception("Argument {$this->name} n'est pas un nombre (doit caster en int)");
+                throw new ParseException("Argument {$this->name} n'est pas un nombre (doit caster en int)");
             }
 
             $this->valueParsed = intval($value);
         } elseif ($this->castTo === 'double') {
             if (!is_numeric($value) || strpos($value, ',') !== false) {
-                throw new Exception(
+                throw new ParseException(
                     "Argument {$this->name} n'est pas un nombre ou contient des , (doit caster en float)"
                 );
             }

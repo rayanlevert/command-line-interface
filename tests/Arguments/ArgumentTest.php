@@ -4,6 +4,7 @@ namespace DisDev\Cli\Tests\Arguments;
 
 use DisDev\Cli\Arguments\Argument;
 use DisDev\Cli\Arguments\Exception;
+use DisDev\Cli\Arguments\ParseException;
 
 class ArgumentTest extends \PHPUnit\Framework\TestCase
 {
@@ -273,7 +274,7 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
             $this->fail('expected exception');
         } catch (\Exception $e) {
             $this->assertEquals('Argument test n\'est pas un nombre (doit caster en int)', $e->getMessage());
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf(ParseException::class, $e);
         }
     }
 
@@ -311,7 +312,7 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
                 $e->getMessage()
             );
 
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf(ParseException::class, $e);
         }
 
         // parse d'un argument string non numérique avec castTo integer => throw
@@ -327,7 +328,7 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
                 $e->getMessage()
             );
 
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf(ParseException::class, $e);
         }
     }
 
