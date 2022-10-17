@@ -7,7 +7,7 @@ use DisDev\Cli\Arguments\Exception;
 use DisDev\Cli\Arguments\ParseException;
 
 /**
- * Collection d'App\Tasks\Arguments\Argument, qui possèdent les arguments d'une application Cli
+ * Collection de DisDev\Cli\Arguments\Argument, qui possèdent les arguments d'une application Cli
  *
  * Possède une méthode ->parse() qui demande des valeurs string comme ceux récupérés depuis $argv
  * qui set la valeur de chaque argument et/ou throw une Exception si une erreur d'initialisation se produit

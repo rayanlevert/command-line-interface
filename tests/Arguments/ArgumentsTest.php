@@ -389,7 +389,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
                 $e->getMessage()
             );
 
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf(ParseException::class, $e);
         }
 
         // 2 arguments
@@ -412,7 +412,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
                 $e->getMessage()
             );
 
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf(ParseException::class, $e);
         }
     }
 
@@ -443,7 +443,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
         } catch (\Exception $e) {
             $this->assertEquals('Argument test n\'est pas un nombre (doit caster en int)', $e->getMessage());
 
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf(ParseException::class, $e);
         }
 
         // 2 arguments
@@ -462,7 +462,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
             $this->fail('expect exception');
         } catch (\Exception $e) {
             $this->assertEquals('Argument test2 n\'est pas un nombre (doit caster en int)', $e->getMessage());
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf(ParseException::class, $e);
         }
     }
 
