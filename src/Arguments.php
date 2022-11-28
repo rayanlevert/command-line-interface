@@ -215,7 +215,7 @@ class Arguments implements \IteratorAggregate
                 continue;
             }
 
-            if (!$argValue = current($arguments)) {
+            if (($argValue = current($arguments)) === false) {
                 throw new ParseException("Argument $name is required");
             }
 
@@ -234,7 +234,7 @@ class Arguments implements \IteratorAggregate
         }
 
         foreach ($oNotHandled as $oArgument) {
-            if (!$arg = current($arguments)) {
+            if (($arg = current($arguments)) === false) {
                 return;
             }
 
