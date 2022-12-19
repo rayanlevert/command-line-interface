@@ -120,10 +120,6 @@ class Arguments implements \IteratorAggregate
      */
     private function getNotHandled(): self
     {
-        if (!$this->count()) {
-            return $this;
-        }
-
         $oSelf = new self();
 
         foreach ($this->data as $oArgument) {
@@ -234,9 +230,7 @@ class Arguments implements \IteratorAggregate
         }
 
         foreach ($oNotHandled as $oArgument) {
-            if (($arg = current($arguments)) === false) {
-                return;
-            }
+            $arg = current($arguments);
 
             // On skip les arguments préfixés, déjà handled dans la première boucle
             if ($oArgument->getLongPrefix() || $oArgument->getPrefix()) {
@@ -246,7 +240,7 @@ class Arguments implements \IteratorAggregate
             $oArgument->setValueParsed($arg);
 
             if (!next($arguments)) {
-                break;
+                return;
             }
         }
     }

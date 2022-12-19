@@ -16,19 +16,4 @@ enum Attribute: string
     case REVERSE   = '7';
     case NONDISP   = '8';
     case STRIKE    = '9';
-
-    public function getTag(): string
-    {
-        return match ($this) {
-            self::NORMAL    => 'normal',
-            self::BOLD      => 'b',
-            self::ITALIC    => 'i',
-            self::UNDERLINE => 'u',
-            self::BLINK     => 'blink',
-            self::OUTLINE   => 'outline',
-            self::REVERSE   => 'reverse',
-            self::NONDISP   => 'nondisp',
-            self::STRIKE    => 'strike'
-        };
-    }
 }

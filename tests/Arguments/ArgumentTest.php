@@ -240,6 +240,16 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @test Test le construct avec un castTo incorrect
+     */
+    public function testCastToNotCorrectType(): void
+    {
+        $this->expectExceptionObject(new Exception('incorrect-type n\'est pas un type de cast correct'));
+
+        new Argument('test', ['castTo' => 'incorrect-type']);
+    }
+
+    /**
      * @test Test la method ->setValueParsed() d'un argument string
      */
     public function testParseArgumentString(): void
