@@ -11,6 +11,8 @@ use DisDev\Cli\Arguments\ParseException;
  *
  * Possède une méthode ->parse() qui demande des valeurs string comme ceux récupérés depuis $argv
  * qui set la valeur de chaque argument et/ou throw une Exception si une erreur d'initialisation se produit
+ *
+ * @implements \IteratorAggregate<string, Argument>
  */
 class Arguments implements \IteratorAggregate
 {
@@ -32,7 +34,7 @@ class Arguments implements \IteratorAggregate
     }
 
     /**
-     * @return \Traversable<int, Argument>
+     * @return \Traversable<string, Argument>
      */
     public function getIterator(): \Traversable
     {

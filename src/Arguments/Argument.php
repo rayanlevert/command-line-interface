@@ -71,11 +71,13 @@ class Argument
         }
 
         if (array_key_exists('defaultValue', $options)) {
-            if (!in_array(gettype($options['defaultValue']), ['double', 'integer', 'string'])) {
+            $defaultValue = $options['defaultValue'];
+
+            if (!is_string($defaultValue) && !is_double($defaultValue) && !is_int($defaultValue)) {
                 throw new Exception('La valeur par défaut doit être un float, int ou string');
             }
 
-            $this->defaultValue = $options['defaultValue'];
+            $this->defaultValue = $defaultValue;
 
             // On test que le type de la valeur par défault est le même que castTo (string si non renseigné)
             if (gettype($this->defaultValue) !== $this->castTo) {
