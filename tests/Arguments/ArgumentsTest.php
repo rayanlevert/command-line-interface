@@ -275,6 +275,56 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @test ->parse() avec un argument préfixé mais non dans la collection -> handled
+     */
+    public function testArgPrefixNotInCollection(): void
+    {
+        $oArguments = new Arguments(new Argument('test'));
+        $oArguments->parse('-value');
+
+        $this->assertSame('-value', $oArguments->get('test'));
+    }
+
+    /**
+     * @test ->parse() avec un argument long préfixé mais non dans la collection
+     */
+    public function testArgLongPrefixNotInCollection(): void
+    {
+        $oArguments = new Arguments(new Argument('test'));
+        $oArguments->parse('--test1');
+
+        $this->assertSame('--test1', $oArguments->get('test'));
+    }
+
+    /**
+     * @test ->parse() avec plusieurs arguments préfixés mais non dans la collection
+     */
+    public function testMultiplePrefixNotInCollection(): void
+    {
+        $oArguments = new Arguments(new Argument('test'), new Argument('test2'), new Argument('test3'));
+        $oArguments->parse('test', '-test', '--test');
+
+        $this->assertSame('test', $oArguments->get('test'));
+        $this->assertSame('-test', $oArguments->get('test2'));
+        $this->assertSame('--test', $oArguments->get('test3'));
+    }
+
+    /**
+     * @test ->parse() avec des arguments prefixés et dans la collection sont préfixés -> non handled
+     */
+    public function testPrefixArgsInCollection(): void
+    {
+        $oArguments = new Arguments(
+            new Argument('test', ['prefix' => 'test']),
+            new Argument('test2', ['longPrefix' => 'longtest', 'defaultValue' => 'default'])
+        );
+
+        $oArguments->parse('-value1', '-value2');
+        $this->assertNull($oArguments->get('test'));
+        $this->assertSame('default', $oArguments->get('test2'));
+    }
+
+    /**
      * @test Test des arguments parsés qui ont des prefix et longPrefix (- et --, avec valeur ou non)
      */
     public function testParseShortAndLongPrefix(): void

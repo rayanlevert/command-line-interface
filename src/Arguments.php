@@ -197,12 +197,14 @@ class Arguments implements \IteratorAggregate
                 continue;
             }
 
-            // Check de la présence d'un prefix/longPrefix
-            if (strncmp($arg, '--', 2) === 0) {
-                $this->setArgFromPrefix($arg, '--');
+            /**
+             * Check de la présence d'un prefix/longPrefix
+             *
+             * Si l'argument n'a pas son nom, on ne l'unset pas pour qu'il soit traité par la suite
+             */
+            if (!$this->setArgFromPrefix($arg, strncmp($arg, '--', 2) === 0 ? '--' : '-')) {
+                continue;
             }
-
-            $this->setArgFromPrefix($arg, '-');
 
             unset($arguments[$index]);
         }
@@ -285,7 +287,7 @@ class Arguments implements \IteratorAggregate
     /**
      * Méthode permettant de set la valeur parsed de l'argument commençant par - (une option)
      */
-    private function setArgFromPrefix(string $arg, string $prefix): void
+    private function setArgFromPrefix(string $arg, string $prefix): bool
     {
         $countPrefix = strlen($prefix);
 
@@ -302,14 +304,14 @@ class Arguments implements \IteratorAggregate
         $oArgument = $countPrefix === 1 ? $this->getByShortPrefix($argName) : $this->getByLongPrefix($argName);
 
         if (!$oArgument) {
-            return;
+            return false;
         }
 
         // On check qu'on a pas un argument noValue
         if ($oArgument->hasNoValue()) {
             $oArgument->setValueParsed(true);
 
-            return;
+            return true;
         }
 
         // Si un égal n'a pas été trouvé et que l'argument requiert une valeur (noValue => false)
@@ -320,5 +322,7 @@ class Arguments implements \IteratorAggregate
         $argValue = mb_substr($arg, $equalPosition + 1);
 
         $oArgument->setValueParsed($argValue);
+
+        return true;
     }
 }
