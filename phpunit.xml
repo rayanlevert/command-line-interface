@@ -18,6 +18,10 @@
         <testsuite name='Arguments'>
             <directory>./tests/Arguments</directory>
         </testsuite>
+
+        <testsuite name='ProgressBar'>
+            <directory>./tests/ProgressBar</directory>
+        </testsuite>
     </testsuites>
 
     <coverage>
