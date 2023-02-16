@@ -172,3 +172,48 @@ public static function outlineWithBool(bool $status, string $ifTrue, string $ifF
 // Affiche les détails d'une exception en rouge + sa trace en blanc si voulu
 public static function exception(\Exception $e, bool $withoutTrace = false): void;
 ```
+
+## **DisDev\Cli\ProgressBar affichant une barre de progrès qui progresse à chaque itération**
+
+```php
+/**
+ * @param int $max Valeur maximale d'itérations
+ * @param int $numberOfSymbols Nombre équivalent de symbols (#) qui sont ajoutés à chaque itération
+*/
+$oProgressBar = new ProgressBar(int $max, int $numberOfSymbols = 50);
+
+/**
+ * Commence la barre de progrès, à appeler juste avant que commencer à itérer
+ *
+ * @param string $title Titre à ajouter au dessus de la barre de progrès
+ * @param Style\Foreground $fg Couleur du texte
+*/
+$oProgressBar->start(string $title = '', Style\Foreground $fg = Style\Foreground::BLUE);
+
+/**
+ * Avance la barre de progrès, si la fin est atteint, la barre sera remplie et le prochain ->advance() ne fera rien
+*/
+$oProgressBar->advance(int $toAdvance = 1);
+
+// Termine la barre de progrès en passant deux lignes (\n\n), si ->advance() est appelé rien ne se passera
+$oProgressBar->finish();
+```
+
+### Simple implémentation via une itération
+
+```php
+// 10 la valeur max -> un nouveau symbole par itération avec 20 symboles
+$oProgressBar = new ProgressBar(10);
+$oProgressBar->start('Ma barre de progrès');
+
+// Avance de 1 à chaque itération
+foreach (range(1, 10) as $range) {
+    $oProgressBar->advance();
+}
+
+  Ma barre de progression
+  1 / 10 [#         ]
+  2 / 10 [##        ]
+  ...
+  10 / 10 [##########]
+```
