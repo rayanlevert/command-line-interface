@@ -90,9 +90,9 @@ foreach (range(1, 3) as $range) {
     if ($range === 1) {
         $oProgressBar->setTitle("Barre n°$range", Foreground::GREEN);
     } elseif ($range === 2) {
-        $oProgressBar->setTitle("Barre n°$range", Foreground::RED);
+        $oProgressBar->setTitle("Barre n°$range plus grande", Foreground::RED);
     } else {
-        $oProgressBar->setTitle("Barre n°$range", Foreground::LIGHT_PURPLE);
+        $oProgressBar->setTitle("Barre", Foreground::LIGHT_PURPLE);
     }
 
     $oProgressBar->start();
@@ -106,6 +106,25 @@ foreach (range(1, 3) as $range) {
     }
 
     usleep(200000);
+}
+
+print "\n\nProgress bar - changing title in a while";
+
+$oProgressBar = new ProgressBar(100);
+$oProgressBar->start();
+
+foreach (range(1, 100) as $range) {
+    if ($range >= 25 && $range <= 50) {
+        $oProgressBar->setTitle("Barre de 25 à 50", Foreground::GREEN);
+    } elseif ($range >= 50 && $range <= 75) {
+        $oProgressBar->setTitle("Barre entre 50 et 75", Foreground::RED);
+    } else {
+        $oProgressBar->setTitle("Barre", Foreground::LIGHT_PURPLE);
+    }
+
+    $oProgressBar->advance(1);
+    echo ob_get_clean();
+    usleep(50000);
 }
 
 print "\n\n";

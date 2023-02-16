@@ -73,19 +73,7 @@ class ProgressBar
         $this->isFinished = false;
         $this->iteration  = 0;
 
-        if ($this->title) {
-            print sprintf($this->up . $this->left . $this->title . $this->down, 1, 1000, 1);
-        }
-
-        // On reset la ligne en revenant le cursor tout à gauche + la courante iteration / max
-        print sprintf($this->left, 1000) . "\t{$this->iteration} / {$this->max} [";
-
-        // On affiche la barre de progression vide (que des empty strings)
-        if ($this->max <= $this->numberOfSymbols) {
-            print str_repeat(' ', $this->max) . ']';
-        } else {
-            print str_repeat(' ', $this->numberOfSymbols) . ']';
-        }
+        $this->advance(0);
     }
 
     /**
@@ -102,6 +90,10 @@ class ProgressBar
         // Si la position courante est égale ou supérieure à max, à la prochaine iteration on ne fera rien
         if (($this->iteration += $toAdvance) >= $this->max) {
             $this->isFinished = true;
+        }
+
+        if ($this->title) {
+            print sprintf($this->up . $this->left . "\33[2K" . $this->title . $this->down, 1, 1000, 1);
         }
 
         // Si on est arrivé à la fin, on affiche toute la ligne de #

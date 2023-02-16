@@ -64,7 +64,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     public function testStartWithTitle(): void
     {
         $this->expectOutputString(
-            "\n\n\e[1A\e[1000D" . Style::stylize("\tTitre en bleu", fg: Foreground::BLUE)
+            "\n\n\e[1A\e[1000D\33[2K" . Style::stylize("\tTitre en bleu", fg: Foreground::BLUE)
                 . "\e[1B\e[1000D\t0 / 5 [     ]"
         );
 
@@ -77,7 +77,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     public function testStartWithTitleDifferentColor(): void
     {
         $this->expectOutputString(
-            "\n\n\e[1A\e[1000D" . Style::stylize("\tTitre en vert", fg: Foreground::GREEN)
+            "\n\n\e[1A\e[1000D\33[2K" . Style::stylize("\tTitre en vert", fg: Foreground::GREEN)
                 . "\e[1B\e[1000D\t0 / 5 [     ]"
         );
 
