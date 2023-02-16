@@ -77,22 +77,20 @@ class ProgressBar
             return;
         }
 
-        // On reset la ligne en revenant le cursor tout à gauche
-        print sprintf($this->left, 1000);
-
         // Si la position courante est égale ou supérieure à max, à la prochaine iteration on ne fera rien
         if (($this->iteration += $toAdvance) >= $this->max) {
             $this->isFinished = true;
         }
 
-        print "\t{$this->iteration} / {$this->max} [";
-
         // Si on est arrivé à la fin, on affiche toute la ligne de #
         if ($this->isFinished) {
-            print str_repeat('#', $this->max <= $this->numberOfSymbols ? $this->max : $this->numberOfSymbols) . ']';
+            $this->printEntireLigne();
 
             return;
         }
+
+        // On reset la ligne en revenant le cursor tout à gauche + la courante iteration / max
+        print sprintf($this->left, 1000) . "\t{$this->iteration} / {$this->max} [";
 
         /**
          * Si la valeur max est inférieure au nombre de symboles, on affiche x ->iteration
@@ -105,6 +103,19 @@ class ProgressBar
 
             print str_repeat('#', $actualDiezes) . str_repeat(' ', ($this->numberOfSymbols - $actualDiezes)) . "]";
         }
+    }
+
+    /**
+     * @test Termine la barre de progression
+     */
+    public function finish(): void
+    {
+        if ($this->isFinished) {
+            return;
+        }
+
+        $this->isFinished = true;
+        $this->printEntireLigne();
     }
 
     /**
@@ -121,5 +132,15 @@ class ProgressBar
     public function getCurrent(): int
     {
         return $this->iteration;
+    }
+
+    /**
+     * Remplit la ligne entière de symbols signifiant la fin de la progression
+     */
+    private function printEntireLigne(): void
+    {
+        print sprintf($this->left, 1000)
+            . "\t{$this->max} / {$this->max} ["
+            . str_repeat('#', $this->max <= $this->numberOfSymbols ? $this->max : $this->numberOfSymbols) . ']';
     }
 }

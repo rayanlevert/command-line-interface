@@ -66,3 +66,17 @@ foreach (range(1, 100) as $step) {
 
     usleep(50000);
 }
+
+print "\n\nProgress bar - max 50 step 10 until 30 then finish\n";
+
+$oProgressBar = new ProgressBar(50);
+$oProgressBar->start();
+
+foreach (range(1, 30, 10) as $step) {
+    $oProgressBar->advance(10);
+
+    echo ob_get_clean();
+
+    usleep(500000);
+}
+$oProgressBar->finish();

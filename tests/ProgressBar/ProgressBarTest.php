@@ -203,7 +203,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
 
         $oProgressBar->advance(2);
-        $this->assertSame("\e[1000D\t11 / 10 [##]", ob_get_contents());
+        $this->assertSame("\e[1000D\t10 / 10 [##]", ob_get_contents());
         ob_clean();
 
         // Un symbole toutes les 3 iterations (impair, floor(10 / 3))
@@ -227,7 +227,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
 
         $oProgressBar->advance(3);
-        $this->assertSame("\e[1000D\t12 / 10 [###]", ob_get_contents());
+        $this->assertSame("\e[1000D\t10 / 10 [###]", ob_get_contents());
         ob_clean();
     }
 
@@ -302,6 +302,37 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
                 ob_get_contents()
             );
         }
+
+        ob_clean();
+    }
+
+    /**
+     * @test ->finish() sans avoir ->start() -> n'affiche rien
+     */
+    public function testFinishWithoutStarting(): void
+    {
+        $oProgressBar = new ProgressBar(10);
+        $oProgressBar->finish();
+
+        $this->expectOutputString('');
+        $oProgressBar->advance();
+    }
+
+    /**
+     * @test ->finish()
+     */
+    public function testFinishWithAdvance(): void
+    {
+        $oProgressBar = new ProgressBar(10);
+        $oProgressBar->start();
+
+        $oProgressBar->advance(7);
+        $this->assertSame("\n\e[1000D\t7 / 10 [" . str_repeat('#', 7) . str_repeat(' ', 3) . ']', ob_get_contents());
+        ob_clean();
+
+        $oProgressBar->finish();
+
+        $this->assertSame("\e[1000D\t10 / 10 [" . str_repeat('#', 10) . ']', ob_get_contents());
 
         ob_clean();
     }
