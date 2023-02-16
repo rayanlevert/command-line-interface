@@ -72,7 +72,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     /**
      * @test ->start() avec un titre d'une différente couleur
      */
-    public function testStartWithTtitleDifferentColor(): void
+    public function testStartWithTitleDifferentColor(): void
     {
         $this->expectOutputString("\n" . Style::stylize("\tTitre en vert", fg: Foreground::GREEN) . "\n");
 
@@ -107,10 +107,10 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
 
             $oProgressBar->advance(1);
 
-            $this->assertSame(
-                "\e[1000D\t$step / 10 [" . str_repeat('#', $step) . str_repeat(' ', 10 - $step) . ']',
-                ob_get_contents()
-            );
+            $expectedOutput = "\e[1000D\t$step / 10 [" . str_repeat('#', $step) . str_repeat(' ', 10 - $step)
+                . ($step === 10 ? "]\n\n" : ']');
+
+            $this->assertSame($expectedOutput, ob_get_contents());
 
             if ($step === 10) {
                 $this->assertTrue($oProgressBar->isFinished());
@@ -141,10 +141,10 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
 
             $oProgressBar->advance(2);
 
-            $this->assertSame(
-                "\e[1000D\t$step / 10 [" . str_repeat('#', $step) . str_repeat(' ', 10 - $step) . ']',
-                ob_get_contents()
-            );
+            $expectedOutput = "\e[1000D\t$step / 10 [" . str_repeat('#', $step) . str_repeat(' ', 10 - $step)
+                . ($step === 10 ? "]\n\n" : ']');
+
+            $this->assertSame($expectedOutput, ob_get_contents());
 
             if ($step === 10) {
                 $this->assertTrue($oProgressBar->isFinished());
@@ -170,7 +170,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
 
         $oProgressBar->advance(2);
 
-        $this->assertSame("\n\e[1000D\t2 / 2 [##]", ob_get_contents());
+        $this->assertSame("\n\e[1000D\t2 / 2 [##]\n\n", ob_get_contents());
         ob_clean();
 
         $this->assertTrue($oProgressBar->isFinished());
@@ -203,7 +203,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
 
         $oProgressBar->advance(2);
-        $this->assertSame("\e[1000D\t10 / 10 [##]", ob_get_contents());
+        $this->assertSame("\e[1000D\t10 / 10 [##]\n\n", ob_get_contents());
         ob_clean();
 
         // Un symbole toutes les 3 iterations (impair, floor(10 / 3))
@@ -227,7 +227,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
 
         $oProgressBar->advance(3);
-        $this->assertSame("\e[1000D\t10 / 10 [###]", ob_get_contents());
+        $this->assertSame("\e[1000D\t10 / 10 [###]\n\n", ob_get_contents());
         ob_clean();
     }
 
@@ -245,10 +245,10 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
 
             $oProgressBar->advance(1);
 
-            $this->assertSame(
-                "\e[1000D\t$step / 20 [" . str_repeat('#', $step) . str_repeat(' ', 20 - $step) . ']',
-                ob_get_contents()
-            );
+            $expectedOutput = "\e[1000D\t$step / 20 [" . str_repeat('#', $step) . str_repeat(' ', 20 - $step)
+                . ($step === 20 ? "]\n\n" : ']');
+
+            $this->assertSame($expectedOutput, ob_get_contents());
         }
 
         ob_clean();
@@ -274,11 +274,11 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
                 $expectedIterationDiez++;
             }
 
-            $this->assertSame(
-                "\e[1000D\t$step / 1000 [" . str_repeat('#', $expectedIterationDiez)
-                    . str_repeat(' ', 100 - $expectedIterationDiez) . ']',
-                ob_get_contents()
-            );
+            $expectedOutput = "\e[1000D\t$step / 1000 [" .
+                str_repeat('#', $expectedIterationDiez) . str_repeat(' ', 100 - $expectedIterationDiez)
+                . ($step === 1000 ? "]\n\n" : ']');
+
+            $this->assertSame($expectedOutput, ob_get_contents());
         }
 
         $oProgressBar = new ProgressBar(1000);
@@ -296,11 +296,11 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
                 $expectedIterationDiez++;
             }
 
-            $this->assertSame(
-                "\e[1000D\t$step / 1000 [" . str_repeat('#', $expectedIterationDiez)
-                    . str_repeat(' ', 50 - $expectedIterationDiez) . ']',
-                ob_get_contents()
-            );
+            $expectedOutput = "\e[1000D\t$step / 1000 [" .
+                str_repeat('#', $expectedIterationDiez) . str_repeat(' ', 50 - $expectedIterationDiez)
+                . ($step === 1000 ? "]\n\n" : ']');
+
+            $this->assertSame($expectedOutput, ob_get_contents());
         }
 
         ob_clean();
@@ -332,7 +332,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
 
         $oProgressBar->finish();
 
-        $this->assertSame("\e[1000D\t10 / 10 [" . str_repeat('#', 10) . ']', ob_get_contents());
+        $this->assertSame("\e[1000D\t10 / 10 [" . str_repeat('#', 10) . "]\n\n", ob_get_contents());
 
         ob_clean();
     }

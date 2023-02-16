@@ -106,7 +106,7 @@ class ProgressBar
     }
 
     /**
-     * @test Termine la barre de progression
+     * Termine la barre de progression
      */
     public function finish(): void
     {
@@ -135,12 +135,13 @@ class ProgressBar
     }
 
     /**
-     * Remplit la ligne entière de symbols signifiant la fin de la progression
+     * Remplit la ligne entière de symbols signifiant la fin de la progression et passe deux lignes
      */
     private function printEntireLigne(): void
     {
         print sprintf($this->left, 1000)
             . "\t{$this->max} / {$this->max} ["
-            . str_repeat('#', $this->max <= $this->numberOfSymbols ? $this->max : $this->numberOfSymbols) . ']';
+            . str_repeat('#', $this->max <= $this->numberOfSymbols ? $this->max : $this->numberOfSymbols) . ']'
+            . "\n\n";
     }
 }
