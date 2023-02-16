@@ -3,7 +3,7 @@
 namespace DisDev\Cli;
 
 /**
- * Barre de progrès permettant l'affichage d'une progression pour le CLI
+ * barre de progression permettant l'affichage d'une progression pour le CLI
  */
 class ProgressBar
 {
@@ -16,7 +16,7 @@ class ProgressBar
     protected string $left = "\e[%dD";
 
     /**
-     * Nombre d'itération requis pour ajouter un charactère à la barre de progrès
+     * Nombre d'itération requis pour ajouter un charactère à la barre de progression
      */
     protected int $numberOfEachIterations;
 
@@ -26,12 +26,22 @@ class ProgressBar
     protected int $iteration = 0;
 
     /**
-     * Si l'itération a dépassé ou égalé la valeur max de la barre de progrès
+     * Si la barre de progression a déjà été commencé au moins une fois
+     */
+    protected bool $hasBeenStartedOnce = false;
+
+    /**
+     * Si l'itération a dépassé ou égalé la valeur max de la barre de progression
      */
     protected bool $isFinished = true;
 
     /**
-     * Initialise une barre de progrès en settant le max
+     * Titre de la barre de progression
+     */
+    protected string $title = '';
+
+    /**
+     * Initialise une barre de progression en settant le max
      *
      * @param int $max Valeur max d'itérations
      * @param int $numberOfSymbols Nombre équivalent de symbols (#) qui sont ajoutés à chaque itération
@@ -41,7 +51,7 @@ class ProgressBar
     public function __construct(protected int $max, protected int $numberOfSymbols = 50)
     {
         if ($max <= 0) {
-            throw new \UnexpectedValueException('La valeur max de la barre de progrès doit être positive');
+            throw new \UnexpectedValueException('La valeur max de la barre de progression doit être positive');
         } elseif ($numberOfSymbols <= 0) {
             throw new \UnexpectedValueException('Le nombre de symbols doit être positif');
         }
@@ -50,24 +60,36 @@ class ProgressBar
     }
 
     /**
-     * Commence la barre de progrès et passe une ligne
-     *
-     * @param string $title Si un texte en bleu au dessus de la barre doit être affiché
-     * @param Style\Foreground $fg Si une couleur de texte est souhaitée (bleue par défaut)
+     * Commence la barre de progression (ou recommence si déjà started, sinon passe deux lignes)
      */
-    public function start(string $title = '', Style\Foreground $fg = Style\Foreground::BLUE): void
+    public function start(): void
     {
+        if (!$this->hasBeenStartedOnce) {
+            $this->hasBeenStartedOnce = true;
+
+            print "\n\n";
+        }
+
         $this->isFinished = false;
+        $this->iteration  = 0;
 
-        print "\n";
+        if ($this->title) {
+            print sprintf($this->up . $this->left . $this->title . $this->down, 1, 1000, 1);
+        }
 
-        if ($title) {
-            Style::outline("\t$title", fg: $fg);
+        // On reset la ligne en revenant le cursor tout à gauche + la courante iteration / max
+        print sprintf($this->left, 1000) . "\t{$this->iteration} / {$this->max} [";
+
+        // On affiche la barre de progression vide (que des empty strings)
+        if ($this->max <= $this->numberOfSymbols) {
+            print str_repeat(' ', $this->max) . ']';
+        } else {
+            print str_repeat(' ', $this->numberOfSymbols) . ']';
         }
     }
 
     /**
-     * Avance la barre de progrès de `$toAdvance` iteration et met à jour la progression
+     * Avance la barre de progression de `$toAdvance` iteration et met à jour la progression
      *
      * @param int $toAdvance Nombre d'itération à avancer
      */
@@ -119,7 +141,19 @@ class ProgressBar
     }
 
     /**
-     * Si la barre de progrès a atteint sa valeur maximale ou n'a pas commencé
+     * Set le titre à afficher au dessus de la barre de progression
+     *
+     * @param Style\Foreground $fg Si une couleur de texte est souhaitée (bleue par défaut)
+     */
+    public function setTitle(string $title, Style\Foreground $fg = Style\Foreground::BLUE): self
+    {
+        $this->title = Style::stylize("\t$title", fg: $fg);
+
+        return $this;
+    }
+
+    /**
+     * Si la barre de progression a atteint sa valeur maximale ou n'a pas commencé
      */
     public function isFinished(): bool
     {
@@ -127,7 +161,7 @@ class ProgressBar
     }
 
     /**
-     * Retourne la position courante de la barre de progrès
+     * Retourne la position courante de la barre de progression
      */
     public function getCurrent(): int
     {
@@ -135,13 +169,12 @@ class ProgressBar
     }
 
     /**
-     * Remplit la ligne entière de symbols signifiant la fin de la progression et passe deux lignes
+     * Remplit la ligne entière de symbols signifiant la fin de la progression
      */
     private function printEntireLigne(): void
     {
         print sprintf($this->left, 1000)
             . "\t{$this->max} / {$this->max} ["
-            . str_repeat('#', $this->max <= $this->numberOfSymbols ? $this->max : $this->numberOfSymbols) . ']'
-            . "\n\n";
+            . str_repeat('#', $this->max <= $this->numberOfSymbols ? $this->max : $this->numberOfSymbols) . ']';
     }
 }

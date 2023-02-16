@@ -183,7 +183,7 @@ public static function exception(\Exception $e, bool $withoutTrace = false): voi
 $oProgressBar = new ProgressBar(int $max, int $numberOfSymbols = 50);
 
 /**
- * Commence la barre de progrès, à appeler juste avant que commencer à itérer
+ * Commence la barre de progrès, à appeler juste avant que commencer à itérer (ou pour revenir à la première itération)
  *
  * @param string $title Titre à ajouter au dessus de la barre de progrès
  * @param Style\Foreground $fg Couleur du texte
