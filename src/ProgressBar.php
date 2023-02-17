@@ -2,6 +2,8 @@
 
 namespace DisDev\Cli;
 
+use DisDev\Cli\Style\Foreground;
+
 /**
  * barre de progression permettant l'affichage d'une progression pour le CLI
  */
@@ -40,6 +42,12 @@ class ProgressBar
      */
     protected string $title = '';
 
+    protected float $startTime = 0.0;
+
+    protected float $totalTime = 0.0;
+
+    protected float $lastIterationTime = 0.0;
+
     /**
      * Initialise une barre de progression en settant le max
      *
@@ -54,6 +62,10 @@ class ProgressBar
             throw new \UnexpectedValueException('La valeur max de la barre de progression doit être positive');
         } elseif ($numberOfSymbols <= 0) {
             throw new \UnexpectedValueException('Le nombre de symbols doit être positif');
+        }
+
+        if ($max <= $numberOfSymbols) {
+            $this->numberOfSymbols = $max;
         }
 
         $this->numberOfEachIterations = floor($this->max / $this->numberOfSymbols);
@@ -72,6 +84,8 @@ class ProgressBar
 
         $this->isFinished = false;
         $this->iteration  = 0;
+        $this->startTime  = microtime(true);
+        $this->totalTime  = 0.0;
 
         $this->advance(0);
     }
@@ -88,35 +102,49 @@ class ProgressBar
         }
 
         // Si la position courante est égale ou supérieure à max, à la prochaine iteration on ne fera rien
-        if (($this->iteration += $toAdvance) >= $this->max) {
+        $toAdvance += $this->iteration;
+
+        if ($toAdvance >= $this->max) {
+            $this->iteration  = $this->max;
             $this->isFinished = true;
+        } else {
+            $this->iteration = $toAdvance;
         }
 
         if ($this->title) {
             print sprintf($this->up . $this->left . "\33[2K" . $this->title . $this->down, 1, 1000, 1);
         }
 
-        // Si on est arrivé à la fin, on affiche toute la ligne de #
-        if ($this->isFinished) {
-            $this->printEntireLigne();
-
-            return;
-        }
-
         // On reset la ligne en revenant le cursor tout à gauche + la courante iteration / max
-        print sprintf($this->left, 1000) . "\t{$this->iteration} / {$this->max} [";
+        print sprintf($this->left, 1000) . "\33[2K\t{$this->iteration} / {$this->max} [";
 
         /**
+         * Si on est arrivé à la fin, on affiche toute la ligne de #
          * Si la valeur max est inférieure au nombre de symboles, on affiche x ->iteration
          * sinon on prend une moyenne de chaque itération par rapport au max
          */
-        if ($this->max <= $this->numberOfSymbols) {
-            print str_repeat('#', $this->iteration) . str_repeat(' ', $this->max - $this->iteration) . ']';
+        if ($this->iteration >= $this->max) {
+            print str_repeat('#', $this->numberOfSymbols);
+        } elseif ($this->max === $this->numberOfSymbols) {
+            print str_repeat('#', $this->iteration) . str_repeat(' ', $this->max - $this->iteration);
         } else {
             $actualDiezes = floor($this->iteration / $this->numberOfEachIterations);
 
-            print str_repeat('#', $actualDiezes) . str_repeat(' ', ($this->numberOfSymbols - $actualDiezes)) . "]";
+            print str_repeat('#', $actualDiezes) . str_repeat(' ', ($this->numberOfSymbols - $actualDiezes));
         }
+
+        if (!$this->lastIterationTime) {
+            $this->totalTime = 0.0;
+        } else {
+            $this->totalTime += (microtime(true) - $this->lastIterationTime) * 1000;
+        }
+
+        // Affichage du poucentage de l'itération
+        print '] ' . $this->iteration / $this->max * 100  . '%';
+
+        $this->printTime();
+
+        $this->lastIterationTime = microtime(true);
     }
 
     /**
@@ -128,8 +156,7 @@ class ProgressBar
             return;
         }
 
-        $this->isFinished = true;
-        $this->printEntireLigne();
+        $this->advance($this->max);
     }
 
     /**
@@ -161,12 +188,24 @@ class ProgressBar
     }
 
     /**
-     * Remplit la ligne entière de symbols signifiant la fin de la progression
+     * Affiche le temps total de la progression en dessous de la barre
      */
-    private function printEntireLigne(): void
+    private function printTime(): void
     {
-        print sprintf($this->left, 1000)
-            . "\t{$this->max} / {$this->max} ["
-            . str_repeat('#', $this->max <= $this->numberOfSymbols ? $this->max : $this->numberOfSymbols) . ']';
+        // Couleur du temps en fonction de la progression de la barre
+        $time = Style::stylize((string) round($this->totalTime, 2) . 'ms', fg: match (true) {
+            $this->totalTime <= 500  => Foreground::GREEN,
+            $this->totalTime <= 2000 => Foreground::YELLOW,
+            default                  => Foreground::RED
+        });
+
+        print sprintf(
+            $this->down . $this->left . "\t\33[2K%s" . $this->up . $this->left,
+            1,
+            1000,
+            $time,
+            1,
+            1000
+        );
     }
 }

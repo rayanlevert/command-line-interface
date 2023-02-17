@@ -16,10 +16,23 @@ foreach (range(1, 10) as $step) {
     usleep(200000);
 }
 
+print "\nProgress bar - max 47 step 2 with decimal percentage";
+
+$oProgressBar = new ProgressBar(47);
+$oProgressBar->start();
+
+foreach (range(1, 47, 2) as $step) {
+    $oProgressBar->advance(2);
+
+    echo ob_get_clean();
+
+    usleep(200000);
+}
+
 print "\n\nProgress bar - max 10 step 1 with title";
 
 $oProgressBar = new ProgressBar(10);
-$oProgressBar->start('Barre de progrès');
+$oProgressBar->setTitle('Barre de progrès')->start();
 
 foreach (range(1, 10, 2) as $step) {
     $oProgressBar->advance(2);
@@ -32,7 +45,7 @@ foreach (range(1, 10, 2) as $step) {
 print "\n\nProgress bar - max 10 step 2";
 
 $oProgressBar = new ProgressBar(10);
-$oProgressBar->setTitle('Title 2')->start('Title');
+$oProgressBar->setTitle('Title 2')->start();
 
 foreach (range(1, 10, 2) as $step) {
     $oProgressBar->advance(2);
@@ -45,7 +58,7 @@ foreach (range(1, 10, 2) as $step) {
 print "\n\nProgress bar - max 10 step 3";
 
 $oProgressBar = new ProgressBar(10);
-$oProgressBar->setTitle('Title 2', Foreground::LIGHT_GREEN)->start();
+$oProgressBar->setTitle('Title 3', Foreground::LIGHT_GREEN)->start();
 
 foreach (range(1, 12, 3) as $step) {
     $oProgressBar->advance(3);
