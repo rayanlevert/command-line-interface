@@ -71,6 +71,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
             ob_get_contents()
         );
 
+        $this->assertMemoryInOutput();
+
         ob_clean();
     }
 
@@ -86,6 +88,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
                 . "\e[1B\e[1000D\33[2K\t0 / 5 [     ] 0%",
             ob_get_contents()
         );
+
+        $this->assertMemoryInOutput();
 
         ob_clean();
     }
@@ -111,6 +115,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $oProgressBar->start();
 
         $this->assertStringStartsWith("\n\n\e[1000D\33[2K\t0 / 10 [          ] 0%", ob_get_contents());
+        $this->assertMemoryInOutput();
 
         foreach (range(1, 10) as $step) {
             ob_clean();
@@ -130,9 +135,11 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
             }
 
             $this->assertSame($step, $oProgressBar->getCurrent());
+
+            $this->assertMemoryInOutput();
         }
 
-        $this->assertSame(31, $this->getCount());
+        $this->assertSame(42, $this->getCount());
 
         ob_clean();
     }
@@ -146,6 +153,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $oProgressBar->start();
 
         $this->assertStringStartsWith("\n\n\e[1000D\33[2K\t0 / 10 [          ] 0%", ob_get_contents());
+        $this->assertMemoryInOutput();
 
         foreach (range(2, 10, 2) as $step) {
             ob_clean();
@@ -165,9 +173,11 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
             }
 
             $this->assertSame($step, $oProgressBar->getCurrent());
+
+            $this->assertMemoryInOutput();
         }
 
-        $this->assertSame(16, $this->getCount());
+        $this->assertSame(22, $this->getCount());
 
         ob_clean();
     }
@@ -181,10 +191,12 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $oProgressBar->start();
 
         $this->assertStringStartsWith("\n\n\e[1000D\33[2K\t0 / 2 [  ] 0%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $oProgressBar->advance(2);
         $this->assertStringStartsWith("\e[1000D\33[2K\t2 / 2 [##] 100%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $this->assertTrue($oProgressBar->isFinished());
@@ -205,22 +217,27 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $oProgressBar->start();
 
         $this->assertStringStartsWith("\n\n\e[1000D\33[2K\t0 / 10 [  ] 0%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $oProgressBar->advance(3);
         $this->assertStringStartsWith("\e[1000D\33[2K\t3 / 10 [  ] 30%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $oProgressBar->advance(2);
         $this->assertStringStartsWith("\e[1000D\33[2K\t5 / 10 [# ] 50%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $oProgressBar->advance(4);
         $this->assertStringStartsWith("\e[1000D\33[2K\t9 / 10 [# ] 90%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $oProgressBar->advance(5);
         $this->assertStringStartsWith("\e[1000D\33[2K\t10 / 10 [##] 100%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         // Un symbole toutes les 3 iterations (impair, floor(10 / 3))
@@ -228,26 +245,32 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $oProgressBar->start();
 
         $this->assertStringStartsWith("\n\n\e[1000D\33[2K\t0 / 10 [   ] 0%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $oProgressBar->advance(3);
         $this->assertStringStartsWith("\e[1000D\33[2K\t3 / 10 [#  ] 30%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $oProgressBar->advance(2);
         $this->assertStringStartsWith("\e[1000D\33[2K\t5 / 10 [#  ] 50%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $oProgressBar->advance(1);
         $this->assertStringStartsWith("\e[1000D\33[2K\t6 / 10 [## ] 60%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $oProgressBar->advance(3);
         $this->assertStringStartsWith("\e[1000D\33[2K\t9 / 10 [###] 90%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $oProgressBar->advance(3);
         $this->assertStringStartsWith("\e[1000D\33[2K\t10 / 10 [###] 100%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
     }
 
@@ -260,6 +283,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $oProgressBar->start();
 
         $this->assertStringStartsWith("\n\n\e[1000D\33[2K\t0 / 20 [                    ] 0%", ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         // 20 diez
@@ -273,6 +297,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
                     . 5 * $step . '%',
                 ob_get_contents()
             );
+            $this->assertMemoryInOutput();
         }
 
         ob_clean();
@@ -287,6 +312,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $oProgressBar->start();
 
         $this->assertStringStartsWith("\n\n\e[1000D\33[2K\t0 / 1000 [" . str_repeat(' ', 100) . ']', ob_get_contents());
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $expectedIterationDiez = 0;
@@ -307,6 +333,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
                     . $step / 10 . '%',
                 ob_get_contents()
             );
+            $this->assertMemoryInOutput();
         }
 
         $oProgressBar = new ProgressBar(1000);
@@ -330,6 +357,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
                     . $step / 10 . '%',
                 ob_get_contents()
             );
+            $this->assertMemoryInOutput();
         }
 
         ob_clean();
@@ -363,11 +391,13 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
             "\e[1000D\33[2K\t7 / 10 [" . str_repeat('#', 7) . '   ] 70%',
             ob_get_contents()
         );
+        $this->assertMemoryInOutput();
         ob_clean();
 
         $oProgressBar->finish();
 
         $this->assertStringStartsWith("\e[1000D\33[2K\t10 / 10 [" . str_repeat('#', 10) . '] 100%', ob_get_contents());
+        $this->assertMemoryInOutput();
 
         ob_clean();
     }
@@ -383,5 +413,16 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_start();
 
         print "\n";
+    }
+
+    /**
+     * Assert que la mémoire est affichée dans la barre de progression
+     */
+    private function assertMemoryInOutput(): void
+    {
+        $this->assertStringContainsString(
+            Style::stylize(round(memory_get_usage(true) / 1048576, 2) . ' MB'),
+            ob_get_contents()
+        );
     }
 }

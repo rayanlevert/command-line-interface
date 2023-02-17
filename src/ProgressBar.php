@@ -139,7 +139,7 @@ class ProgressBar
             $this->totalTime += (microtime(true) - $this->lastIterationTime) * 1000;
         }
 
-        // Affichage du poucentage de l'itération
+        // Affichage du pourcentage et la mémoire de l'itération
         print '] ' . $this->iteration / $this->max * 100  . '%';
 
         $this->printTime();
@@ -162,9 +162,9 @@ class ProgressBar
     /**
      * Set le titre à afficher au dessus de la barre de progression
      *
-     * @param Style\Foreground $fg Si une couleur de texte est souhaitée (bleue par défaut)
+     * @param Foreground $fg Si une couleur de texte est souhaitée (bleue par défaut)
      */
-    public function setTitle(string $title, Style\Foreground $fg = Style\Foreground::BLUE): self
+    public function setTitle(string $title, Foreground $fg = Foreground::BLUE): self
     {
         $this->title = Style::stylize("\t$title", fg: $fg);
 
@@ -188,7 +188,21 @@ class ProgressBar
     }
 
     /**
-     * Affiche le temps total de la progression en dessous de la barre
+     * Retourne la memory allocated formatée
+     */
+    private function getFormattedMemory(): string
+    {
+        $memory = memory_get_usage(true);
+
+        return match (true) {
+            $memory <= 1024         => $memory . ' B',
+            $memory <= 1048576      => round($memory / 1024, 2) . ' KB',
+            default                 => round($memory / 1048576, 2) . ' MB'
+        };
+    }
+
+    /**
+     * Affiche le temps total de la progression et la mémoire PHP en dessous de la barre
      */
     private function printTime(): void
     {
@@ -199,11 +213,19 @@ class ProgressBar
             default                  => Foreground::RED
         });
 
+        // Couleur de la mémoire allocated en fonction de sa taille
+        $memoryUsage = memory_get_usage(true);
+        $memory      = Style::stylize($this->getFormattedMemory(), fg: match (true) {
+            $memoryUsage <= 268435456  => Foreground::LIGHT_GREEN, // 256Mo
+            $memoryUsage <= 536870912  => Foreground::YELLOW, // 512Mo
+            default                    => Foreground::RED
+        });
+
         print sprintf(
             $this->down . $this->left . "\t\33[2K%s" . $this->up . $this->left,
             1,
             1000,
-            $time,
+            $time . str_repeat(' ', $this->numberOfSymbols + 2) . $memory,
             1,
             1000
         );
