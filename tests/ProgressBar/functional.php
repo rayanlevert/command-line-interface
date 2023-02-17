@@ -136,8 +136,34 @@ foreach (range(1, 100) as $range) {
     }
 
     $oProgressBar->advance(1);
+
     echo ob_get_clean();
+
     usleep(50000);
+}
+
+print "\n\nProgress bar - changing max in a while";
+
+$oProgressBar = new ProgressBar(100);
+
+foreach (range(1, 3) as $range) {
+    if ($range === 1) {
+        $max = 15;
+    } elseif ($range === 2) {
+        $max = 30;
+    } else {
+        $max = 50;
+    }
+
+    $oProgressBar->setMax($max, 30)->setTitle("Max $max")->start();
+
+    foreach (range(1, $max) as $range) {
+        $oProgressBar->advance();
+
+        echo ob_get_clean();
+
+        usleep(50000);
+    }
 }
 
 print "\n\n";

@@ -240,7 +240,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $this->assertMemoryInOutput();
         ob_clean();
 
-        // Un symbole toutes les 3 iterations (impair, floor(10 / 3))
+        // Un symbole toutes les 4 iterations (impair, ceil(10 / 3))
         $oProgressBar = new ProgressBar(10, 3);
         $oProgressBar->start();
 
@@ -249,7 +249,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
 
         $oProgressBar->advance(3);
-        $this->assertStringStartsWith("\e[1000D\33[2K\t3 / 10 [#  ] 30%", ob_get_contents());
+        $this->assertStringStartsWith("\e[1000D\33[2K\t3 / 10 [   ] 30%", ob_get_contents());
         $this->assertMemoryInOutput();
         ob_clean();
 
@@ -259,12 +259,12 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
 
         $oProgressBar->advance(1);
-        $this->assertStringStartsWith("\e[1000D\33[2K\t6 / 10 [## ] 60%", ob_get_contents());
+        $this->assertStringStartsWith("\e[1000D\33[2K\t6 / 10 [#  ] 60%", ob_get_contents());
         $this->assertMemoryInOutput();
         ob_clean();
 
         $oProgressBar->advance(3);
-        $this->assertStringStartsWith("\e[1000D\33[2K\t9 / 10 [###] 90%", ob_get_contents());
+        $this->assertStringStartsWith("\e[1000D\33[2K\t9 / 10 [## ] 90%", ob_get_contents());
         $this->assertMemoryInOutput();
         ob_clean();
 
@@ -399,6 +399,36 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $this->assertStringStartsWith("\e[1000D\33[2K\t10 / 10 [" . str_repeat('#', 10) . '] 100%', ob_get_contents());
         $this->assertMemoryInOutput();
 
+        ob_clean();
+    }
+
+    /**
+     * @test ->setMax()
+     */
+    public function testSetMax(): void
+    {
+        $oProgressBar = new ProgressBar(10);
+        $oProgressBar->start();
+        $this->assertSame(10, $oProgressBar->getMax());
+
+        ob_clean();
+        $oProgressBar->finish();
+        $this->assertStringStartsWith("\e[1000D\33[2K\t10 / 10 [##########] 100%", ob_get_contents());
+        ob_clean();
+
+        $oProgressBar->setMax(5)->start();
+        $this->assertSame(5, $oProgressBar->getMax());
+        $this->assertStringStartsWith("\e[1000D\33[2K\t0 / 5 [     ] 0%", ob_get_contents());
+
+        ob_clean();
+        $oProgressBar->setMax(3, 2)->start();
+        $this->assertSame(3, $oProgressBar->getMax());
+        $this->assertStringStartsWith("\e[1000D\33[2K\t0 / 3 [  ] 0%", ob_get_contents());
+        ob_clean();
+
+        ob_clean();
+        $oProgressBar->finish();
+        $this->assertStringStartsWith("\e[1000D\33[2K\t3 / 3 [##] 100%", ob_get_contents());
         ob_clean();
     }
 

@@ -58,17 +58,7 @@ class ProgressBar
      */
     public function __construct(protected int $max, protected int $numberOfSymbols = 50)
     {
-        if ($max <= 0) {
-            throw new \UnexpectedValueException('La valeur max de la barre de progression doit être positive');
-        } elseif ($numberOfSymbols <= 0) {
-            throw new \UnexpectedValueException('Le nombre de symbols doit être positif');
-        }
-
-        if ($max <= $numberOfSymbols) {
-            $this->numberOfSymbols = $max;
-        }
-
-        $this->numberOfEachIterations = floor($this->max / $this->numberOfSymbols);
+        $this->setMax($max, $numberOfSymbols);
     }
 
     /**
@@ -169,6 +159,42 @@ class ProgressBar
         $this->title = Style::stylize("\t$title", fg: $fg);
 
         return $this;
+    }
+
+    /**
+     * Valeur max d'itérations à set
+     *
+     * @param int $max Valeur max d'itérations
+     * @param int $numberOfSymbols Nombre équivalent de symbols (#) qui sont ajoutés à chaque itération
+     *
+     * @throws \UnexpectedValueException Si `$max` ou `$numberOfSymbols` sont négatifs
+     */
+    public function setMax(int $max, int $numberOfSymbols = 50): self
+    {
+        if ($max <= 0) {
+            throw new \UnexpectedValueException('La valeur max de la barre de progression doit être positive');
+        } elseif ($numberOfSymbols <= 0) {
+            throw new \UnexpectedValueException('Le nombre de symbols doit être positif');
+        }
+
+        $this->max              = $max;
+        $this->numberOfSymbols  = $numberOfSymbols;
+
+        if ($max <= $this->numberOfSymbols) {
+            $this->numberOfSymbols = $max;
+        }
+
+        $this->numberOfEachIterations = ceil($this->max / $this->numberOfSymbols);
+
+        return $this;
+    }
+
+    /**
+     * Retourne la valeur maximale d'itérations
+     */
+    public function getMax(): int
+    {
+        return $this->max;
     }
 
     /**
