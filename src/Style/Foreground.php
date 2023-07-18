@@ -5,7 +5,7 @@ namespace DisDev\Cli\Style;
 /**
  * Enum contenant les codes ANSI des couleurs de texte
  */
-enum Foreground: string
+enum Foreground: string implements AnsiInterface
 {
     case BLACK        = '0;30';
     case DARK_GRAY    = '1;30';
@@ -23,4 +23,30 @@ enum Foreground: string
     case LIGHT_CYAN   = '1;36';
     case LIGHT_GRAY   = '0;37';
     case WHITE        = '1;37';
+
+    /**
+     * On ajoute fg à chaque début de tag pour les différencier du background
+     */
+    public static function tryFromTag(string $tagName): ?self
+    {
+        return match ($tagName) {
+            'fgblack'       => self::BLACK,
+            'fgdarkgray'    => self::DARK_GRAY,
+            'fgred'         => self::RED,
+            'fglightred'    => self::LIGHT_RED,
+            'fggreen'       => self::GREEN,
+            'fglightgreen'  => self::LIGHT_GREEN,
+            'fgbrown'       => self::BROWN,
+            'fgyellow'      => self::YELLOW,
+            'fgblue'        => self::BLUE,
+            'fglightblue'   => self::LIGHT_BLUE,
+            'fgpurple'      => self::PURPLE,
+            'fglightpurple' => self::LIGHT_PURPLE,
+            'fgcyan'        => self::CYAN,
+            'fglightcyan'   => self::LIGHT_CYAN,
+            'fglightgray'   => self::LIGHT_GRAY,
+            'fgwhite'       => self::WHITE,
+            default         => null
+        };
+    }
 }
