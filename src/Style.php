@@ -144,12 +144,61 @@ class Style
             $e->getLine()
         ));
 
-        // On passe une ligne et affiche le message le l'exception en gras
+        // On passe une ligne et affiche le message de l'exception en gras
         print self::stylize('          ' . $e->getMessage(), at: Style\Attribute::BOLD) . "\n";
 
         if (!$withoutTrace) {
             self::outline("\nTrace : " . $e->getTraceAsString());
         }
+    }
+
+    /**
+     * Print le string stylisé de plusieurs manières grâce aux tags HTML des codes ANSI
+     *
+     * @see DisDev\Cli\Style{Attribute, Background, Foreground} et la méthode `tryFromTag`
+     */
+    public static function tag(string $tag): void
+    {
+        // On récupère tous les tags ouvrants et fermants ainsi que leur inner valeur
+        preg_match_all('/<([\w]+)[^>]*>(.*?)<\/\1>/', $tag, $aMatches);
+
+        // Aucun tag n'a été reconnu
+        if (!$aMatches[0]) {
+            print $tag;
+
+            return;
+        }
+
+        $content = '';
+
+        /**
+         * On boucle à travers chaque tag
+         *
+         * - 0: tag ouvrant et fermant
+         * - 1: nom du tag
+         * - 2: inner value
+         */
+        foreach ($aMatches[0] as $index => $tag) {
+            $tagName    = $aMatches[1][$index];
+            $innerValue = $aMatches[2][$index];
+
+            // On récupère une instance AnsiInterface par le tag
+            $oAnsi = match (substr($tagName, 0, 2)) {
+                'fg'    => Style\Foreground::tryFromTag($tagName),
+                'bg'    => Style\Background::tryFromTag($tagName),
+                default => Style\Attribute::tryFromTag($tagName)
+            };
+
+            if (!$oAnsi) {
+                trigger_error(get_called_class() . " : nom du tag '$tagName' est incorrect");
+
+                continue;
+            }
+
+            $content .= self::START_TAG . $oAnsi->value . 'm' . $innerValue . self::END_TAG;
+        }
+
+        print $content;
     }
 
     /**

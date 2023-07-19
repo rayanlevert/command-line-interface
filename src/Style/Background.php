@@ -30,7 +30,7 @@ enum Background: string implements AnsiInterface
             'bgmagenta'   => self::MAGENTA,
             'bgcyan'      => self::CYAN,
             'bglightgray' => self::LIGHT_GRAY,
-            default     => null
+            default       => null
         };
     }
 }
