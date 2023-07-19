@@ -171,6 +171,15 @@ public static function outlineWithBool(bool $status, string $ifTrue, string $ifF
 
 // Affiche les détails d'une exception en rouge + sa trace en blanc si voulu
 public static function exception(\Exception $e, bool $withoutTrace = false): void;
+
+/**
+ * Affiche les trois types de style (Foreground, Background et Attribute) via des tags HTML
+ *
+ * Idéal si vous voulez utiliser plusieurs types de style pour différentes parties du string
+ *
+ * Les tags à utiliser sont dans les trois enums grâce à la méthode 'tryFromTag'
+*/
+public static function tag(string $tag): void
 ```
 
 ## **DisDev\Cli\ProgressBar affichant une barre de progrès qui progresse à chaque itération**
