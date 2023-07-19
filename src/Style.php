@@ -153,7 +153,7 @@ class Style
     }
 
     /**
-     * Print le string stylisé de plusieurs manières grâce aux tags HTML des codes ANSI
+     * Print le string stylisé grâce aux tags HTML des codes ANSI
      *
      * @see DisDev\Cli\Style{Attribute, Background, Foreground} et la méthode `tryFromTag`
      */
@@ -169,8 +169,6 @@ class Style
             return;
         }
 
-        $content = '';
-
         /**
          * On boucle à travers chaque tag
          *
@@ -178,7 +176,7 @@ class Style
          * - 1: nom du tag
          * - 2: inner value
          */
-        foreach ($aMatches[0] as $index => $tag) {
+        foreach ($aMatches[0] as $index => $match) {
             $tagName    = $aMatches[1][$index];
             $innerValue = $aMatches[2][$index];
 
@@ -195,10 +193,14 @@ class Style
                 continue;
             }
 
-            $content .= self::START_TAG . $oAnsi->value . 'm' . $innerValue . self::END_TAG;
+            $tag = str_replace(
+                $match,
+                self::START_TAG . $oAnsi->value . 'm' . $innerValue . self::END_TAG,
+                $tag
+            );
         }
 
-        print $content;
+        print $tag;
     }
 
     /**
