@@ -283,4 +283,84 @@ class StyleTest extends \PHPUnit\Framework\TestCase
 
         self::$oStyle->outlineWithBool(false, 'ifTrue', 'ifFalse', 'To Precede ');
     }
+
+    public function testTagNoTags(): void
+    {
+        $this->expectOutputString('ce texte ne contient pas de tags.');
+
+        self::$oStyle->tag('ce texte ne contient pas de tags.');
+    }
+
+    public function testTagNotTheSame(): void
+    {
+        $this->expectOutputString('<fgred>Je me suis trompé de tag</bgred>');
+
+        self::$oStyle->tag('<fgred>Je me suis trompé de tag</bgred>');
+    }
+
+    public function testTagNotKnown(): void
+    {
+        try {
+            self::$oStyle->tag('<fgorange>Je me suis trompé de tag</fgorange>');
+        } catch (\PHPUnit\Framework\Error\Notice $e) {
+            $this->assertSame('DisDev\Cli\Style : nom du tag \'fgorange\' est incorrect', $e->getMessage());
+
+            return;
+        }
+
+        $this->fail('Une notice aurait du être levée pour un tag non connu');
+    }
+
+    public function testOneAttributeTag(): void
+    {
+        $this->expectOutputString("\e[1mtexte en gras\e[0m");
+
+        self::$oStyle->tag('<b>texte en gras</b>');
+    }
+
+    public function testOneBackgroundTag(): void
+    {
+        $this->expectOutputString("\e[41mbackground en rouge\e[0m");
+
+        self::$oStyle->tag('<bgred>background en rouge</bgred>');
+    }
+
+    public function testOneForegroundTag(): void
+    {
+        $this->expectOutputString("\e[1;35mtexte en light purple\e[0m");
+
+        self::$oStyle->tag('<fglightpurple>texte en light purple</fglightpurple>');
+    }
+
+    public function testTagWithAntiSlashN(): void
+    {
+        $this->expectOutputString("\e[1;35mtexte en light purple\e[0m\n");
+
+        self::$oStyle->tag("<fglightpurple>texte en light purple</fglightpurple>\n");
+    }
+
+    public function testTagWithTextOuterTagsBeggining(): void
+    {
+        $this->expectOutputString("texte sans tag. \e[1;35mtexte en light purple\e[0m");
+
+        self::$oStyle->tag("texte sans tag. <fglightpurple>texte en light purple</fglightpurple>");
+    }
+
+    public function testTagWithTextOuterTagsEnding(): void
+    {
+        $this->expectOutputString("\e[1;35mtexte en light purple\e[0m. texte sans tag");
+
+        self::$oStyle->tag("<fglightpurple>texte en light purple</fglightpurple>. texte sans tag");
+    }
+
+    public function testTagWithTextOuterTagsInBetween(): void
+    {
+        $this->expectOutputString(
+            "\e[1;35mtexte en light purple\e[0m. texte sans tag. \e[0;31mtexte en red\e[0m"
+        );
+
+        self::$oStyle->tag(
+            "<fglightpurple>texte en light purple</fglightpurple>. texte sans tag. <fgred>texte en red</fgred>"
+        );
+    }
 }
