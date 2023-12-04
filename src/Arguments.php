@@ -56,7 +56,7 @@ class Arguments implements \IteratorAggregate
     public function get(string $argumentName): string|int|float|bool|null
     {
         if (!$oArgument = $this->retrieve($argumentName)) {
-            throw new Exception("L'argument $argumentName n'existe pas dans la collection");
+            throw new Exception("Argument $argumentName does not exist in the collection");
         }
 
         return $oArgument->getValue();
@@ -191,7 +191,7 @@ class Arguments implements \IteratorAggregate
             return;
         }
 
-        print "\n\Optionnal arguments:";
+        print "\n\Optional arguments:";
 
         foreach ($oSelf as $name => $oArg) {
             print "\n\t" . $oArg->getInfos();
@@ -267,7 +267,7 @@ class Arguments implements \IteratorAggregate
             }
 
             if ($argHasNotRequired && $oArgument->isRequired()) {
-                throw new Exception("Argument $name required succède d'un argument non required");
+                throw new Exception("Required argument $name follows a not required argument");
             }
         }
     }
@@ -302,7 +302,7 @@ class Arguments implements \IteratorAggregate
 
         // Argument must have an equal to recovers the value after it (noValue => false)
         if ($equalPosition === false) {
-            throw new ParseException("Prefixed argument starting by $prefix ($arg) has no = sign");
+            throw new ParseException("Prefixed argument starting with $prefix ($arg) has no = sign");
         }
 
         $oArgument->setValueParsed(mb_substr($arg, $equalPosition + 1));

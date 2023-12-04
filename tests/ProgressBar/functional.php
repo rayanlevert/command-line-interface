@@ -32,7 +32,7 @@ foreach (range(1, 47, 2) as $step) {
 print "\n\nProgress bar - max 10 step 1 with title";
 
 $oProgressBar = new ProgressBar(10);
-$oProgressBar->setTitle('Barre de progrès')->start();
+$oProgressBar->setTitle('Progress bar')->start();
 
 foreach (range(1, 10, 2) as $step) {
     $oProgressBar->advance(2);
@@ -101,11 +101,11 @@ $oProgressBar = new ProgressBar(100);
 
 foreach (range(1, 3) as $range) {
     if ($range === 1) {
-        $oProgressBar->setTitle("Barre n°$range", Foreground::GREEN);
+        $oProgressBar->setTitle("Bar n°$range", Foreground::GREEN);
     } elseif ($range === 2) {
-        $oProgressBar->setTitle("Barre n°$range plus grande", Foreground::RED);
+        $oProgressBar->setTitle("Bar n°$range longer", Foreground::RED);
     } else {
-        $oProgressBar->setTitle("Barre", Foreground::LIGHT_PURPLE);
+        $oProgressBar->setTitle("Bar", Foreground::LIGHT_PURPLE);
     }
 
     $oProgressBar->start();
@@ -128,11 +128,11 @@ $oProgressBar->start();
 
 foreach (range(1, 100) as $range) {
     if ($range >= 25 && $range <= 50) {
-        $oProgressBar->setTitle("Barre de 25 à 50", Foreground::GREEN);
+        $oProgressBar->setTitle("Bar from 25 to 50", Foreground::GREEN);
     } elseif ($range >= 50 && $range <= 75) {
-        $oProgressBar->setTitle("Barre entre 50 et 75", Foreground::RED);
+        $oProgressBar->setTitle("Bar from 50 to 75", Foreground::RED);
     } else {
-        $oProgressBar->setTitle("Barre", Foreground::LIGHT_PURPLE);
+        $oProgressBar->setTitle("Bar", Foreground::LIGHT_PURPLE);
     }
 
     $oProgressBar->advance(1);

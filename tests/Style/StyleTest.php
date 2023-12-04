@@ -15,7 +15,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle = new \RayanLevert\Cli\Style();
     }
 
-    /** @test */
     public function testInlineNoStyle(): void
     {
         $this->expectOutputString('test');
@@ -23,7 +22,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->inline('test');
     }
 
-    /** @test */
     public function testInlineOnlyBackground(): void
     {
         $this->expectOutputString("\e[40mtest\e[0m");
@@ -31,7 +29,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->inline('test', Background::BLACK);
     }
 
-    /** @test */
     public function testInlineOnlyAttribute(): void
     {
         $this->expectOutputString("\e[6mtest\e[0m");
@@ -39,7 +36,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->inline('test', at: Attribute::OUTLINE);
     }
 
-    /** @test */
     public function testInlineOnlyForeground(): void
     {
         $this->expectOutputString("\e[0;33mtest\e[0m");
@@ -47,7 +43,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->inline('test', fg: Foreground::BROWN);
     }
 
-    /** @test */
     public function testInlineBackgroundAndForeground(): void
     {
         $this->expectOutputString("\e[0;35m\e[40mtest\e[0m");
@@ -55,7 +50,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->inline('test', Background::BLACK, Foreground::PURPLE);
     }
 
-    /** @test */
     public function testInlineForegroundAndAttribute(): void
     {
         $this->expectOutputString("\e[0;35m\e[4mtest\e[0m");
@@ -63,7 +57,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->inline('test', fg: Foreground::PURPLE, at: Attribute::UNDERLINE);
     }
 
-    /** @test */
     public function testInlineBackgroundAndAttribute(): void
     {
         $this->expectOutputString("\e[46m\e[3mtest\e[0m");
@@ -71,7 +64,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->inline('test', Background::CYAN, at: Attribute::ITALIC);
     }
 
-    /** @test */
     public function testOutlineNoStyle(): void
     {
         $this->expectOutputString("test\n");
@@ -79,7 +71,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->outline('test');
     }
 
-    /** @test */
     public function testOutlineOnlyBackground(): void
     {
         $this->expectOutputString("\e[40mtest\e[0m\n");
@@ -87,7 +78,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->outline('test', Background::BLACK);
     }
 
-    /** @test */
     public function testOutlineOnlyAttribute(): void
     {
         $this->expectOutputString("\e[6mtest\e[0m\n");
@@ -95,7 +85,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->outline('test', at: Attribute::OUTLINE);
     }
 
-    /** @test */
     public function testOutlineOnlyForeground(): void
     {
         $this->expectOutputString("\e[0;33mtest\e[0m\n");
@@ -103,7 +92,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->outline('test', fg: Foreground::BROWN);
     }
 
-    /** @test */
     public function testOutlineBackgroundAndForeground(): void
     {
         $this->expectOutputString("\e[0;35m\e[40mtest\e[0m\n");
@@ -111,7 +99,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->outline('test', Background::BLACK, Foreground::PURPLE);
     }
 
-    /** @test */
     public function testOutlineForegroundAndAttribute(): void
     {
         $this->expectOutputString("\e[0;35m\e[4mtest\e[0m\n");
@@ -119,7 +106,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->outline('test', fg: Foreground::PURPLE, at: Attribute::UNDERLINE);
     }
 
-    /** @test */
     public function testOutlineBackgroundAndAttribute(): void
     {
         $this->expectOutputString("\e[46m\e[3mtest\e[0m\n");
@@ -127,23 +113,20 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->outline('test', Background::CYAN, at: Attribute::ITALIC);
     }
 
-    /** @test */
     public function testError(): void
     {
-        $this->expectOutputString("\e[1;31m  (◍•﹏•) Une erreur est survenue\e[0m\n");
+        $this->expectOutputString("\e[1;31m  (◍•﹏•) An error occured\e[0m\n");
 
-        self::$oStyle->error('Une erreur est survenue');
+        self::$oStyle->error('An error occured');
     }
 
-    /** @test */
     public function testWarning(): void
     {
-        $this->expectOutputString("\e[1;33m  (◍•﹏•) Un warning est survenu\e[0m\n");
+        $this->expectOutputString("\e[1;33m  (◍•﹏•) A warning occured\e[0m\n");
 
-        self::$oStyle->warning('Un warning est survenu');
+        self::$oStyle->warning('A warning occured');
     }
 
-    /** @test */
     public function testFlankDefault(): void
     {
         $this->expectOutputString("--- Test Message ---\n");
@@ -151,7 +134,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->flank('Test Message');
     }
 
-    /** @test */
     public function testFlankCharacter(): void
     {
         $this->expectOutputString('### Test Message ###' . "\n");
@@ -159,7 +141,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->flank('Test Message', '#');
     }
 
-    /** @test */
     public function testFlankLength(): void
     {
         $this->expectOutputString('- Test Message -' . "\n");
@@ -167,7 +148,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->flank('Test Message', length: 1);
     }
 
-    /** @test */
     public function testFlankCharacterAndLength(): void
     {
         $this->expectOutputString('// Test Message //' . "\n");
@@ -175,7 +155,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->flank('Test Message', '/', 2);
     }
 
-    /** @test */
     public function testTitle(): void
     {
         $this->expectOutputString("==============\n｡◕‿◕｡ test ｡◕‿◕｡\n==============\n");
@@ -183,76 +162,52 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->title('test');
     }
 
-    /** @test */
-    public function testTermine(): void
-    {
-        $this->expectOutputString("\n｡◕‿◕｡ Terminé ｡◕‿◕｡\n");
-
-        self::$oStyle->termine();
-    }
-
-    /** @test */
-    public function testFlankStyle(): void
-    {
-        $this->expectOutputString('｡◕‿◕｡ Test Message ｡◕‿◕｡' . "\n");
-
-        self::$oStyle->flankStyle('Test Message');
-    }
-
-    /** @test */
     public function testRed(): void
     {
-        $this->expectOutputString("\e[1;31mmessage rouge\e[0m\n");
+        $this->expectOutputString("\e[1;31mred message\e[0m\n");
 
-        self::$oStyle->red('message rouge');
+        self::$oStyle->red('red message');
     }
 
-    /** @test */
     public function testYellow(): void
     {
-        $this->expectOutputString("\e[1;33mmessage jaune\e[0m\n");
+        $this->expectOutputString("\e[1;33myellow message\e[0m\n");
 
-        self::$oStyle->yellow('message jaune');
+        self::$oStyle->yellow('yellow message');
     }
 
-    /** @test */
     public function testGreen(): void
     {
-        $this->expectOutputString("\e[0;32mmessage vert\e[0m\n");
+        $this->expectOutputString("\e[0;32mgreen message\e[0m\n");
 
-        self::$oStyle->green('message vert');
+        self::$oStyle->green('green message');
     }
 
-    /** @test */
     public function testExceptionWithoutTrace(): void
     {
-        $e = new \Exception('Test message de l\'exception');
+        $e = new \Exception('Exception message test');
 
         $this->expectOutputString(
-            "\n\e[1;31m  (◍•﹏•) Exception thrown in file " . $e->getFile() . " (line n°229)\e[0m"
-                . "\n\e[1m          Test message de l'exception\e[0m\n"
+            "\n\e[1;31m  (◍•﹏•) Exception thrown in file " . $e->getFile() . " (line n°188)\e[0m"
+                . "\n\e[1m          Exception message test\e[0m\n"
         );
 
         self::$oStyle->exception($e, true);
     }
 
-    /** @test */
     public function testExceptionWithTrace(): void
     {
-        $e = new \Exception('Test message de l\'exception');
+        $e = new \Exception('Exception message test');
 
         self::$oStyle->exception($e);
 
-        $output = $this->getActualOutputForAssertion();
-
         $this->assertStringStartsWith(
-            "\n\e[1;31m  (◍•﹏•) Exception thrown in file " . $e->getFile() . " (line n°242)\e[0m"
-                . "\n\e[1m          Test message de l'exception\e[0m\n",
-            $output
+            "\n\e[1;31m  (◍•﹏•) Exception thrown in file " . $e->getFile() . " (line n°200)\e[0m"
+                . "\n\e[1m          Exception message test\e[0m\n",
+            $this->getActualOutputForAssertion()
         );
     }
 
-    /** @test */
     public function testOutlineWithBoolTrueNoPrecede(): void
     {
         $this->expectOutputString("\e[0;32mifTrue\e[0m\n");
@@ -260,7 +215,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->outlineWithBool(true, 'ifTrue', 'ifFalse');
     }
 
-    /** @test */
     public function testOutlineWithBoolTrueWithPrecede(): void
     {
         $this->expectOutputString("To Precede \e[0;32mifTrue\e[0m\n");
@@ -268,7 +222,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->outlineWithBool(true, 'ifTrue', 'ifFalse', 'To Precede ');
     }
 
-    /** @test */
     public function testOutlineWithBoolFalseNoPrecede(): void
     {
         $this->expectOutputString("\e[1;31mifFalse\e[0m\n");
@@ -276,7 +229,6 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->outlineWithBool(false, 'ifTrue', 'ifFalse');
     }
 
-    /** @test */
     public function testOutlineWithBoolFalseWithPrecede(): void
     {
         $this->expectOutputString("To Precede \e[1;31mifFalse\e[0m\n");
@@ -286,29 +238,32 @@ class StyleTest extends \PHPUnit\Framework\TestCase
 
     public function testTagNoTags(): void
     {
-        $this->expectOutputString('ce texte ne contient pas de tags.');
+        $this->expectOutputString('text does not contain tags.');
 
-        self::$oStyle->tag('ce texte ne contient pas de tags.');
+        self::$oStyle->tag('text does not contain tags.');
     }
 
     public function testTagNotTheSame(): void
     {
-        $this->expectOutputString('<fgred>Je me suis trompé de tag</bgred>');
+        $this->expectOutputString('<fgred>Wrong tag</bgred>');
 
-        self::$oStyle->tag('<fgred>Je me suis trompé de tag</bgred>');
+        self::$oStyle->tag('<fgred>Wrong tag</bgred>');
     }
 
     public function testTagNotKnown(): void
     {
-        try {
-            self::$oStyle->tag('<fgorange>Je me suis trompé de tag</fgorange>');
-        } catch (\PHPUnit\Framework\Error\Notice $e) {
-            $this->assertSame('RayanLevert\Cli\Style : nom du tag \'fgorange\' est incorrect', $e->getMessage());
+        $oldError = set_error_handler(function (int $errorCode, string $errorMessage) {
+            $this->assertSame('RayanLevert\Cli\Style : tag name \'fgorange\' is incorrect', $errorMessage);
+            $this->assertSame(E_USER_NOTICE, $errorCode);
+        });
 
-            return;
-        }
+        self::$oStyle->tag('<fgorange>Wrong tag</fgorange>');
 
-        $this->fail('Une notice aurait du être levée pour un tag non connu');
+        $this->assertSame(2, $this->getCount(), 'A user notice has not been handled');
+
+        set_error_handler($oldError);
+
+        ob_clean();
     }
 
     public function testOneAttributeTag(): void
