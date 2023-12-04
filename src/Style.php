@@ -3,7 +3,7 @@
 namespace RayanLevert\Cli;
 
 /**
- * Personalizes the command line interface by changing the color and format of displayed text
+ * Personalizes the command line interface by changing the color and formatting displayed text
  */
 class Style
 {

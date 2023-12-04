@@ -136,7 +136,7 @@ class Argument
 
             $this->valueParsed = intval($value);
         } elseif ($this->castTo === 'double') {
-            if (!is_numeric($value) || strpos($value, ',') !== false) {
+            if (!is_numeric($value)) {
                 throw new ParseException("Argument {$this->name} is not a floating point number (must cast to float)");
             }
 
