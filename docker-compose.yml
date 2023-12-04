@@ -1,12 +1,23 @@
 version: '2'
 
 services:
-  app:
-    build: docker/app
+  cli-8.1:
+    build: docker/8.1
     restart: 'no'
     working_dir: /app
-    ports:
-      - "8082:80"
-      - "4432:443"
+    volumes:
+      - .:/app
+
+  cli-8.2:
+    build: docker/8.2
+    restart: 'no'
+    working_dir: /app
+    volumes:
+      - .:/app
+
+  cli-8.3:
+    build: docker/8.3
+    restart: 'no'
+    working_dir: /app
     volumes:
       - .:/app
