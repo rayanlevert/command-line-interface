@@ -1,18 +1,18 @@
 <?php
 
-namespace DisDev\Cli\Tests\Style;
+namespace RayanLevert\Cli\Tests\Style;
 
-use DisDev\Cli\Style\Attribute;
-use DisDev\Cli\Style\Background;
-use DisDev\Cli\Style\Foreground;
+use RayanLevert\Cli\Style\Attribute;
+use RayanLevert\Cli\Style\Background;
+use RayanLevert\Cli\Style\Foreground;
 
 class StyleTest extends \PHPUnit\Framework\TestCase
 {
-    protected static \DisDev\Cli\Style $oStyle;
+    protected static \RayanLevert\Cli\Style $oStyle;
 
     public static function setUpBeforeClass(): void
     {
-        self::$oStyle = new \DisDev\Cli\Style();
+        self::$oStyle = new \RayanLevert\Cli\Style();
     }
 
     /** @test */
@@ -303,7 +303,7 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         try {
             self::$oStyle->tag('<fgorange>Je me suis trompé de tag</fgorange>');
         } catch (\PHPUnit\Framework\Error\Notice $e) {
-            $this->assertSame('DisDev\Cli\Style : nom du tag \'fgorange\' est incorrect', $e->getMessage());
+            $this->assertSame('RayanLevert\Cli\Style : nom du tag \'fgorange\' est incorrect', $e->getMessage());
 
             return;
         }

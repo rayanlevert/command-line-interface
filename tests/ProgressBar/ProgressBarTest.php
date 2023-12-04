@@ -1,10 +1,10 @@
 <?php
 
-namespace DisDev\Cli\Tests\ProgressBar;
+namespace RayanLevert\Cli\Tests\ProgressBar;
 
-use DisDev\Cli\ProgressBar;
-use DisDev\Cli\Style;
-use DisDev\Cli\Style\Foreground;
+use RayanLevert\Cli\ProgressBar;
+use RayanLevert\Cli\Style;
+use RayanLevert\Cli\Style\Foreground;
 
 class ProgressBarTest extends \PHPUnit\Framework\TestCase
 {

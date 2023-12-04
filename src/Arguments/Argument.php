@@ -1,6 +1,6 @@
 <?php
 
-namespace DisDev\Cli\Arguments;
+namespace RayanLevert\Cli\Arguments;
 
 /**
  * Un argument passé à une application Cli
@@ -36,7 +36,7 @@ class Argument
      * - prefix (string) Court prefix (-u)
      * - longPrefix (string) Long prefix (--user)
      *
-     * @throws \DisDev\Cli\Arguments\Exception Si des options ne sont pas compatibles ou incorrectes
+     * @throws \RayanLevert\Cli\Arguments\Exception Si des options ne sont pas compatibles ou incorrectes
      */
     final public function __construct(protected readonly string $name, array $options = [])
     {
@@ -117,7 +117,7 @@ class Argument
      *
      * @param  bool|string $value Si string, essaie de caster, si bool on check qui soit en noValue
      *
-     * @throws \DisDev\Cli\Arguments\ParseException Si $value n'est pas correct selon le type de cast demandé
+     * @throws \RayanLevert\Cli\Arguments\ParseException Si $value n'est pas correct selon le type de cast demandé
      */
     final public function setValueParsed(bool|string $value): void
     {

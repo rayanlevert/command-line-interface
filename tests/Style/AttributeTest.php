@@ -1,8 +1,8 @@
 <?php
 
-namespace DisDev\Cli\Tests\Style;
+namespace RayanLevert\Cli\Tests\Style;
 
-use DisDev\Cli\Style\Attribute;
+use RayanLevert\Cli\Style\Attribute;
 
 class AttributeTest extends \PHPUnit\Framework\TestCase
 {

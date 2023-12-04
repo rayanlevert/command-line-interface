@@ -1,13 +1,13 @@
 <?php
 
-namespace DisDev\Cli;
+namespace RayanLevert\Cli;
 
-use DisDev\Cli\Arguments\Argument;
-use DisDev\Cli\Arguments\Exception;
-use DisDev\Cli\Arguments\ParseException;
+use RayanLevert\Cli\Arguments\Argument;
+use RayanLevert\Cli\Arguments\Exception;
+use RayanLevert\Cli\Arguments\ParseException;
 
 /**
- * Collection de DisDev\Cli\Arguments\Argument, qui possèdent les arguments d'une application Cli
+ * Collection de RayanLevert\Cli\Arguments\Argument, qui possèdent les arguments d'une application Cli
  *
  * Possède une méthode ->parse() qui demande des valeurs string comme ceux récupérés depuis $argv
  * qui set la valeur de chaque argument et/ou throw une Exception si une erreur d'initialisation se produit
@@ -62,7 +62,7 @@ class Arguments implements \IteratorAggregate
     /**
      * Récupère la valeur d'un argument de la collection (retourne sa valeur par défaut si non handled)
      *
-     * @throws \DisDev\Cli\Arguments\Exception Si l'argument n'existe pas dans la collection
+     * @throws \RayanLevert\Cli\Arguments\Exception Si l'argument n'existe pas dans la collection
      */
     public function get(string $argumentName): string|int|float|bool|null
     {
@@ -182,7 +182,7 @@ class Arguments implements \IteratorAggregate
      *
      * @param string ...$arguments Arguments qui doivent être parsés (de type string comme la superglobal `$argv`)
      *
-     * @throws \DisDev\Cli\Arguments\Exception Si un argument required n'est pas renseigné ou erreur d'argument
+     * @throws \RayanLevert\Cli\Arguments\Exception Si un argument required n'est pas renseigné ou erreur d'argument
      */
     public function parse(string ...$arguments): void
     {

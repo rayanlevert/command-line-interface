@@ -1,6 +1,6 @@
 <?php
 
-namespace DisDev\Cli;
+namespace RayanLevert\Cli;
 
 /**
  * Class qui personnalise et rend plus clair l'output du CLI qui print un texte et le stylise selon la méthode
@@ -155,7 +155,7 @@ class Style
     /**
      * Print le string stylisé grâce aux tags HTML des codes ANSI
      *
-     * @see DisDev\Cli\Style{Attribute, Background, Foreground} et la méthode `tryFromTag`
+     * @see RayanLevert\Cli\Style{Attribute, Background, Foreground} et la méthode `tryFromTag`
      */
     public static function tag(string $tag): void
     {

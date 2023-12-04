@@ -1,7 +1,13 @@
 {
-    "name": "dis-dev/cli",
+    "name": "rayanlevert/command-line-interface",
     "description": "Permet de gérer les arguments via une application Cli ainsi que de personnaliser facilement l'output du Cli",
     "type": "library",
+    "authors": [
+        {
+            "name": "Rayan Levert",
+            "email": "rayanlevert@msn.com"
+        }
+    ],
     "require": {
         "php": ">=8.1"
     },
@@ -12,18 +18,12 @@
     },
     "autoload": {
         "psr-4": {
-            "DisDev\\Cli\\": "src/"
+            "RayanLevert\\Cli\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "DisDev\\Cli\\Tests\\": "tests/"
+            "RayanLevert\\Cli\\Tests\\": "tests/"
         }
-    },
-    "authors": [
-        {
-            "name": "Rayan Levert",
-            "email": "rayan.levert@group-dis.com"
-        }
-    ]
+    }
 }

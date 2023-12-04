@@ -1,12 +1,12 @@
 # Une libraie simple pour gérer des arguments parsés depuis le Cli
 
-## **DisDev\Cli\Arguments\Argument** qui définie ce qu'est un argument
+## **RayanLevert\Cli\Arguments\Argument** qui définie ce qu'est un argument
 Un argument possède un nom et différentes options à passer au constructeur
 
 Un argument ne peut que être de type `integer`, `double` ou `string` (si l'option `noValue` est passée, il sera en `bool`)
 
 ```php
-new \DisDev\Cli\Arguments\Argument(string $name, array $options = [])
+new \RayanLevert\Cli\Arguments\Argument(string $name, array $options = [])
 ```
 
 ```
@@ -18,7 +18,7 @@ new \DisDev\Cli\Arguments\Argument(string $name, array $options = [])
 - longPrefix (string) Long prefix (--user)
 ```
 
-Une `DisDev\Cli\Arguments\Exception` peut être lancée à chaque instance si les options ne sont pas conformes:
+Une `RayanLevert\Cli\Arguments\Exception` peut être lancée à chaque instance si les options ne sont pas conformes:
 
 - Si `castTo` est renseigné, il doit être soit `integer|int`, `double|float` ou `string`
 - Si `defaultValue` est renseigné
@@ -28,30 +28,30 @@ Une `DisDev\Cli\Arguments\Exception` peut être lancée à chaque instance si le
 - Un argument ne peut être `noValue` (casté en bool) et avoir une valeur par défaut
 - Un argument avec prefix et longPrefix (`-i`, `--iterator`) ne peut être `required`
 
-## **DisDev\Cli\Arguments** est une collection d'arguments qui permet de parser des valeurs
+## **RayanLevert\Cli\Arguments** est une collection d'arguments qui permet de parser des valeurs
 
 Le constructeur permet d'ajouter un nombre indéfini d'argument
 
 ```php
-new \DisDev\Cli\Arguments(\DisDev\Cli\Arguments\Argument ...$oArguments)
+new \RayanLevert\Cli\Arguments(\RayanLevert\Cli\Arguments\Argument ...$oArguments)
 ```
 
-> ! L'ordre des arguments est important si un ou plusieurs arguments obligatoires sont présents, il devront être ajoutés en premier, une exception `DisDev\Cli\Arguments\Exception` sera levée sinon
+> ! L'ordre des arguments est important si un ou plusieurs arguments obligatoires sont présents, il devront être ajoutés en premier, une exception `RayanLevert\Cli\Arguments\Exception` sera levée sinon
 
 ### La récupération de valeurs passées se fait via la méthode `parse(string ...$arguments): void`
 Associe chaque valeur passée en argument de méthode à son Argument dans la collection
 - Check en premier les options (préfixés par -- ou -)
-- Boucle dans les `Argument` de la collection qui sont required et associe dans l'ordre des arguments (une exception `DisDev\Cli\Arguments\ParseException` est levée si un argument required n'est pas associé)
+- Boucle dans les `Argument` de la collection qui sont required et associe dans l'ordre des arguments (une exception `RayanLevert\Cli\Arguments\ParseException` est levée si un argument required n'est pas associé)
 - Les arguments restant seront associés aux derniers `Argument` de la collection (order d'ajout des `Argument`)
 
-> ! Si un `Argument` de la collection a l'option prefix ou longPrefix (-- ou -) et qu'un argument parsé n'a pas de signe = (ex: `--test` pour un `Argument` `longPrefix => 'test'`) une `DisDev\Cli\Arguments\ParseException` sera lancée
+> ! Si un `Argument` de la collection a l'option prefix ou longPrefix (-- ou -) et qu'un argument parsé n'a pas de signe = (ex: `--test` pour un `Argument` `longPrefix => 'test'`) une `RayanLevert\Cli\Arguments\ParseException` sera lancée
 
-La valeur parsée d'un argument est obtenue via `::get(string $nomArgument)`, une `DisDev\Cli\Arguments\Exception` est lancée si la collection n'a pas l'argument via son nom
+La valeur parsée d'un argument est obtenue via `::get(string $nomArgument)`, une `RayanLevert\Cli\Arguments\Exception` est lancée si la collection n'a pas l'argument via son nom
 
 Par défaut, `NULL` est retourné; `integer`, `float` ou `string` peut être retourné si l'argument a été parsé depuis `::parse()` et que l'option castTo a été set en option
 
-- Si castTo est en `integer`, la valeur parsée doit être un chiffre numerique (conditionne avec `is_numeric()`), une `DisDev\Cli\Arguments\Exception` sera lancée sinon
-- Si castTo est en `float`, la valeur parsée doit être un chiffre numerique en notation avec . (ex: 4.3, 4,3 ne sera pas autorisé et une `DisDev\Cli\Arguments\Exception` sera lancée)
+- Si castTo est en `integer`, la valeur parsée doit être un chiffre numerique (conditionne avec `is_numeric()`), une `RayanLevert\Cli\Arguments\Exception` sera lancée sinon
+- Si castTo est en `float`, la valeur parsée doit être un chiffre numerique en notation avec . (ex: 4.3, 4,3 ne sera pas autorisé et une `RayanLevert\Cli\Arguments\Exception` sera lancée)
 - Si castTo est un `string`, la valeur parsée sera celle passée en argument
 
 #### Implémentation
@@ -113,13 +113,13 @@ $oArguments->parse('--arg="test Value"'); // $oArguments->get('arg1') = test Val
 
 # Stylise et rend l'output du CLI beaucoup plus clair et propre
 
-## **DisDev\Cli\Style** est une classe ayant uniquement des méthodes statiques qui affiche du texte
+## **RayanLevert\Cli\Style** est une classe ayant uniquement des méthodes statiques qui affiche du texte
 
 3 enum sont à disposition et utilisées par la librairie pour styliser le texte:
 
-- `DisDev\Cli\Style\Background`: Couleurs de background
-- `DisDev\Cli\Style\Foreground`: Couleurs de texte
-- `DisDev\Cli\Style\Attributes`: Attributs de texte
+- `RayanLevert\Cli\Style\Background`: Couleurs de background
+- `RayanLevert\Cli\Style\Foreground`: Couleurs de texte
+- `RayanLevert\Cli\Style\Attributes`: Attributs de texte
 
 2 méthodes principales sont à disposition pour afficher du texte stylisé:
 ```php
@@ -182,7 +182,7 @@ public static function exception(\Exception $e, bool $withoutTrace = false): voi
 public static function tag(string $tag): void
 ```
 
-## **DisDev\Cli\ProgressBar affichant une barre de progrès qui progresse à chaque itération**
+## **RayanLevert\Cli\ProgressBar affichant une barre de progrès qui progresse à chaque itération**
 
 ```php
 /**

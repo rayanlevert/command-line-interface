@@ -3,6 +3,12 @@ FROM php:8.1-fpm
 
 LABEL maintainer="Rayan Levert <rayanlevert@msn.com>"
 
+# Installing packages needed
+RUN apt-get update -y && \
+    apt-get install -y \
+    git \
+    zip
+
 # Enabling xdebug
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 
