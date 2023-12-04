@@ -1,6 +1,6 @@
 <?php
 
-namespace DisDev\Cli\Style;
+namespace RayanLevert\Cli\Style;
 
 /**
  * Enum contenant les codes ANSI des couleurs de background

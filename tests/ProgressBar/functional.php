@@ -1,7 +1,7 @@
 <?php
 
-use DisDev\Cli\ProgressBar;
-use DisDev\Cli\Style\Foreground;
+use RayanLevert\Cli\ProgressBar;
+use RayanLevert\Cli\Style\Foreground;
 
 print "\nProgress bar - max 10 step 1";
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace DisDev\Cli\Style;
+namespace RayanLevert\Cli\Style;
 
 /**
  * Interface pour les données ANSI du CLI

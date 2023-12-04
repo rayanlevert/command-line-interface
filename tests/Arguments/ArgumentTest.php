@@ -1,10 +1,10 @@
 <?php
 
-namespace DisDev\Cli\Tests\Arguments;
+namespace RayanLevert\Cli\Tests\Arguments;
 
-use DisDev\Cli\Arguments\Argument;
-use DisDev\Cli\Arguments\Exception;
-use DisDev\Cli\Arguments\ParseException;
+use RayanLevert\Cli\Arguments\Argument;
+use RayanLevert\Cli\Arguments\Exception;
+use RayanLevert\Cli\Arguments\ParseException;
 
 class ArgumentTest extends \PHPUnit\Framework\TestCase
 {

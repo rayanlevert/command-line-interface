@@ -1,8 +1,8 @@
 <?php
 
-namespace DisDev\Cli;
+namespace RayanLevert\Cli;
 
-use DisDev\Cli\Style\Foreground;
+use RayanLevert\Cli\Style\Foreground;
 
 /**
  * barre de progression permettant l'affichage d'une progression pour le CLI

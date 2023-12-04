@@ -1,8 +1,8 @@
 <?php
 
-namespace DisDev\Cli\Tests\Style;
+namespace RayanLevert\Cli\Tests\Style;
 
-use DisDev\Cli\Style\Background;
+use RayanLevert\Cli\Style\Background;
 
 class BackgroundTest extends \PHPUnit\Framework\TestCase
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace DisDev\Cli\Arguments;
+namespace RayanLevert\Cli\Arguments;
 
 /**
- * Les exceptions levées dans DisDev\Cli\Arguments::parse() utiliseront cette classe
+ * Les exceptions levées dans RayanLevert\Cli\Arguments::parse() utiliseront cette classe
  */
 class ParseException extends \InvalidArgumentException
 {
