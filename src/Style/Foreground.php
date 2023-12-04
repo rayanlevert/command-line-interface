@@ -3,7 +3,7 @@
 namespace RayanLevert\Cli\Style;
 
 /**
- * Enum contenant les codes ANSI des couleurs de texte
+ * Enumeration of ANSI foreground color codes
  */
 enum Foreground: string implements AnsiInterface
 {

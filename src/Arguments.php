@@ -7,10 +7,7 @@ use RayanLevert\Cli\Arguments\Exception;
 use RayanLevert\Cli\Arguments\ParseException;
 
 /**
- * Collection de RayanLevert\Cli\Arguments\Argument, qui possèdent les arguments d'une application Cli
- *
- * Possède une méthode ->parse() qui demande des valeurs string comme ceux récupérés depuis $argv
- * qui set la valeur de chaque argument et/ou throw une Exception si une erreur d'initialisation se produit
+ * Collection of `Arguments\Argument` possessing arguments of an CLI application (`$argv`)
  *
  * @implements \IteratorAggregate<string, Argument>
  */
@@ -22,7 +19,7 @@ class Arguments implements \IteratorAggregate
     protected array $data = [];
 
     /**
-     * Initialise la collection avec l'ajout d'arguments
+     * Initializes the collection adding arguments
      */
     public function __construct(Argument ...$oArguments)
     {
@@ -42,15 +39,7 @@ class Arguments implements \IteratorAggregate
     }
 
     /**
-     * Méthode interne qui récupère l'argument et retourne l'instance ou null
-     */
-    private function retrieve(string $argumentName): ?Argument
-    {
-        return $this->data[$argumentName] ?? null;
-    }
-
-    /**
-     * Ajout un argument dans la collection
+     * Adds an argument
      */
     public function set(Argument $oArgument): void
     {
@@ -60,9 +49,9 @@ class Arguments implements \IteratorAggregate
     }
 
     /**
-     * Récupère la valeur d'un argument de la collection (retourne sa valeur par défaut si non handled)
+     * Recovers an argument's value in the collection (gets its default value if not handled yet)
      *
-     * @throws \RayanLevert\Cli\Arguments\Exception Si l'argument n'existe pas dans la collection
+     * @throws \RayanLevert\Cli\Arguments\Exception If the argument doesn't exist in the collection
      */
     public function get(string $argumentName): string|int|float|bool|null
     {
@@ -74,7 +63,7 @@ class Arguments implements \IteratorAggregate
     }
 
     /**
-     * Supprime un argument de la collection
+     * Removes an argument
      */
     public function remove(string $argumentName): void
     {
@@ -82,7 +71,7 @@ class Arguments implements \IteratorAggregate
     }
 
     /**
-     * Retourne le nombre d'argument disponible dans la collection
+     * Returns the number of arguments
      */
     public function count(): int
     {
@@ -90,51 +79,77 @@ class Arguments implements \IteratorAggregate
     }
 
     /**
-     * Méthode interne recupérant un argument de la collection selon un prefix (-)
+     * Parses the arguments from the collection checking required arguments, with or without prefixes
+     *
+     * Sets each argument's value from the arguments passed to the method (...$argv)
+     *
+     * @param string ...$arguments Parsed arguments (`...$argv` for arguments from your CLI)
+     *
+     * @throws \RayanLevert\Cli\Arguments\Exception If a required argument has not been set or any argument error
      */
-    private function getByShortPrefix(string $name): ?Argument
+    public function parse(string ...$arguments): void
     {
-        foreach ($this->data as $oArgument) {
-            if ($oArgument->getPrefix() === $name) {
-                return $oArgument;
-            }
+        // If no argument has been added, no need to parse
+        if (!$this->count()) {
+            return;
         }
 
-        return null;
+        // Loops a first time to recover all prefixed arguments
+        foreach ($arguments as $index => $arg) {
+            if (substr($arg, 0, 1) !== '-') {
+                continue;
+            }
+
+            // Checks the presence of a prefixed argument, if the argument is not recovered from the collection -> skips
+            if (!$this->setArgFromPrefix($arg, strncmp($arg, '--', 2) === 0 ? '--' : '-')) {
+                continue;
+            }
+
+            unset($arguments[$index]);
+        }
+
+        // Loops to recover required arguments and set their values
+        foreach ($this->data as $name => $oArgument) {
+            if (!$oArgument->isRequired()) {
+                continue;
+            }
+
+            if (($argValue = current($arguments)) === false) {
+                throw new ParseException("Argument $name is required");
+            }
+
+            $oArgument->setValueParsed($argValue);
+
+            unset($arguments[key($arguments)]);
+        }
+
+        reset($arguments);
+
+        // Remains non required arguments
+        $oNotHandled = $this->getNotHandled();
+
+        if (!$oNotHandled->count() || !$arguments) {
+            return;
+        }
+
+        foreach ($oNotHandled as $oArgument) {
+            $arg = current($arguments);
+
+            // Skips prefixes arguments, already handled in the first loop
+            if ($oArgument->getLongPrefix() || $oArgument->getPrefix()) {
+                continue;
+            }
+
+            $oArgument->setValueParsed($arg);
+
+            if (!next($arguments)) {
+                return;
+            }
+        }
     }
 
     /**
-     * Méthode interne recupérant un argument de la collection selon un longPrefix (--)
-     */
-    private function getByLongPrefix(string $name): ?Argument
-    {
-        foreach ($this->data as $oArgument) {
-            if ($oArgument->getLongPrefix() === $name) {
-                return $oArgument;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Méthode interne récupérant les arguments non traités
-     */
-    private function getNotHandled(): self
-    {
-        $oSelf = new self();
-
-        foreach ($this->data as $oArgument) {
-            if (!$oArgument->hasBeenHandled()) {
-                $oSelf->set($oArgument);
-            }
-        }
-
-        return $oSelf;
-    }
-
-    /**
-     * Méthode interne récupérant les arguments non traités
+     * Returns required arguments
      */
     public function getRequired(): self
     {
@@ -154,10 +169,91 @@ class Arguments implements \IteratorAggregate
     }
 
     /**
-     * Vérifie que la collection a un ordre d'argument required respecté
-     * (appelée au construct et à chaque set)
+     * Prints a clean display about the informations of arguments
      */
-    private function assertOrderRequired(): void
+    public function printArguments(): void
+    {
+        $oSelf = clone $this;
+        $oArgs = $oSelf->getRequired();
+
+        // Prints required arguments
+        if ($oArgs->count()) {
+            print "Required arguments:";
+
+            foreach ($oArgs as $name => $oArg) {
+                print "\n\t" . $oArg->getInfos();
+
+                $oSelf->remove($name);
+            }
+        }
+
+        if (!$oSelf->count()) {
+            return;
+        }
+
+        print "\n\Optionnal arguments:";
+
+        foreach ($oSelf as $name => $oArg) {
+            print "\n\t" . $oArg->getInfos();
+        }
+    }
+
+    /**
+     * Returns an argument from a prefixed one (-)
+     */
+    protected function getByShortPrefix(string $name): ?Argument
+    {
+        foreach ($this->data as $oArgument) {
+            if ($oArgument->getPrefix() === $name) {
+                return $oArgument;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns an argument from a long prefixed one (-)
+     */
+    protected function getByLongPrefix(string $name): ?Argument
+    {
+        foreach ($this->data as $oArgument) {
+            if ($oArgument->getLongPrefix() === $name) {
+                return $oArgument;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns not handled arguments
+     */
+    protected function getNotHandled(): self
+    {
+        $oSelf = new self();
+
+        foreach ($this->data as $oArgument) {
+            if (!$oArgument->hasBeenHandled()) {
+                $oSelf->set($oArgument);
+            }
+        }
+
+        return $oSelf;
+    }
+
+    /**
+     * Returns an Argument or NULL from its name
+     */
+    protected function retrieve(string $argumentName): ?Argument
+    {
+        return $this->data[$argumentName] ?? null;
+    }
+
+    /**
+     * Verifies the order of required arguments
+     */
+    protected function assertOrderRequired(): void
     {
         $argHasNotRequired = false;
 
@@ -177,151 +273,39 @@ class Arguments implements \IteratorAggregate
     }
 
     /**
-     * Parse les arguments de la collection en checkant les arguments required,
-     * avec ou sans prefix et set la valeur parsée (castée si castTo renseigné)
-     *
-     * @param string ...$arguments Arguments qui doivent être parsés (de type string comme la superglobal `$argv`)
-     *
-     * @throws \RayanLevert\Cli\Arguments\Exception Si un argument required n'est pas renseigné ou erreur d'argument
+     * Sets the value of an prefixed argument (starting either by - or --)
      */
-    public function parse(string ...$arguments): void
-    {
-        // Si aucun argument de set, on ne check pas
-        if (!$this->count()) {
-            return;
-        }
-
-        // On boucle une première fois pour récupérer les prefix, on unset pour récupérer un new array sans les prefix
-        foreach ($arguments as $index => $arg) {
-            if (substr($arg, 0, 1) !== '-') {
-                continue;
-            }
-
-            /**
-             * Check de la présence d'un prefix/longPrefix
-             *
-             * Si l'argument n'a pas son nom, on ne l'unset pas pour qu'il soit traité par la suite
-             */
-            if (!$this->setArgFromPrefix($arg, strncmp($arg, '--', 2) === 0 ? '--' : '-')) {
-                continue;
-            }
-
-            unset($arguments[$index]);
-        }
-
-        // On boucle pour récupérer les arguments required
-        foreach ($this->data as $name => $oArgument) {
-            if (!$oArgument->isRequired()) {
-                continue;
-            }
-
-            if (($argValue = current($arguments)) === false) {
-                throw new ParseException("Argument $name is required");
-            }
-
-            $oArgument->setValueParsed($argValue);
-
-            unset($arguments[key($arguments)]);
-        }
-
-        reset($arguments);
-
-        // Il reste les derniers arguments non required
-        $oNotHandled = $this->getNotHandled();
-
-        if (!$oNotHandled->count() || !$arguments) {
-            return;
-        }
-
-        foreach ($oNotHandled as $oArgument) {
-            $arg = current($arguments);
-
-            // On skip les arguments préfixés, déjà handled dans la première boucle
-            if ($oArgument->getLongPrefix() || $oArgument->getPrefix()) {
-                continue;
-            }
-
-            $oArgument->setValueParsed($arg);
-
-            if (!next($arguments)) {
-                return;
-            }
-        }
-    }
-
-    /**
-     * Affiche les arguments requis et/ou ceux optionnels dans un affichage propre
-     */
-    public function printArguments(): void
-    {
-        $oSelf = clone $this;
-        $oArgs = $oSelf->getRequired();
-
-        // On print les arguments obligatoires
-        if ($oArgs->count()) {
-            print "Arguments requis:";
-
-            foreach ($oArgs as $name => $oArg) {
-                print "\n\t" . $oArg->getInfos();
-
-                $oSelf->remove($name);
-            }
-        }
-
-        if (!$oSelf->count()) {
-            return;
-        }
-
-        print "\n\nArguments optionnels:";
-
-        /**
-         * On affiche les arguments restants
-         *
-         * @var Argument $oArg
-         */
-        foreach ($oSelf as $name => $oArg) {
-            print "\n\t" . $oArg->getInfos();
-        }
-    }
-
-    /**
-     * Méthode permettant de set la valeur parsed de l'argument commençant par - (une option)
-     */
-    private function setArgFromPrefix(string $arg, string $prefix): bool
+    protected function setArgFromPrefix(string $arg, string $prefix): bool
     {
         $countPrefix = strlen($prefix);
 
-        // On enlève les quotes et les deux premiers --
+        // Removes quotes and first --
         $arg = mb_substr(str_replace(['\'', '"'], '', $arg), $countPrefix);
 
-        // On récupère le nom de l'argument (si un egal est trouvé, on prend partie avant l'egal, sinon l'arg complet)
+        // Recovers the name of the argument (if an = is found, we slice before the sign, if not the complete value)
         $argName = $arg;
         if (($equalPosition = mb_strpos($arg, '=')) !== false) {
             $argName = mb_substr($arg, 0, $equalPosition);
         }
 
-        // On retrouve l'argument depuis soit le shortPrefix soit le longPrefix
-        $oArgument = $countPrefix === 1 ? $this->getByShortPrefix($argName) : $this->getByLongPrefix($argName);
-
-        if (!$oArgument) {
+        // Retrives the argumetn from its short or long prefix name
+        if (!$oArgument = $countPrefix === 1 ? $this->getByShortPrefix($argName) : $this->getByLongPrefix($argName)) {
             return false;
         }
 
-        // On check qu'on a pas un argument noValue
+        // If the argument is a noValue one -> parses it
         if ($oArgument->hasNoValue()) {
             $oArgument->setValueParsed(true);
 
             return true;
         }
 
-        // Si un égal n'a pas été trouvé et que l'argument requiert une valeur (noValue => false)
+        // Argument must have an equal to recovers the value after it (noValue => false)
         if ($equalPosition === false) {
-            throw new ParseException("Argument avec valeur commençant par $prefix ($arg) n'a pas de signe =");
+            throw new ParseException("Prefixed argument starting by $prefix ($arg) has no = sign");
         }
 
-        $argValue = mb_substr($arg, $equalPosition + 1);
-
-        $oArgument->setValueParsed($argValue);
+        $oArgument->setValueParsed(mb_substr($arg, $equalPosition + 1));
 
         return true;
     }

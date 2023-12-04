@@ -5,7 +5,7 @@ namespace RayanLevert\Cli;
 use RayanLevert\Cli\Style\Foreground;
 
 /**
- * barre de progression permettant l'affichage d'une progression pour le CLI
+ * Displays progression output through a progress bar
  */
 class ProgressBar
 {
@@ -18,27 +18,27 @@ class ProgressBar
     protected string $left = "\e[%dD";
 
     /**
-     * Nombre d'itération requis pour ajouter un charactère à la barre de progression
+     * Number of required iterations to add a character
      */
     protected int $numberOfEachIterations;
 
     /**
-     * Courante itération
+     * Current iteration
      */
     protected int $iteration = 0;
 
     /**
-     * Si la barre de progression a déjà été commencé au moins une fois
+     * If the progress bar has been started
      */
     protected bool $hasBeenStartedOnce = false;
 
     /**
-     * Si l'itération a dépassé ou égalé la valeur max de la barre de progression
+     * If the progress bar has been finished (exceeded the max value)
      */
     protected bool $isFinished = true;
 
     /**
-     * Titre de la barre de progression
+     * Title of the current progress bar
      */
     protected string $title = '';
 
@@ -49,10 +49,10 @@ class ProgressBar
     protected float $lastIterationTime = 0.0;
 
     /**
-     * Initialise une barre de progression en settant le max
+     * Initializes the progress bar
      *
-     * @param int $max Valeur max d'itérations
-     * @param int $numberOfSymbols Nombre équivalent de symbols (#) qui sont ajoutés à chaque itération
+     * @param int $max Maximum value of iterations
+     * @param int $numberOfSymbols Number of symbols added after each iteration
      *
      * @throws \UnexpectedValueException Si `$max` ou `$numberOfSymbols` sont négatifs
      */
@@ -62,7 +62,7 @@ class ProgressBar
     }
 
     /**
-     * Commence la barre de progression (ou recommence si déjà started, sinon passe deux lignes)
+     * Starts the progress bar (or restarts it, if not breaks two lines)
      */
     public function start(): void
     {
@@ -81,9 +81,9 @@ class ProgressBar
     }
 
     /**
-     * Avance la barre de progression de `$toAdvance` iteration et met à jour la progression
+     * Advances the progress bar of `$toAdvance` iterations updating the progression
      *
-     * @param int $toAdvance Nombre d'itération à avancer
+     * @param int $toAdvance Number of iteration to progress
      */
     public function advance(int $toAdvance = 1): void
     {
@@ -91,7 +91,10 @@ class ProgressBar
             return;
         }
 
-        // Si la position courante est égale ou supérieure à max, à la prochaine iteration on ne fera rien
+        /**
+         * If the current position is superior or greater than the max value
+         * -> nothing will be processed in the next iteration
+         */
         $toAdvance += $this->iteration;
 
         if ($toAdvance >= $this->max) {
@@ -105,13 +108,13 @@ class ProgressBar
             print sprintf($this->up . $this->left . "\33[2K" . $this->title . $this->down, 1, 1000, 1);
         }
 
-        // On reset la ligne en revenant le cursor tout à gauche + la courante iteration / max
+        // Resets the line placing the cursor leftmost + the current iteration / max
         print sprintf($this->left, 1000) . "\33[2K\t{$this->iteration} / {$this->max} [";
 
         /**
-         * Si on est arrivé à la fin, on affiche toute la ligne de #
-         * Si la valeur max est inférieure au nombre de symboles, on affiche x ->iteration
-         * sinon on prend une moyenne de chaque itération par rapport au max
+         * - Progress bar is finished -> displays the complete line of #
+         * - Max value est inferior to the number of symbols -> displays # of current iteration
+         * - Else establishes the average of iteration from the number of each iteration
          */
         if ($this->iteration >= $this->max) {
             print str_repeat('#', $this->numberOfSymbols);
@@ -129,7 +132,7 @@ class ProgressBar
             $this->totalTime += (microtime(true) - $this->lastIterationTime) * 1000;
         }
 
-        // Affichage du pourcentage et la mémoire de l'itération
+        // Displays the pourcentage of iterations, the time and allocated memory
         print '] ' . $this->iteration / $this->max * 100  . '%';
 
         $this->printTime();
@@ -138,7 +141,7 @@ class ProgressBar
     }
 
     /**
-     * Termine la barre de progression
+     * Finishes the progress bar (advances to the max value)
      */
     public function finish(): void
     {
@@ -150,9 +153,9 @@ class ProgressBar
     }
 
     /**
-     * Set le titre à afficher au dessus de la barre de progression
+     * Sets the displayed title on top of the progress bar
      *
-     * @param Foreground $fg Si une couleur de texte est souhaitée (bleue par défaut)
+     * @param Foreground $fg If a foreground color is wished (blue by default)
      */
     public function setTitle(string $title, Foreground $fg = Foreground::BLUE): self
     {
@@ -162,19 +165,16 @@ class ProgressBar
     }
 
     /**
-     * Valeur max d'itérations à set
+     * Max value of iterations to set
      *
-     * @param int $max Valeur max d'itérations
-     * @param int $numberOfSymbols Nombre équivalent de symbols (#) qui sont ajoutés à chaque itération
-     *
-     * @throws \UnexpectedValueException Si `$max` ou `$numberOfSymbols` sont négatifs
+     * @throws \UnexpectedValueException If `$max` or `$numberOfSymbols` are nagative values
      */
     public function setMax(int $max, int $numberOfSymbols = 50): self
     {
         if ($max <= 0) {
-            throw new \UnexpectedValueException('La valeur max de la barre de progression doit être positive');
+            throw new \UnexpectedValueException('The max value must be positive');
         } elseif ($numberOfSymbols <= 0) {
-            throw new \UnexpectedValueException('Le nombre de symbols doit être positif');
+            throw new \UnexpectedValueException('The number of symbols must be positive');
         }
 
         $this->max              = $max;
@@ -190,7 +190,7 @@ class ProgressBar
     }
 
     /**
-     * Retourne la valeur maximale d'itérations
+     * Returns the maximum value of iterations
      */
     public function getMax(): int
     {
@@ -198,7 +198,7 @@ class ProgressBar
     }
 
     /**
-     * Si la barre de progression a atteint sa valeur maximale ou n'a pas commencé
+     * If the progress bar reached its max value or hasn't started yet
      */
     public function isFinished(): bool
     {
@@ -206,7 +206,7 @@ class ProgressBar
     }
 
     /**
-     * Retourne la position courante de la barre de progression
+     * Returns the current iteration
      */
     public function getCurrent(): int
     {
@@ -214,32 +214,18 @@ class ProgressBar
     }
 
     /**
-     * Retourne la memory allocated formatée
-     */
-    private function getFormattedMemory(): string
-    {
-        $memory = memory_get_usage(true);
-
-        return match (true) {
-            $memory <= 1024         => $memory . ' B',
-            $memory <= 1048576      => round($memory / 1024, 2) . ' KB',
-            default                 => round($memory / 1048576, 2) . ' MB'
-        };
-    }
-
-    /**
-     * Affiche le temps total de la progression et la mémoire PHP en dessous de la barre
+     * Displays the total time of the progression et PHP memory on bottom of the progress bar
      */
     private function printTime(): void
     {
-        // Couleur du temps en fonction de la progression de la barre
+        // Time color by its total time
         $time = Style::stylize((string) round($this->totalTime, 2) . 'ms', fg: match (true) {
             $this->totalTime <= 500  => Foreground::GREEN,
             $this->totalTime <= 2000 => Foreground::YELLOW,
             default                  => Foreground::RED
         });
 
-        // Couleur de la mémoire allocated en fonction de sa taille
+        // Allocated memory by its usage
         $memoryUsage = memory_get_usage(true);
         $memory      = Style::stylize($this->getFormattedMemory(), fg: match (true) {
             $memoryUsage <= 268435456  => Foreground::LIGHT_GREEN, // 256Mo
@@ -255,5 +241,19 @@ class ProgressBar
             1,
             1000
         );
+    }
+
+    /**
+     * Returns a formatted allocated memory to PHP
+     */
+    private function getFormattedMemory(): string
+    {
+        $memory = memory_get_usage(true);
+
+        return match (true) {
+            $memory <= 1024         => $memory . ' B',
+            $memory <= 1048576      => round($memory / 1024, 2) . ' KB',
+            default                 => round($memory / 1048576, 2) . ' MB'
+        };
     }
 }

@@ -3,7 +3,7 @@
 namespace RayanLevert\Cli\Arguments;
 
 /**
- * Les exceptions levées dans RayanLevert\Cli\Arguments::parse() utiliseront cette classe
+ * Exceptions throws in RayanLevert\Cli\Arguments::parse() will use this class
  */
 class ParseException extends \InvalidArgumentException
 {

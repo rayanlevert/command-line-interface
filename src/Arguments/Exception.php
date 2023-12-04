@@ -3,7 +3,7 @@
 namespace RayanLevert\Cli\Arguments;
 
 /**
- * Les exceptions levées dans RayanLevert\Cli\Arguments et RayanLevert\Cli\Arguments\Argument utiliseront cette classe
+ * Exceptions throws in RayanLevert\Cli\Arguments and RayanLevert\Cli\Arguments\Argument wil use this class
  */
 class Exception extends \LogicException
 {

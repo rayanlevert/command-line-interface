@@ -3,7 +3,7 @@
 namespace RayanLevert\Cli\Style;
 
 /**
- * Enum contenant les codes ANSI des attributs disponibles
+ * Enumeration of ANSI attribute codes
  */
 enum Attribute: string implements AnsiInterface
 {

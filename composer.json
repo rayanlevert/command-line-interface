@@ -1,6 +1,6 @@
 {
     "name": "rayanlevert/command-line-interface",
-    "description": "Permet de gérer les arguments via une application Cli ainsi que de personnaliser facilement l'output du Cli",
+    "description": "Dependency-free command line interface handling arguments and easily personalizing output in the PHP userland",
     "type": "library",
     "authors": [
         {

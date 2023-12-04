@@ -3,7 +3,7 @@
 namespace RayanLevert\Cli\Arguments;
 
 /**
- * Un argument passé à une application Cli
+ * An argument from a console application viewpoint
  */
 class Argument
 {
@@ -26,17 +26,18 @@ class Argument
     private bool $hasBeenHandled = false;
 
     /**
-     * Créé un argument selon un nom et des options
+     * Creates an argument with a name and differents options
      *
      * @param array<string, string|bool|int|float> $options
-     * - description (string) Description de l'argument
-     * - defaultValue (float|int|string) Valeur par défaut si l'argument n'est pas renseigné
-     * - required (bool) Si l'argument est obligatoire
-     * - noValue (bool) Si l'argument n'a pas besoin de valeur, il sera casté en bool
-     * - prefix (string) Court prefix (-u)
+     * - description (string) Description of the argument
+     * - defaultValue (float|int|string) Default value if the argument is not handled
+     * - required (bool) If the argument must be present and parsed
+     * - castTo (string) PHP type - If the argument has a type other than string, its value will be casted
+     * - noValue (bool) If a prefixed argument doesn't need a value -> boolean cast
+     * - prefix (string) Short prefix (-u)
      * - longPrefix (string) Long prefix (--user)
      *
-     * @throws \RayanLevert\Cli\Arguments\Exception Si des options ne sont pas compatibles ou incorrectes
+     * @throws \RayanLevert\Cli\Arguments\Exception If options are incompatible or incorrectes
      */
     final public function __construct(protected readonly string $name, array $options = [])
     {
@@ -63,10 +64,10 @@ class Argument
         if (array_key_exists('castTo', $options) && is_string($options['castTo'])) {
             $this->castTo = match ($options['castTo']) {
                 'int', 'integer'  => 'integer',
-                'bool', 'boolean' => throw new Exception('castTo ne peut être bool, utiliser l\'option noValue'),
+                'bool', 'boolean' => throw new Exception('castTo cannot be of type bool, use the option "noValue"'),
                 'double', 'float' => 'double',
                 'string'          => 'string',
-                default           => throw new Exception($options['castTo'] . ' n\'est pas un type de cast correct')
+                default           => throw new Exception($options['castTo'] . ' is not a native PHP type')
             };
         }
 
@@ -74,79 +75,69 @@ class Argument
             $defaultValue = $options['defaultValue'];
 
             if (!is_string($defaultValue) && !is_double($defaultValue) && !is_int($defaultValue)) {
-                throw new Exception('La valeur par défaut doit être un float, int ou string');
+                throw new Exception('Default value must be of type float, integer or string');
             }
 
             $this->defaultValue = $defaultValue;
 
-            // On test que le type de la valeur par défault est le même que castTo (string si non renseigné)
+            // Asserts the default value type is the same as the castTo option
             if (gettype($this->defaultValue) !== $this->castTo) {
-                throw new Exception(
-                    'La valeur par défaut n\'est pas du même type que castTo (' . $this->castTo . ')'
-                );
+                throw new Exception("Default value is not the same type as castTo option ({$this->castTo})");
             }
         }
 
         if (($this->noValue || $this->isRequired) && $this->defaultValue) {
-            throw new Exception('Un argument noValue|required ne peut avoir une valeur par défaut');
+            throw new Exception('A noValue|required argument cannot have the default value');
         }
 
         if ($this->isRequired && ($this->prefix || $this->longPrefix)) {
-            throw new Exception('Un argument avec un prefix (option) ne peut être required');
+            throw new Exception('A prefixed argument cannot be required');
         }
     }
 
     /**
-     * Retourne la valeur de l'argument après être parsé et casté, sinon retourne la valeur par défaut
+     * Returns the value of the argument after parsed, if not returns the default value
      */
-    final public function getValue(): string|int|float|bool|null
+    public function getValue(): string|int|float|bool|null
     {
         if (!$this->hasBeenHandled) {
-            if ($this->noValue) {
-                return false;
-            }
-
-            return $this->defaultValue;
+            return $this->noValue ? false : $this->defaultValue;
         }
 
         return $this->valueParsed;
     }
 
     /**
-     * Méthode qui parse l'argument avec la valeur passé en paramètre
+     * Parses the argument setting its value
      *
-     * @param  bool|string $value Si string, essaie de caster, si bool on check qui soit en noValue
+     * @param bool|string $value If string -> tries to cast, if bool -> must have its noValue option
      *
-     * @throws \RayanLevert\Cli\Arguments\ParseException Si $value n'est pas correct selon le type de cast demandé
+     * @throws \RayanLevert\Cli\Arguments\ParseException If the parsed value is not of casted type
      */
-    final public function setValueParsed(bool|string $value): void
+    public function setValueParsed(bool|string $value): void
     {
         if (is_bool($value) && $this->noValue) {
             $this->valueParsed    = $value;
             $this->hasBeenHandled = true;
 
             return;
-        }
-
-        if ($this->castTo === 'string') {
+        } elseif ($this->castTo === 'string') {
             $this->valueParsed    = $value;
             $this->hasBeenHandled = true;
 
             return;
         }
 
-        // Throw une exception si la valeur n'est pas du bon type
+        // Thorws an exception if the value is not of casted type
         if ($this->castTo === 'integer') {
             if (!is_numeric($value)) {
-                throw new ParseException("Argument {$this->name} n'est pas un nombre (doit caster en int)");
+                throw new ParseException("Argument {$this->name} is not a numeric string (must cast to integer)");
             }
 
             $this->valueParsed = intval($value);
         } elseif ($this->castTo === 'double') {
             if (!is_numeric($value) || strpos($value, ',') !== false) {
-                throw new ParseException(
-                    "Argument {$this->name} n'est pas un nombre ou contient des , (doit caster en float)"
-                );
+                throw new ParseException("Argument {$this->name} is not a floating point number (must cast to float)");
             }
 
             $this->valueParsed = floatval($value);
@@ -156,7 +147,7 @@ class Argument
     }
 
     /**
-     * Retourne toutes les infos nécessaires de l'argument pour l'affichage
+     * Returns necessary informations of thr argument to display
      */
     public function getInfos(): string
     {
