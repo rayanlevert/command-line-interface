@@ -3,7 +3,7 @@
 namespace RayanLevert\Cli\Style;
 
 /**
- * Enum contenant les codes ANSI des couleurs de background
+ * Enumeration of ANSI background color codes
  */
 enum Background: string implements AnsiInterface
 {

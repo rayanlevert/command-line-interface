@@ -3,7 +3,7 @@
 namespace RayanLevert\Cli;
 
 /**
- * Class qui personnalise et rend plus clair l'output du CLI qui print un texte et le stylise selon la méthode
+ * Personalizes the command line interface by changing the color and formatting displayed text
  */
 class Style
 {
@@ -12,7 +12,7 @@ class Style
     public const END_TAG = "\e[0m";
 
     /**
-     * Print le string stylisé d'un background, couleur de texte et/ou d'un attribut
+     * Prints a string of a background color, text color and/or an attribute
      */
     public static function inline(
         string $string,
@@ -24,7 +24,7 @@ class Style
     }
 
     /**
-     * Print le string + \n stylisé d'un background, couleur de texte et/ou d'un attribut
+     * Prints a string and breaks a line of a background color, text color and/or an attribute
      */
     public static function outline(
         string $string,
@@ -36,17 +36,7 @@ class Style
     }
 
     /**
-     * Print le titre formaté (par les soins de Yann)
-     */
-    public static function title(string $title): void
-    {
-        $repeatedTitleChar = self::stylize(str_repeat('=', strlen($title) + 10)) . "\n";
-
-        print $repeatedTitleChar . self::stylize("｡◕‿◕｡ $title ｡◕‿◕｡") . "\n" . $repeatedTitleChar;
-    }
-
-    /**
-     * Print le message imbriqué d'un caractère répété (ex: --- message ---) et passe un ligne
+     * Prints a string nested with a repeated character (`--- message ---`) and breaks a line
      */
     public static function flank(string $message, string $char = '-', int $length = 3): void
     {
@@ -56,23 +46,17 @@ class Style
     }
 
     /**
-     * Print 'Terminé' stylisé
+     * Prints a title-like string (flanked by ｡◕‿◕｡)
      */
-    public static function termine(): void
+    public static function title(string $title): void
     {
-        print "\n｡◕‿◕｡ Terminé ｡◕‿◕｡\n";
+        $repeatedTitleChar = self::stylize(str_repeat('=', strlen($title) + 10)) . "\n";
+
+        print $repeatedTitleChar . self::stylize("｡◕‿◕｡ $title ｡◕‿◕｡") . "\n" . $repeatedTitleChar;
     }
 
     /**
-     * Print le message flanké de ｡◕‿◕｡
-     */
-    public static function flankStyle(string $message): void
-    {
-        self::flank($message, '｡◕‿◕｡', 1);
-    }
-
-    /**
-     * Print un message en rouge suivi de (◍•﹏•)
+     * Prints an red colored message followed by (◍•﹏•)
      */
     public static function error(string $message): void
     {
@@ -80,7 +64,7 @@ class Style
     }
 
     /**
-     * Print un message en jaune suivi de (◍•﹏•)
+     * Prints an yellow colored message followed by (◍•﹏•)
      */
     public static function warning(string $message): void
     {
@@ -88,7 +72,7 @@ class Style
     }
 
     /**
-     * Print le texte en rouge et passe une ligne
+     * Prints a red colored message and breaks a line
      */
     public static function red(string $message): void
     {
@@ -96,7 +80,7 @@ class Style
     }
 
     /**
-     * Print le texte en jaune et passe une ligne
+     * Prints a yellow colored message and breaks a line
      */
     public static function yellow(string $message): void
     {
@@ -104,7 +88,7 @@ class Style
     }
 
     /**
-     * Print le texte en vert et passe une ligne
+     * Prints a green colored message and breaks a line
      */
     public static function green(string $message): void
     {
@@ -112,7 +96,9 @@ class Style
     }
 
     /**
-     * Affiche un message selon un boolean en affichant soit le texte en vert ou rouge
+     * Displays according to a boolean status, a red or green text colored message
+     *
+     * @param string $toPrecede (optional) Text preceding the `$ifTrue/$ifFalse` message
      */
     public static function outlineWithBool(bool $status, string $ifTrue, string $ifFalse, string $toPrecede = ''): void
     {
@@ -130,13 +116,13 @@ class Style
     }
 
     /**
-     * Print les détails de l'exception en rouge + sa trace en texte blanc
+     * Prints the details of an exception in red + its trace in white
      */
     public static function exception(\Exception $e, bool $withoutTrace = false): void
     {
         print "\n";
 
-        // On affiche les infos de l'exception sur une ligne en rouge
+        // Displays the exception infos in a line of red colored text
         self::error(sprintf(
             "%s thrown in file %s (line n°%d)",
             get_class($e),
@@ -144,7 +130,7 @@ class Style
             $e->getLine()
         ));
 
-        // On passe une ligne et affiche le message de l'exception en gras
+        // Breaks a line and displays the message in a bold text
         print self::stylize('          ' . $e->getMessage(), at: Style\Attribute::BOLD) . "\n";
 
         if (!$withoutTrace) {
@@ -153,16 +139,16 @@ class Style
     }
 
     /**
-     * Print le string stylisé grâce aux tags HTML des codes ANSI
+     * Prints a formatted string thanks to its tags of ANSI codes
      *
-     * @see RayanLevert\Cli\Style{Attribute, Background, Foreground} et la méthode `tryFromTag`
+     * @see RayanLevert\Cli\Style{Attribute, Background, Foreground} and their `tryFromTag` method
      */
     public static function tag(string $tag): void
     {
-        // On récupère tous les tags ouvrants et fermants ainsi que leur inner valeur
+        // We recover the tags name and their inner value
         preg_match_all('/<([\w]+)[^>]*>(.*?)<\/\1>/', $tag, $aMatches);
 
-        // Aucun tag n'a été reconnu
+        // If no tag is recovered
         if (!$aMatches[0]) {
             print $tag;
 
@@ -170,17 +156,17 @@ class Style
         }
 
         /**
-         * On boucle à travers chaque tag
+         * Loop through each recovered tag
          *
-         * - 0: tag ouvrant et fermant
-         * - 1: nom du tag
+         * - 0: full value from opening to closing tag
+         * - 1: tag name
          * - 2: inner value
          */
         foreach ($aMatches[0] as $index => $match) {
             $tagName    = $aMatches[1][$index];
             $innerValue = $aMatches[2][$index];
 
-            // On récupère une instance AnsiInterface par le tag
+            // Recovers the AnsiInterface instance from the tag name
             $oAnsi = match (substr($tagName, 0, 2)) {
                 'fg'    => Style\Foreground::tryFromTag($tagName),
                 'bg'    => Style\Background::tryFromTag($tagName),
@@ -188,7 +174,7 @@ class Style
             };
 
             if (!$oAnsi) {
-                trigger_error(get_called_class() . " : nom du tag '$tagName' est incorrect");
+                trigger_error(get_called_class() . " : tag name '$tagName' is incorrect");
 
                 continue;
             }
@@ -204,7 +190,7 @@ class Style
     }
 
     /**
-     * Retourne le string stylisé d'un ou plusieurs enum de style
+     * Returns a background color, text color and/or an attribute formatted string
      */
     public static function stylize(
         string $string,

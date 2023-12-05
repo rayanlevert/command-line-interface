@@ -3,12 +3,12 @@
 namespace RayanLevert\Cli\Style;
 
 /**
- * Interface pour les données ANSI du CLI
+ * Interface for ANSI data
  */
 interface AnsiInterface
 {
     /**
-     * Retourne une instance ANSI (ou null) selon le nom d'un tag
+     * Returns an ANSI instance from a tag name
      */
     public static function tryFromTag(string $tagName): ?self;
 }

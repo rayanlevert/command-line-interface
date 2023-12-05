@@ -10,7 +10,7 @@ use RayanLevert\Cli\Arguments\ParseException;
 class ArgumentsTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @test Test du ->count() avec un nombre différent d'argument au __construct()/->set()
+     * @test ->count() with a different number of arguments to the __construct and ->set()
      */
     public function testCount(): void
     {
@@ -34,13 +34,13 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
         $oArguments->remove('test');
         $this->assertSame(2, $oArguments->count());
 
-        $this->expectExceptionMessage('L\'argument test n\'existe pas dans la collection');
+        $this->expectExceptionMessage('Argument test does not exist in the collection');
 
         $oArguments->get('test');
     }
 
     /**
-     * @test Test la présence d'un ou plusieurs arguments required et l'ordre
+     * @test required arguments and order
      */
     public function testRequiredArguments(): void
     {
@@ -49,17 +49,17 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('testValeur1', $oArguments->get('test1'));
 
-        // 2ème argument required alors que le premier non => exception
+        // 2nd argument is required but the first no => exception
         try {
             $oArguments = new Arguments(new Argument('test1'), new Argument('test2', ['required' => true]));
 
             $this->fail('exception expected');
         } catch (\Exception $e) {
-            $this->assertSame('Argument test2 required succède d\'un argument non required', $e->getMessage());
+            $this->assertSame('Required argument test2 follows a not required argument', $e->getMessage());
             $this->assertInstanceOf(Exception::class, $e);
         }
 
-        // 3ème argument required alors que le deuxième non => exception
+        // 3rd argument is required but the first no => exception
         try {
             $oArguments = new Arguments(
                 new Argument('test1', ['required' => true]),
@@ -69,11 +69,11 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
 
             $this->fail('exception expected');
         } catch (\Exception $e) {
-            $this->assertSame('Argument test3 required succède d\'un argument non required', $e->getMessage());
+            $this->assertSame('Required argument test3 follows a not required argument', $e->getMessage());
             $this->assertInstanceOf(Exception::class, $e);
         }
 
-        // 3ème argument required mais le 2ème est un longPrefix => correct
+        // 3rd argument is required and the 2nd one is a longPrefix => correct
         $oArguments = new Arguments(
             new Argument('test1', ['required' => true]),
             new Argument('test2', ['longPrefix' => 'test2']),
@@ -86,14 +86,14 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('testValue3', $oArguments->get('test3'));
         $this->assertSame('test2', $oArguments->get('test2'));
 
-        // Deux arguments prefixés et troisième required => correct
+        // Two prefixed arguments and the third is required => correct
         $oArguments = new Arguments(
             new Argument('test1', ['longPrefix' => 'test1']),
             new Argument('test2', ['longPrefix' => 'test2']),
             new Argument('test3', ['required' => true])
         );
 
-        // On parse uniquement les prefixés => exception
+        // Parses only the prefixed one => exception
         try {
             $oArguments->parse('--test1=t', '--test2=a');
 
@@ -103,8 +103,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
             $this->assertInstanceOf(ParseException::class, $e);
         }
 
-
-        // On parse un préfixé et un valeur => correct
+        // Parses a prefixed and a value one => correct
         $oArguments->parse('--test1=t1', 'testValue3');
 
         $this->assertSame('t1', $oArguments->get('test1'));
@@ -116,13 +115,13 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
             new Argument('test2', ['required' => true])
         );
 
-        // Avec le setter
+        // With the setter
         try {
             $oArguments->set(new Argument('test1'));
 
             $this->fail('exception expected');
         } catch (\Exception $e) {
-            $this->assertSame('Argument test2 required succède d\'un argument non required', $e->getMessage());
+            $this->assertSame('Required argument test2 follows a not required argument', $e->getMessage());
             $this->assertInstanceOf(Exception::class, $e);
         }
 
@@ -138,13 +137,13 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
             $this->assertInstanceOf(ParseException::class, $e);
         }
 
-        // Deuxième argument useless, argument test2 required prend la valeur du premier parsé
+        // Second argument is useless, argument test2 required takes the value of the first parsed
         $oArguments->parse('testValeur', 'testValeur2');
 
         $this->assertSame('testValeur', $oArguments->get('test2'));
         $this->assertNull($oArguments->get('test1'));
 
-        // Deux argument parsés d'un même prefix => le dernier est set
+        // Two parsed arguments with a same prefix => last one is set
         $oArguments->parse('test', '-t=test1', 'test3', '-t=test2');
 
         $this->assertSame('test', $oArguments->get('test2'));
@@ -152,7 +151,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test Test ->parse() sans argument
+     * @test ->parse() with no argument
      */
     public function testParseNoArgument(): void
     {
@@ -166,33 +165,33 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test Test ->parse() où la collection a un seul argument
+     * @test ->parse() where the collection has a single argument
      */
     public function testParseOneArgument(): void
     {
-        // Un argument non required
+        // One non required argument
         $oArguments = new Arguments(new Argument('test'));
 
-        // Ne throw pas d'exception
+        // Does not throw an exception
         $argumentValue = $oArguments->get('test');
         $this->assertNull($argumentValue);
 
-        // premier argument qui set la valeur, on retrouve la valeur testValue
+        // 1st argument setting the value, we retrieve the value testValue
         $oArguments->parse('testValue');
         $this->assertSame('testValue', $oArguments->get('test'));
 
-        // On re parse un argument déjà set => le premier est set
+        // We parse an already set argument => first one is set
         $oArguments->parse('premiereValeur');
         $this->assertSame('testValue', $oArguments->get('test'));
 
-        // Un argument required
+        // A required argument
         $oArguments = new Arguments($oArgument = new Argument('test', ['required' => true]));
 
         $this->assertTrue($oArgument->isRequired());
         $this->assertFalse($oArgument->hasBeenHandled());
         $this->assertNull($oArguments->get('test'));
 
-        // on parse aucun argument => throw exception d'un argument required
+        // Parses 0 argument => throws an exception
         try {
             $oArguments->parse();
 
@@ -202,19 +201,19 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
             $this->assertInstanceOf(ParseException::class, $e);
         }
 
-        // un argument non required avec une defaultValue différent de null
+        // Non required argument with a defaultValue different from null
         $oArguments->set(new Argument('test', ['castTo' => 'int', 'defaultValue' => 25]));
         $oArguments->parse();
 
         $this->assertSame(25, $oArguments->get('test'));
 
-        // Un argument required avec plusieurs parsés => prend le premier
+        // Required argument with multiple parsed ones => takes the first one
         $oArguments = new Arguments($oArgument = new Argument('test1', ['required' => true]));
 
         $oArguments->parse('test', 'test2');
         $this->assertSame('test', $oArguments->get('test1'));
 
-        // Un argument non required avec plusieurs parsés => prend le premier
+        // Non required argument with multiple parsed ones => takes the first one
         $oArguments = new Arguments($oArgument = new Argument('test1'));
 
         $oArguments->parse('test', 'test2');
@@ -222,13 +221,13 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test Test ->parse() où la collection a deux arguments
+     * @test ->parse() where the collection has 2 arguments
      */
     public function testParseTwoArguments(): void
     {
         $oArguments = new Arguments(new Argument('test1'), new Argument('test2'));
 
-        // Sans defaultValue
+        // Without defaultValue
         $oArguments->parse();
 
         $this->assertNull($oArguments->get('test1'));
@@ -237,19 +236,19 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
         $oArguments->set(new Argument('test1', ['castTo' => 'int', 'defaultValue' => 1]));
         $oArguments->set(new Argument('test2', ['castTo' => 'float', 'defaultValue' => 2.5]));
 
-        // Avec defaultValue
+        // With defaultValue
         $oArguments->parse();
 
         $this->assertSame(1, $oArguments->get('test1'));
         $this->assertSame(2.5, $oArguments->get('test2'));
 
-        // 1 seul required
+        // 1 required one
         $oArguments = new Arguments(new Argument('test1', ['required' => true]), new Argument('test2'));
         $oArguments->parse('test', 'testValue2');
 
         $this->assertSame('testValue2', $oArguments->get('test2'));
 
-        // 2 arguments parsés => correct
+        // 2 parsed arguments => correct
         $oArguments->parse('testValue1', 'testValue2');
 
         $this->assertSame('testValue1', $oArguments->get('test1'));
@@ -257,7 +256,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test Test ->parse() avec deux arguments set en premier qui sont prefix et un 3ème et 4ème non requis
+     * @test ->parse() with 2 first prefixed arguments and parses two valued ones
      */
     public function testTwoFirstArgumentsPrefixParseNotRequired(): void
     {
@@ -275,7 +274,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test ->parse() avec un argument préfixé mais non dans la collection -> handled
+     * @test ->parse() with a prefixed argument value not present in the collection -> handled
      */
     public function testArgPrefixNotInCollection(): void
     {
@@ -286,7 +285,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test ->parse() avec un argument long préfixé mais non dans la collection
+     * @test ->parse() with a long prefix argument not present in the collection -> handled
      */
     public function testArgLongPrefixNotInCollection(): void
     {
@@ -297,7 +296,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test ->parse() avec plusieurs arguments préfixés mais non dans la collection
+     * @test ->parse() with multiple prefixed arguments not in the collection
      */
     public function testMultiplePrefixNotInCollection(): void
     {
@@ -307,13 +306,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('test', $oArguments->get('test'));
         $this->assertSame('-test', $oArguments->get('test2'));
         $this->assertSame('--test', $oArguments->get('test3'));
-    }
 
-    /**
-     * @test ->parse() avec des arguments prefixés et dans la collection sont préfixés -> non handled
-     */
-    public function testPrefixArgsInCollection(): void
-    {
         $oArguments = new Arguments(
             new Argument('test', ['prefix' => 'test']),
             new Argument('test2', ['longPrefix' => 'longtest', 'defaultValue' => 'default'])
@@ -325,28 +318,28 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test Test des arguments parsés qui ont des prefix et longPrefix (- et --, avec valeur ou non)
+     * @test Parsed long and short prefixed arguments (- and --, with value or not)
      */
     public function testParseShortAndLongPrefix(): void
     {
         foreach (['prefix' => '-t', 'longPrefix' => '--t'] as $optionName => $optionValue) {
             $oArguments = new Arguments(new Argument('test', [$optionName => 't']));
 
-            //  Aucun argument parsed => defaultValue
+            // No argument parsed => defaultValue
             $oArguments->parse();
             $this->assertSame(null, $oArguments->get('test'));
 
-            // On parse des arguments sans prefix => defaultValue
+            // Prses arguments with no prefix => defaultValue
             $oArguments = new Arguments(new Argument('test', [$optionName => 't']));
             $oArguments->parse('test', 'ae');
             $this->assertSame(null, $oArguments->get('test'));
 
-            // On parse des arguments avec un prefix inverse de l'iterator => defaultValue
+            // Parses arguments with a prefix reverse from the iterator => defaultValue
             $oArguments = new Arguments(new Argument('test', [$optionName => 't']));
             $oArguments->parse($optionName === 'prefix' ? '--t' : '-t' . '=value');
             $this->assertSame(null, $oArguments->get('test'));
 
-            // On parse des arguments avec un prefix sans value d'un arg avec value => throw exception
+            // Parses arguments with a prefix without a value from an argument with value => throws exception
             try {
                 $oArguments->parse($optionValue);
 
@@ -354,7 +347,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
             } catch (\Exception $e) {
                 $this->assertSame(
                     sprintf(
-                        'Argument avec valeur commençant par %s (t) n\'a pas de signe =',
+                        'Prefixed argument starting with %s (t) has no = sign',
                         $optionName === 'prefix' ? '-' : '--'
                     ),
                     $e->getMessage()
@@ -363,23 +356,23 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
                 $this->assertInstanceOf(ParseException::class, $e);
             }
 
-            // sans ' ni "
+            // without ' or "
             $oArguments->parse($optionValue . '=testValue');
             $this->assertSame('testValue', $oArguments->get('test'));
 
-            // avec ""
+            // with ""
             $oArguments = new Arguments(new Argument('test', [$optionName => 't']));
             $oArguments->parse($optionValue . '="test valeur"');
 
             $this->assertSame('test valeur', $oArguments->get('test'));
 
-            // avec ''
+            // with ''
             $oArguments = new Arguments(new Argument('test', [$optionName => 't']));
             $oArguments->parse($optionValue . "='test valeur 2'");
 
             $this->assertSame('test valeur 2', $oArguments->get('test'));
 
-            // Argument non parsé avec une defaultValue de set
+            // Argument not parsed with a defaultValue
             $oArguments = new Arguments(new Argument('test', [
                 $optionName     => 't',
                 'defaultValue'  => 20,
@@ -397,11 +390,11 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
 
             $oArguments = new Arguments(new Argument('test', [$optionName => 't', 'noValue' => true]));
 
-            // Argument noValue avec un prefix inverse de l'iterator => false
+            // Argument noValue with a reverse prefix from the iterator => false
             $oArguments->parse($optionName === 'prefix' ? '--t' : '-t');
             $this->assertSame(false, $oArguments->get('test'));
 
-            // Argument noValue renseigné => true
+            // Argument noValue => true
             $oArguments = new Arguments(new Argument('test', [$optionName => 't', 'noValue' => true]));
 
             $oArguments->parse($optionValue);
@@ -410,7 +403,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test Test des arguments parsés qui doivent être castés en float
+     * @test Parsed arguments being casted to float
      */
     public function testParseCastToFloat(): void
     {
@@ -435,7 +428,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
             $this->fail('expect exception');
         } catch (\Exception $e) {
             $this->assertSame(
-                'Argument test n\'est pas un nombre ou contient des , (doit caster en float)',
+                'Argument test is not a floating point number (must cast to float)',
                 $e->getMessage()
             );
 
@@ -458,7 +451,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
             $this->fail('expect exception');
         } catch (\Exception $e) {
             $this->assertSame(
-                'Argument test2 n\'est pas un nombre ou contient des , (doit caster en float)',
+                'Argument test2 is not a floating point number (must cast to float)',
                 $e->getMessage()
             );
 
@@ -467,7 +460,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test Test des arguments parsés qui doivent être castés en integer
+     * @test Parsed arguments being casted to integer
      */
     public function testParseCastToInt(): void
     {
@@ -491,7 +484,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
 
             $this->fail('expect exception');
         } catch (\Exception $e) {
-            $this->assertSame('Argument test n\'est pas un nombre (doit caster en int)', $e->getMessage());
+            $this->assertSame('Argument test is not a numeric string (must cast to integer)', $e->getMessage());
 
             $this->assertInstanceOf(ParseException::class, $e);
         }
@@ -511,13 +504,13 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
 
             $this->fail('expect exception');
         } catch (\Exception $e) {
-            $this->assertSame('Argument test2 n\'est pas un nombre (doit caster en int)', $e->getMessage());
+            $this->assertSame('Argument test2 is not a numeric string (must cast to integer)', $e->getMessage());
             $this->assertInstanceOf(ParseException::class, $e);
         }
     }
 
     /**
-     * @test Test des arguments parsés dont le string est une valeur fausse ('0', '')
+     * @test Parsed arguments with a false string value ('0', '')
      */
     public function testParseStringFalsable(): void
     {
@@ -538,7 +531,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test ->printArguments() sans argument
+     * @test ->printArguments() with no argument
      */
     public function testPrintNoArgument(): void
     {
@@ -550,21 +543,21 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test ->printArguments() avec un required argument
+     * @test ->printArguments() with a required argument
      */
     public function testPrintOneRequiredArgument(): void
     {
         $oArguments = new Arguments(new Argument('test', ['required' => true]));
 
-        $this->expectOutputString("Arguments requis:\n\ttest (type: string)");
+        $this->expectOutputString("Required arguments:\n\ttest (type: string)");
 
         $oArguments->printArguments();
     }
 
     /**
-     * @test ->printArguments() un require et un optional
+     * @test ->printArguments() one required and one optional
      */
-    public function testPrintOneRequiredOneOptionnal(): void
+    public function testPrintOneRequiredOneOptional(): void
     {
         $oArguments = new Arguments(
             new Argument('test', ['required' => true]),
@@ -572,16 +565,16 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->expectOutputString(
-            "Arguments requis:\n\ttest (type: string)\n\nArguments optionnels:\n\ttest2 (type: integer) (default: 12)"
+            "Required arguments:\n\ttest (type: string)\n\Optional arguments:\n\ttest2 (type: integer) (default: 12)"
         );
 
         $oArguments->printArguments();
     }
 
     /**
-     * @test ->printArguments() deux required et deux optionnals
+     * @test ->printArguments() two required and one optional
      */
-    public function testPrintTwoRequiredTwoOptionnal(): void
+    public function testPrintTwoRequiredTwoOptional(): void
     {
         $oArguments = new Arguments(
             new Argument('test', ['required' => true]),
@@ -591,8 +584,8 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->expectOutputString(
-            "Arguments requis:\n\ttest (type: string)\n\ttest2 (type: integer)"
-                . "\n\nArguments optionnels:\n\ttest3 --test3=test3 (type: integer)\n\ttest4 -test4"
+            "Required arguments:\n\ttest (type: string)\n\ttest2 (type: integer)"
+                . "\n\Optional arguments:\n\ttest3 --test3=test3 (type: integer)\n\ttest4 -test4"
         );
 
         $oArguments->printArguments();

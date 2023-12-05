@@ -19,54 +19,54 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test __construct() d'une valeur max négative
+     * @test __construct() with a negative max value
      */
     public function testMaxNegative(): void
     {
-        $this->expectExceptionMessage('La valeur max de la barre de progression doit être positive');
+        $this->expectExceptionMessage('The max value must be positive');
 
         new ProgressBar(-1);
     }
 
     /**
-     * @test __construct() d'une valeur max à 0
+     * @test __construct() with a max value at 0
      */
     public function testMax0(): void
     {
-        $this->expectExceptionMessage('La valeur max de la barre de progression doit être positive');
+        $this->expectExceptionMessage('The max value must be positive');
 
         new ProgressBar(0);
     }
 
     /**
-     * @test __construct() d'un nombre de symbols nagatif
+     * @test __construct() with a negative number of symbols
      */
     public function testNumberOfSymbolsNegative(): void
     {
-        $this->expectExceptionMessage('Le nombre de symbols doit être positif');
+        $this->expectExceptionMessage('The number of symbols must be positive');
 
         new ProgressBar(1, -1);
     }
 
     /**
-     * @test __construct() d'un nombre de symbols à 0
+     * @test __construct() with 0 symbol
      */
     public function testNumberOfSymbols0(): void
     {
-        $this->expectExceptionMessage('Le nombre de symbols doit être positif');
+        $this->expectExceptionMessage('The number of symbols must be positive');
 
         new ProgressBar(1, 0);
     }
 
     /**
-     * @test ->start() avec un titre
+     * @test ->start() with a title
      */
     public function testStartWithTitle(): void
     {
-        (new ProgressBar(5))->setTitle('Titre en bleu')->start();
+        (new ProgressBar(5))->setTitle('Titre in blue')->start();
 
         $this->assertStringStartsWith(
-            "\n\n\e[1A\e[1000D\33[2K" . Style::stylize("\tTitre en bleu", fg: Foreground::BLUE)
+            "\n\n\e[1A\e[1000D\33[2K" . Style::stylize("\tTitre in blue", fg: Foreground::BLUE)
                 . "\e[1B\e[1000D\33[2K\t0 / 5 [     ] 0%",
             ob_get_contents()
         );
@@ -77,14 +77,14 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test ->start() avec un titre d'une différente couleur
+     * @test ->start() with a title from a different color
      */
     public function testStartWithTitleDifferentColor(): void
     {
-        (new ProgressBar(5))->setTitle('Titre en vert', Style\Foreground::GREEN)->start();
+        (new ProgressBar(5))->setTitle('Titre in green', Style\Foreground::GREEN)->start();
 
         $this->assertStringStartsWith(
-            "\n\n\e[1A\e[1000D\33[2K" . Style::stylize("\tTitre en vert", fg: Foreground::GREEN)
+            "\n\n\e[1A\e[1000D\33[2K" . Style::stylize("\tTitre in green", fg: Foreground::GREEN)
                 . "\e[1B\e[1000D\33[2K\t0 / 5 [     ] 0%",
             ob_get_contents()
         );
@@ -95,7 +95,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test ->advance() sans avoir appelé ->start() -> ne fait rien
+     * @test ->advance() without calling ->start() -> does not do anything
      */
     public function testAdvanceWithoutStarting(): void
     {
@@ -107,7 +107,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test L'affichage de la barre de progression de 1 à 10 par 1
+     * @test Display from 1 to 10
      */
     public function testAdvance1Until10(): void
     {
@@ -120,7 +120,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         foreach (range(1, 10) as $step) {
             ob_clean();
 
-            $oProgressBar->advance(1);
+            $oProgressBar->advance();
 
             $this->assertStringStartsWith(
                 "\e[1000D\33[2K\t$step / 10 [" . str_repeat('#', $step) . str_repeat(' ', 10 - $step) . '] '
@@ -145,7 +145,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test L'affichage de la barre de progression de 1 à 10 par 2
+     * @test Display from 1 to 2 every 2 iteration
      */
     public function testAdvance2Until10(): void
     {
@@ -183,7 +183,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test ->advance() quand l'iteration a déjà atteint le max
+     * @test ->advance() with the iteration has already maxed out
      */
     public function testAdvanceMoreThanMax(): void
     {
@@ -201,18 +201,18 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue($oProgressBar->isFinished());
 
-        // Rien n'est affiché
+        // Nothing is displayed
         $this->expectOutputString('');
 
         $oProgressBar->advance(1);
     }
 
     /**
-     * @test __construct() avec un nombre de symbols en dessous de la valeur max
+     * @test __construct() with a number of symbols below the max value
      */
     public function testNumberOfSymbolsBelowMax(): void
     {
-        // Un symbole toutes les 5 iterations (pair, 10 / 2)
+        // 1 symbol every 2 iterations (even, 10 / 2)
         $oProgressBar = new ProgressBar(10, 2);
         $oProgressBar->start();
 
@@ -240,7 +240,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $this->assertMemoryInOutput();
         ob_clean();
 
-        // Un symbole toutes les 4 iterations (impair, ceil(10 / 3))
+        // 1 symbol every 4 iterations (odd, ceil(10 / 3))
         $oProgressBar = new ProgressBar(10, 3);
         $oProgressBar->start();
 
@@ -275,7 +275,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test __construct() avec un nombre de symbole au dessus de la valeur max
+     * @test __construct() with a number of sumbol above the max value
      */
     public function testNumberOfSymbolsAboveMax(): void
     {
@@ -304,7 +304,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test L'affichage de la barre de progrès de 1000 élements
+     * @test Display from 1 to 1000
      */
     public function testMax1000Step1(): void
     {
@@ -322,7 +322,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
 
             $oProgressBar->advance(1);
 
-            // 1 diez en plus toutes les 10 iterations
+            // 1 more diez every 10 iterations
             if (fmod($step, 10) === 0.0) {
                 $expectedIterationDiez++;
             }
@@ -346,7 +346,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
 
             $oProgressBar->advance(1);
 
-            // 1 diez en plus toutes les 20 iterations
+            // 1 more diez every 20 iterations
             if (fmod($step, 20) === 0.0) {
                 $expectedIterationDiez++;
             }
@@ -364,7 +364,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @test ->finish() sans avoir ->start() -> n'affiche rien
+     * @test ->finish() without calling ->start() -> does not do anything
      */
     public function testFinishWithoutStarting(): void
     {
@@ -433,10 +433,14 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Include functional.php, ne teste rien cela sert juste à afficher la progression de la barre de progrès
+     * Include functional.php, does not test anything, only displays progress bars
      */
     public function testFunctional(): void
     {
+        if (getenv('display_functional') !== 'true') {
+            $this->markTestSkipped();
+        }
+
         include 'functional.php';
 
         $this->assertTrue(true);
@@ -446,7 +450,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Assert que la mémoire est affichée dans la barre de progression
+     * Asserts the memory is displayed in the progress bar
      */
     private function assertMemoryInOutput(): void
     {
