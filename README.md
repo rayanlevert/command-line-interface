@@ -90,7 +90,7 @@ $oArguments->parse('--arg="test Value"'); // $oArguments->get('arg1') = test Val
 
 # Personalizes the command line interface by changing the color and formatting displayed text
 
-## **RayanLevert\Cli\Style** is a only having static methods class
+## **RayanLevert\Cli\Style** is a class that only has static methods
 
 3 enumerations are available to stylize the output:
 
@@ -154,7 +154,7 @@ public static function outlineWithBool(bool $status, string $ifTrue, string $ifF
 public static function exception(\Exception $e, bool $withoutTrace = false): void;
 ```
 
-## **RayanLevert\Cli\ProgressBar Displays progression output through a progress bar**
+## **RayanLevert\Cli\ProgressBar displays progression output through a progress bar**
 
 ```php
 /**
