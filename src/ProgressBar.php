@@ -121,7 +121,7 @@ class ProgressBar
         } elseif ($this->max === $this->numberOfSymbols) {
             print str_repeat('#', $this->iteration) . str_repeat(' ', $this->max - $this->iteration);
         } else {
-            $actualDiezes = floor($this->iteration / $this->numberOfEachIterations);
+            $actualDiezes = intval(floor($this->iteration / $this->numberOfEachIterations));
 
             print str_repeat('#', $actualDiezes) . str_repeat(' ', ($this->numberOfSymbols - $actualDiezes));
         }
@@ -184,7 +184,7 @@ class ProgressBar
             $this->numberOfSymbols = $max;
         }
 
-        $this->numberOfEachIterations = ceil($this->max / $this->numberOfSymbols);
+        $this->numberOfEachIterations = intval(ceil($this->max / $this->numberOfSymbols));
 
         return $this;
     }

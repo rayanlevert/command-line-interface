@@ -2,6 +2,7 @@
     "name": "rayanlevert/command-line-interface",
     "description": "Dependency-free command line interface (CLI) handling arguments and easily personalizing output in the PHP userland",
     "type": "library",
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Rayan Levert",
