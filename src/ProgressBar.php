@@ -4,6 +4,15 @@ namespace RayanLevert\Cli;
 
 use RayanLevert\Cli\Style\Foreground;
 
+use function microtime;
+use function sprintf;
+use function str_repeat;
+use function intval;
+use function floor;
+use function ceil;
+use function round;
+use function memory_get_usage;
+
 /**
  * Displays progression output through a progress bar
  */

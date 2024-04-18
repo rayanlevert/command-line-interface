@@ -2,6 +2,15 @@
 
 namespace RayanLevert\Cli\Arguments;
 
+use function array_key_exists;
+use function is_string;
+use function is_bool;
+use function is_double;
+use function is_int;
+use function gettype;
+use function is_numeric;
+use function implode;
+
 /**
  * An argument from a console application viewpoint
  */

@@ -6,6 +6,18 @@ use RayanLevert\Cli\Arguments\Argument;
 use RayanLevert\Cli\Arguments\Exception;
 use RayanLevert\Cli\Arguments\ParseException;
 
+use function count;
+use function substr;
+use function strncmp;
+use function current;
+use function key;
+use function reset;
+use function next;
+use function strlen;
+use function mb_substr;
+use function str_replace;
+use function mb_strpos;
+
 /**
  * Collection of `Arguments\Argument` possessing arguments of an CLI application (`$argv`)
  *

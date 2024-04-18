@@ -2,6 +2,14 @@
 
 namespace RayanLevert\Cli;
 
+use function str_repeat;
+use function strlen;
+use function sprintf;
+use function get_class;
+use function preg_match_all;
+use function get_called_class;
+use function str_replace;
+
 /**
  * Personalizes the command line interface by changing the color and formatting displayed text
  */
