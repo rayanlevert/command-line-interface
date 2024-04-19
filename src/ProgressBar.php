@@ -236,9 +236,9 @@ class ProgressBar
 
         // Allocated memory by its usage
         $memoryUsage = memory_get_usage(true);
-        $memory      = Style::stylize($this->getFormattedMemory(), fg: match (true) {
-            $memoryUsage <= 268435456  => Foreground::LIGHT_GREEN, // 256Mo
-            $memoryUsage <= 536870912  => Foreground::YELLOW, // 512Mo
+        $memory      = Style::stylize($this->getFormattedMemory($memoryUsage), fg: match (true) {
+            $memoryUsage <= 268435456  => Foreground::LIGHT_GREEN, // 256MB
+            $memoryUsage <= 536870912  => Foreground::YELLOW, // 512MB
             default                    => Foreground::RED
         });
 
@@ -255,10 +255,8 @@ class ProgressBar
     /**
      * Returns a formatted allocated memory to PHP
      */
-    private function getFormattedMemory(): string
+    private function getFormattedMemory(int $memory): string
     {
-        $memory = memory_get_usage(true);
-
         return match (true) {
             $memory <= 1024         => $memory . ' B',
             $memory <= 1048576      => round($memory / 1024, 2) . ' KB',
