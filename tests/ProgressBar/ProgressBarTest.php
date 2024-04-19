@@ -432,6 +432,32 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
     }
 
+    public function testGetFormattedTime(): void
+    {
+        $this->assertSame('1ms', ProgressBar::getFormattedTime(1));
+        $this->assertSame('99ms', ProgressBar::getFormattedTime(99));
+        $this->assertSame('105.55ms', ProgressBar::getFormattedTime(105.554));
+        $this->assertSame('999.99ms', ProgressBar::getFormattedTime(999.99));
+
+        $this->assertSame('1sec', ProgressBar::getFormattedTime(1000));
+        $this->assertSame('1sec', ProgressBar::getFormattedTime(1001));
+        $this->assertSame('1.01sec', ProgressBar::getFormattedTime(1010));
+        $this->assertSame('1.02sec', ProgressBar::getFormattedTime(1019));
+        $this->assertSame('1.02sec', ProgressBar::getFormattedTime(1020));
+        $this->assertSame('1.1sec', ProgressBar::getFormattedTime(1100));
+        $this->assertSame('59sec', ProgressBar::getFormattedTime(59000));
+        $this->assertSame('59.99sec', ProgressBar::getFormattedTime(59994));
+
+        $this->assertSame('1min0s', ProgressBar::getFormattedTime(60000));
+        $this->assertSame('1min6s', ProgressBar::getFormattedTime(66000));
+        $this->assertSame('2min0s', ProgressBar::getFormattedTime(120000));
+        $this->assertSame('59min59s', ProgressBar::getFormattedTime(3599999));
+
+        $this->assertSame('1h0min0s', ProgressBar::getFormattedTime(3600000));
+        $this->assertSame('1h20min0s', ProgressBar::getFormattedTime(4800000));
+        $this->assertSame('1h23min20s', ProgressBar::getFormattedTime(5000000));
+    }
+
     /**
      * Include functional.php, does not test anything, only displays progress bars
      */

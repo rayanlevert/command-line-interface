@@ -58,6 +58,37 @@ class ProgressBar
     protected float $lastIterationTime = 0.0;
 
     /**
+     * Returns a formatted allocated memory to PHP
+     *
+     * @param int $memory Allocated memory in bytes
+     */
+    public static function getFormattedMemory(int $memory): string
+    {
+        return match (true) {
+            $memory <= 1024    => $memory . ' B',
+            $memory <= 1048576 => round($memory / 1024, 2) . ' KB',
+            default            => round($memory / 1048576, 2) . ' MB'
+        };
+    }
+
+    /**
+     * Returns a formatted time (in ms, sec, min..)
+     *
+     * @param float $time Time in millisecond
+     */
+    public static function getFormattedTime(float $time): string
+    {
+        return strval(match (true) {
+            $time < 1000   => round($time, 2) . 'ms',
+            $time < 60000  => round($time / 1000, 2) . 'sec',
+            $time < 3.6e+6 => round((int) ($time / 1000 / 60) % 60, 2) . 'min' . round((int) ($time / 1000) % 60) . 's',
+            default        => floor($time / 3.6e+6) . 'h'
+                . round((int) ($time / 1000 / 60) % 60, 2) . 'min'
+                . round((int) ($time / 1000) % 60) . 's'
+        });
+    }
+
+    /**
      * Initializes the progress bar
      *
      * @param int $max Maximum value of iterations
@@ -223,12 +254,12 @@ class ProgressBar
     }
 
     /**
-     * Displays the total time of the progression et PHP memory on bottom of the progress bar
+     * Displays the total time of the progression and PHP memory on bottom of the progress bar
      */
     private function printTime(): void
     {
         // Time color by its total time
-        $time = Style::stylize((string) round($this->totalTime, 2) . 'ms', fg: match (true) {
+        $time = Style::stylize($this->getFormattedTime($this->totalTime), fg: match (true) {
             $this->totalTime <= 500  => Foreground::GREEN,
             $this->totalTime <= 2000 => Foreground::YELLOW,
             default                  => Foreground::RED
@@ -250,17 +281,5 @@ class ProgressBar
             1,
             1000
         );
-    }
-
-    /**
-     * Returns a formatted allocated memory to PHP
-     */
-    private function getFormattedMemory(int $memory): string
-    {
-        return match (true) {
-            $memory <= 1024         => $memory . ' B',
-            $memory <= 1048576      => round($memory / 1024, 2) . ' KB',
-            default                 => round($memory / 1048576, 2) . ' MB'
-        };
     }
 }
