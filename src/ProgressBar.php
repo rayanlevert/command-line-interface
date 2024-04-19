@@ -18,13 +18,13 @@ use function memory_get_usage;
  */
 class ProgressBar
 {
-    protected string $up = "\e[%dA";
+    public const UP = "\e[%dA";
 
-    protected string $down = "\e[%dB";
+    public const DOWN = "\e[%dB";
 
-    protected string $right = "\e[%dC";
+    public const RIGHT = "\e[%dC";
 
-    protected string $left = "\e[%dD";
+    public const LEFT = "\e[%dD";
 
     /**
      * Number of required iterations to add a character
@@ -145,11 +145,11 @@ class ProgressBar
         }
 
         if ($this->title) {
-            print sprintf($this->up . $this->left . "\33[2K" . $this->title . $this->down, 1, 1000, 1);
+            print sprintf(self::UP . self::LEFT . "\33[2K" . $this->title . self::DOWN, 1, 1000, 1);
         }
 
         // Resets the line placing the cursor leftmost + the current iteration / max
-        print sprintf($this->left, 1000) . "\33[2K\t{$this->iteration} / {$this->max} [";
+        print sprintf(self::LEFT, 1000) . "\33[2K\t{$this->iteration} / {$this->max} [";
 
         /**
          * - Progress bar is finished -> displays the complete line of #
@@ -274,7 +274,7 @@ class ProgressBar
         });
 
         print sprintf(
-            $this->down . $this->left . "\t\33[2K%s" . $this->up . $this->left,
+            self::DOWN . self::LEFT . "\t\33[2K%s" . self::UP . self::LEFT,
             1,
             1000,
             $time . str_repeat(' ', $this->numberOfSymbols + 2) . $memory,
