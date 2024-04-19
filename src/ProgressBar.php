@@ -173,7 +173,7 @@ class ProgressBar
         }
 
         // Displays the pourcentage of iterations, the time and allocated memory
-        print '] ' . $this->iteration / $this->max * 100  . '%';
+        print '] ' . round($this->iteration / $this->max * 100, 2)  . '%';
 
         $this->printTime();
 
