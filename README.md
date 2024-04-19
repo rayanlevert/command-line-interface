@@ -1,11 +1,11 @@
-# Dependency-free command line interface (CLI) handling arguments and easily personalizing output in the PHP userland
+## Dependency-free command line interface (CLI) handling arguments and easily personalizing output in the PHP userland
 
 [![Packagist Version](https://img.shields.io/packagist/v/rayanlevert/command-line-interface)](https://packagist.org/packages/rayanlevert/command-line-interface)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rayanlevert/command-line-interface)](https://packagist.org/packages/rayanlevert/command-line-interface)
 [![codecov](https://codecov.io/gh/rayanlevert/command-line-interface/branch/main/graph/badge.svg)](https://codecov.io/gh/rayanlevert/command-line-interface)
 [![Packagist](https://img.shields.io/packagist/dd/rayanlevert/command-line-interface)](https://packagist.org/packages/rayanlevert/command-line-interface/stats)
 
-## **RayanLevert\Cli\Arguments\Argument** defines what is an Argument
+### **RayanLevert\Cli\Arguments\Argument** defines what is an Argument
 An argument has a name and different options and can only be of type `integer`, `double` ou `string` (if the option `noValue` is used, it will be `bool`)
 
 ```php
@@ -24,7 +24,7 @@ new \RayanLevert\Cli\Arguments\Argument(string $name, array $options = [])
 
 A `RayanLevert\Cli\Arguments\Exception` can be thrown if options are not compliant (see `__construct()`)
 
-## **RayanLevert\Cli\Arguments** is a collection of Argument capable of parsing values from `argv` (array of strings)
+### **RayanLevert\Cli\Arguments** is a collection of Argument capable of parsing values from `argv` (array of strings)
 
 ```php
 new \RayanLevert\Cli\Arguments(\RayanLevert\Cli\Arguments\Argument ...$oArguments)
@@ -32,7 +32,7 @@ new \RayanLevert\Cli\Arguments(\RayanLevert\Cli\Arguments\Argument ...$oArgument
 
 > Required arguments must be declared first, before not required ones
 
-### Recovery of parsed values is done via the method `parse(string ...$arguments): void`
+#### Recovery of parsed values is done via the method `parse(string ...$arguments): void`
 > To parse arguments from the actual CLI, use `parse(...$argv)` (with declaring `global $argv;` if you are not in the global scope)
 
 Associates each parsed value to its Argument in the collection
@@ -44,7 +44,7 @@ By default, `NULL` is returned; `integer`, `float` or `string` can be returned i
 - If castTo is `integer` or `float`, the value must be a numeric string (asserts with `is_numeric()`)
 - Si castTo is `string` (by default), the value will be the one parsed
 
-#### Implementation
+### Implementation
 ```php
 $oArguments = new Arguments(new Argument('arg1'));
 $oArguments->get('arg1') // NULL
@@ -88,9 +88,9 @@ $oArguments->parse('--arg="test Value"'); // $oArguments->get('arg1') = test Val
       arg4 -arg4
   ```
 
-# Personalizes the command line interface by changing the color and formatting displayed text
+## Personalizes the command line interface by changing the color and formatting displayed text
 
-## **RayanLevert\Cli\Style** is a class that only has static methods
+### **RayanLevert\Cli\Style** is a class that only has static methods
 
 3 enumerations are available to stylize the output:
 
@@ -154,7 +154,7 @@ public static function outlineWithBool(bool $status, string $ifTrue, string $ifF
 public static function exception(\Exception $e, bool $withoutTrace = false): void;
 ```
 
-## **RayanLevert\Cli\ProgressBar displays progression output through a progress bar**
+### **RayanLevert\Cli\ProgressBar displays progression output through a progress bar**
 
 ```php
 /**
@@ -164,7 +164,7 @@ public static function exception(\Exception $e, bool $withoutTrace = false): voi
 $oProgressBar = new ProgressBar(int $max, int $numberOfSymbols = 50);
 
 /**
- * @param string $title Title to add above the progress barTitre à ajouter au dessus de la barre de progrès
+ * @param string $title Title to add above the progress bar
  * @param Style\Foreground $fg Text color
 */
 $oProgressBar->setTitle(string $title = '', Style\Foreground $fg = Style\Foreground::BLUE);
