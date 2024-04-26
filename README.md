@@ -3,7 +3,6 @@
 [![Packagist Version](https://img.shields.io/packagist/v/rayanlevert/command-line-interface)](https://packagist.org/packages/rayanlevert/command-line-interface)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rayanlevert/command-line-interface)](https://packagist.org/packages/rayanlevert/command-line-interface)
 [![codecov](https://codecov.io/gh/rayanlevert/command-line-interface/branch/main/graph/badge.svg)](https://codecov.io/gh/rayanlevert/command-line-interface)
-[![Packagist](https://img.shields.io/packagist/dd/rayanlevert/command-line-interface)](https://packagist.org/packages/rayanlevert/command-line-interface/stats)
 
 ### **RayanLevert\Cli\Arguments\Argument** defines what is an Argument
 An argument has a name and different options and can only be of type `integer`, `double` ou `string` (if the option `noValue` is used, it will be `bool`)
@@ -37,7 +36,7 @@ new \RayanLevert\Cli\Arguments(\RayanLevert\Cli\Arguments\Argument ...$oArgument
 
 Associates each parsed value to its Argument in the collection
 
-The parsed value of an argument is recoverable by `::get(string $nomArgument)`
+The parsed value of an argument is recoverable by `::get(string $argumentName)`
 
 By default, `NULL` is returned; `integer`, `float` or `string` can be returned if the argument has been parsed and option `castTo` has been set
 
