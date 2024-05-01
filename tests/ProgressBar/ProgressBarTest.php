@@ -464,12 +464,15 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     public function testFunctional(): void
     {
         if (getenv('display_functional') !== 'true') {
-            $this->markTestSkipped();
+            $this->markTestSkipped(
+                'Displaying multiple cases of progress bars is enabled'
+                    . ' via "display_functional=true" environment variable.'
+            );
         }
 
         include 'functional.php';
 
-        $this->assertTrue(true);
+        $this->expectNotToPerformAssertions();
         ob_start();
 
         print "\n";
