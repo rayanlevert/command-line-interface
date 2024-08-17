@@ -23,7 +23,7 @@ use function mb_strpos;
  *
  * @implements \IteratorAggregate<string, Argument>
  */
-class Arguments implements \IteratorAggregate
+class Arguments implements \IteratorAggregate, \Countable
 {
     /**
      * @var array<string, Argument>
@@ -43,11 +43,11 @@ class Arguments implements \IteratorAggregate
     }
 
     /**
-     * @return \Traversable<string, Argument>
+     * @return \Generator<string, Argument>
      */
-    public function getIterator(): \Traversable
+    public function getIterator(): \Generator
     {
-        return new \ArrayIterator($this->data);
+        yield from $this->data;
     }
 
     /**
@@ -121,7 +121,7 @@ class Arguments implements \IteratorAggregate
         }
 
         // Loops to recover required arguments and set their values
-        foreach ($this->data as $name => $oArgument) {
+        foreach ($this as $name => $oArgument) {
             if (!$oArgument->isRequired()) {
                 continue;
             }
@@ -171,7 +171,7 @@ class Arguments implements \IteratorAggregate
 
         $oSelf = new self();
 
-        foreach ($this->data as $oArgument) {
+        foreach ($this as $oArgument) {
             if ($oArgument->isRequired()) {
                 $oSelf->set($oArgument);
             }
@@ -215,7 +215,7 @@ class Arguments implements \IteratorAggregate
      */
     protected function getByShortPrefix(string $name): ?Argument
     {
-        foreach ($this->data as $oArgument) {
+        foreach ($this as $oArgument) {
             if ($oArgument->getPrefix() === $name) {
                 return $oArgument;
             }
@@ -229,7 +229,7 @@ class Arguments implements \IteratorAggregate
      */
     protected function getByLongPrefix(string $name): ?Argument
     {
-        foreach ($this->data as $oArgument) {
+        foreach ($this as $oArgument) {
             if ($oArgument->getLongPrefix() === $name) {
                 return $oArgument;
             }
@@ -245,7 +245,7 @@ class Arguments implements \IteratorAggregate
     {
         $oSelf = new self();
 
-        foreach ($this->data as $oArgument) {
+        foreach ($this as $oArgument) {
             if (!$oArgument->hasBeenHandled()) {
                 $oSelf->set($oArgument);
             }
@@ -269,7 +269,7 @@ class Arguments implements \IteratorAggregate
     {
         $argHasNotRequired = false;
 
-        foreach ($this->data as $name => $oArgument) {
+        foreach ($this as $name => $oArgument) {
             if ($oArgument->getPrefix() || $oArgument->getLongPrefix()) {
                 continue;
             }
