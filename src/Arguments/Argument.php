@@ -37,7 +37,7 @@ class Argument
      *
      * @throws \RayanLevert\Cli\Arguments\Exception If options are incompatible or incorrect
      */
-    final public function __construct(protected readonly string $name, array $options = [])
+    public function __construct(protected readonly string $name, array $options = [])
     {
         foreach ($options as $name => $value) {
             if (!($option = Option::tryFrom($name)) || !$option->verifiesType($value)) {
