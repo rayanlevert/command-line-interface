@@ -2,11 +2,7 @@
 
 namespace RayanLevert\Cli\Arguments;
 
-use function array_key_exists;
-use function is_string;
 use function is_bool;
-use function is_double;
-use function is_int;
 use function gettype;
 use function is_numeric;
 use function implode;
@@ -35,64 +31,35 @@ class Argument
     private bool $hasBeenHandled = false;
 
     /**
-     * Creates an argument with a name and differents options
+     * Creates an argument with a name and different options
      *
-     * @param array<string, string|bool|int|float> $options
-     * - description (string) Description of the argument
-     * - defaultValue (float|int|string) Default value if the argument is not handled
-     * - required (bool) If the argument must be present and parsed
-     * - castTo (string) PHP type - If the argument has a type other than string, its value will be casted
-     * - noValue (bool) If a prefixed argument doesn't need a value -> boolean cast
-     * - prefix (string) Short prefix (-u)
-     * - longPrefix (string) Long prefix (--user)
+     * @param array<string, string|bool|int|float> $options See Arguments\Option cases for more informations
      *
-     * @throws \RayanLevert\Cli\Arguments\Exception If options are incompatible or incorrectes
+     * @throws \RayanLevert\Cli\Arguments\Exception If options are incompatible or incorrect
      */
     final public function __construct(protected readonly string $name, array $options = [])
     {
-        if (array_key_exists('description', $options) && is_string($options['description'])) {
-            $this->description = $options['description'];
+        foreach ($options as $name => $value) {
+            if (!($option = Option::tryFrom($name)) || !$option->verifiesType($value)) {
+                continue;
+            }
+
+            $this->{$option->getPhpProperty()} = $value;
         }
 
-        if (array_key_exists('required', $options) && is_bool($options['required'])) {
-            $this->isRequired = $options['required'];
-        }
-
-        if (array_key_exists('noValue', $options) && is_bool($options['noValue'])) {
-            $this->noValue = $options['noValue'];
-        }
-
-        if (array_key_exists('prefix', $options) && is_string($options['prefix'])) {
-            $this->prefix = $options['prefix'];
-        }
-
-        if (array_key_exists('longPrefix', $options) && is_string($options['longPrefix'])) {
-            $this->longPrefix = $options['longPrefix'];
-        }
-
-        if (array_key_exists('castTo', $options) && is_string($options['castTo'])) {
-            $this->castTo = match ($options['castTo']) {
+        if ($this->castTo) {
+            $this->castTo = match ($this->castTo) {
                 'int', 'integer'  => 'integer',
                 'bool', 'boolean' => throw new Exception('castTo cannot be of type bool, use the option "noValue"'),
                 'double', 'float' => 'double',
                 'string'          => 'string',
-                default           => throw new Exception($options['castTo'] . ' is not a native PHP type')
+                default           => throw new Exception($this->castTo . ' is not a native PHP type')
             };
         }
 
-        if (array_key_exists('defaultValue', $options)) {
-            $defaultValue = $options['defaultValue'];
-
-            if (!is_string($defaultValue) && !is_double($defaultValue) && !is_int($defaultValue)) {
-                throw new Exception('Default value must be of type float, integer or string');
-            }
-
-            $this->defaultValue = $defaultValue;
-
-            // Asserts the default value type is the same as the castTo option
-            if (gettype($this->defaultValue) !== $this->castTo) {
-                throw new Exception("Default value is not the same type as castTo option ({$this->castTo})");
-            }
+        // Asserts the default value type is the same as the castTo option
+        if ($this->defaultValue && gettype($this->defaultValue) !== $this->castTo) {
+            throw new Exception("Default value is not the same type as castTo option ({$this->castTo})");
         }
 
         if (($this->noValue || $this->isRequired) && $this->defaultValue) {
@@ -137,7 +104,7 @@ class Argument
             return;
         }
 
-        // Thorws an exception if the value is not of casted type
+        // Throws an exception if the value is not of casted type
         if ($this->castTo === 'integer') {
             if (!is_numeric($value)) {
                 throw new ParseException("Argument {$this->name} is not a numeric string (must cast to integer)");
