@@ -46,7 +46,7 @@ enum Option: string
         };
     }
 
-    /** Returns the php property for the Arguments\Argument class */
+    /** Returns the PHP property for the Arguments\Argument class */
     public function getPhpProperty(): string
     {
         return match ($this) {

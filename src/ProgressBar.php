@@ -259,7 +259,7 @@ class ProgressBar
     private function printTime(): void
     {
         // Time color by its total time
-        $time = Style::stylize($this->getFormattedTime($this->totalTime), fg: match (true) {
+        $time = Style::stylize(self::getFormattedTime($this->totalTime), fg: match (true) {
             $this->totalTime <= 500  => Foreground::GREEN,
             $this->totalTime <= 2000 => Foreground::YELLOW,
             default                  => Foreground::RED
@@ -267,7 +267,7 @@ class ProgressBar
 
         // Allocated memory by its usage
         $memoryUsage = memory_get_usage(true);
-        $memory      = Style::stylize($this->getFormattedMemory($memoryUsage), fg: match (true) {
+        $memory      = Style::stylize(self::getFormattedMemory($memoryUsage), fg: match (true) {
             $memoryUsage <= 268435456  => Foreground::LIGHT_GREEN, // 256MB
             $memoryUsage <= 536870912  => Foreground::YELLOW, // 512MB
             default                    => Foreground::RED

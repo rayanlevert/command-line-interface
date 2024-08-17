@@ -1,4 +1,4 @@
-# Inspired by Sebastian Bergmann's phpunit action workflow https://github.com/sebastianbergmann/phpunit/blob/main/.github/workflows/ci.yml
+# Inspired by Sebastian Bergmann's phpunit action workflow https://github.com/sebastianbergmann/phpunit/blob/main/.github/workflows/ci.yaml
 
 name: "CI"
 
