@@ -7,6 +7,8 @@ use function strlen;
 use function sprintf;
 use function get_class;
 use function preg_match_all;
+use function substr;
+use function trigger_error;
 use function get_called_class;
 use function str_replace;
 
@@ -24,9 +26,9 @@ class Style
      */
     public static function inline(
         string $string,
-        Style\Background $bg = null,
-        Style\Foreground $fg = null,
-        Style\Attribute $at = null
+        ?Style\Background $bg = null,
+        ?Style\Foreground $fg = null,
+        ?Style\Attribute $at = null
     ): void {
         print self::stylize($string, $bg, $fg, $at);
     }
@@ -36,9 +38,9 @@ class Style
      */
     public static function outline(
         string $string,
-        Style\Background $bg = null,
-        Style\Foreground $fg = null,
-        Style\Attribute $at = null
+        ?Style\Background $bg = null,
+        ?Style\Foreground $fg = null,
+        ?Style\Attribute $at = null
     ): void {
         print self::stylize($string, $bg, $fg, $at) . PHP_EOL;
     }
@@ -202,9 +204,9 @@ class Style
      */
     public static function stylize(
         string $string,
-        Style\Background $bg = null,
-        Style\Foreground $fg = null,
-        Style\Attribute $at = null
+        ?Style\Background $bg = null,
+        ?Style\Foreground $fg = null,
+        ?Style\Attribute $at = null
     ): string {
         if (!$bg && !$fg && !$at) {
             return $string;

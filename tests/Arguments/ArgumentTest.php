@@ -157,16 +157,11 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         $oArgument = new Argument('test');
         $this->assertNull($oArgument->getDefaultValue());
 
-        // we recover every incorrect PHP type = throws an exception
+        // we recover every incorrect PHP type = does not assign the value
         foreach ([true, false, [], new \stdClass(), fopen(__FILE__, 'r')] as $incorrectValue) {
-            try {
-                $oArgument = new Argument('test', ['defaultValue' => $incorrectValue]);
+            $oArgument = new Argument('test', ['defaultValue' => $incorrectValue]);
 
-                $this->fail('expected exception pour la valeur ' . var_export($incorrectValue, true));
-            } catch (\Exception $e) {
-                $this->assertSame('Default value must be of type float, integer or string', $e->getMessage());
-                $this->assertInstanceOf(Exception::class, $e);
-            }
+            $this->assertNull($oArgument->getDefaultValue());
         }
 
         // castTo string and defaultValue string OK
