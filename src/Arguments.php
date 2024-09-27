@@ -14,9 +14,8 @@ use function key;
 use function reset;
 use function next;
 use function strlen;
-use function mb_substr;
 use function str_replace;
-use function mb_strpos;
+use function function_exists;
 
 /**
  * Collection of `Arguments\Argument` possessing arguments of an CLI application (`$argv`)
@@ -289,18 +288,21 @@ class Arguments implements \IteratorAggregate, \Countable
      */
     protected function setArgFromPrefix(string $arg, string $prefix): bool
     {
+        $substrCallable = function_exists('mb_substr') ? \mb_substr(...) : substr(...);
+        $strposCallable = function_exists('mb_strpos') ? \mb_strpos(...) : strpos(...);
+
         $countPrefix = strlen($prefix);
 
         // Removes quotes and first --
-        $arg = mb_substr(str_replace(['\'', '"'], '', $arg), $countPrefix);
+        $arg = $substrCallable(str_replace(['\'', '"'], '', $arg), $countPrefix);
 
         // Recovers the name of the argument (if an = is found, we slice before the sign, if not the complete value)
         $argName = $arg;
-        if (($equalPosition = mb_strpos($arg, '=')) !== false) {
-            $argName = mb_substr($arg, 0, $equalPosition);
+        if (($equalPosition = $strposCallable($arg, '=')) !== false) {
+            $argName = $substrCallable($arg, 0, $equalPosition);
         }
 
-        // Retrives the argumetn from its short or long prefix name
+        // Retrives the argument from its short or long prefix name
         if (!$oArgument = $countPrefix === 1 ? $this->getByShortPrefix($argName) : $this->getByLongPrefix($argName)) {
             return false;
         }
@@ -317,7 +319,7 @@ class Arguments implements \IteratorAggregate, \Countable
             throw new ParseException("Prefixed argument starting with $prefix ($arg) has no = sign");
         }
 
-        $oArgument->setValueParsed(mb_substr($arg, $equalPosition + 1));
+        $oArgument->setValueParsed($substrCallable($arg, $equalPosition + 1));
 
         return true;
     }
