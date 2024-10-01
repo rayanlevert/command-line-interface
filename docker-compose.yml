@@ -1,7 +1,9 @@
 services:
   cli:
-    build: docker/8.3
+    build: docker/8.4
     restart: 'no'
+    tty: true
+    stdin_open: true
     working_dir: /app
     volumes:
       - .:/app
