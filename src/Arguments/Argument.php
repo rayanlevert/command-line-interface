@@ -12,23 +12,23 @@ use function implode;
  */
 class Argument
 {
-    private string $description = '';
+    public private(set) string $description = '';
 
-    private string|int|float|null $defaultValue = null;
+    public private(set) string|int|float|null $defaultValue = null;
 
-    private bool $isRequired = false;
+    public private(set) bool $isRequired = false;
 
-    private bool $noValue = false;
+    public private(set) bool $noValue = false;
 
-    private string $castTo = 'string';
+    public private(set) string $castTo = 'string';
 
-    private string $prefix = '';
+    public private(set) string $prefix = '';
 
-    private string $longPrefix = '';
+    public private(set) string $longPrefix = '';
 
-    private string|int|float|bool $valueParsed = '';
+    public private(set) string|int|float|bool $valueParsed = '';
 
-    private bool $hasBeenHandled = false;
+    public private(set) bool $hasBeenHandled = false;
 
     /**
      * Creates an argument with a name and different options
@@ -37,7 +37,7 @@ class Argument
      *
      * @throws \RayanLevert\Cli\Arguments\Exception If options are incompatible or incorrect
      */
-    public function __construct(protected readonly string $name, array $options = [])
+    public function __construct(public protected(set) readonly string $name, array $options = [])
     {
         foreach ($options as $name => $value) {
             if (!($option = Option::tryFrom($name)) || !$option->verifiesType($value)) {
@@ -152,50 +152,5 @@ class Argument
         }
 
         return $this->name . $toPrint;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getLongPrefix(): string
-    {
-        return $this->longPrefix;
-    }
-
-    public function getPrefix(): string
-    {
-        return $this->prefix;
-    }
-
-    public function hasNoValue(): bool
-    {
-        return $this->noValue;
-    }
-
-    public function getCastTo(): string
-    {
-        return $this->castTo;
-    }
-
-    public function isRequired(): bool
-    {
-        return $this->isRequired;
-    }
-
-    public function getDefaultValue(): string|int|float|null
-    {
-        return $this->defaultValue;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function hasBeenHandled(): bool
-    {
-        return $this->hasBeenHandled;
     }
 }

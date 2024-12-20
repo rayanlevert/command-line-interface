@@ -71,48 +71,48 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         // with no option
         $oArgument = new Argument('test');
 
-        $this->assertSame('test', $oArgument->getName());
-        $this->assertSame('', $oArgument->getDescription());
-        $this->assertNull($oArgument->getDefaultValue());
-        $this->assertFalse($oArgument->isRequired());
-        $this->assertFalse($oArgument->hasNoValue());
-        $this->assertSame('string', $oArgument->getCastTo());
-        $this->assertSame('', $oArgument->getPrefix());
-        $this->assertSame('', $oArgument->getLongPrefix());
-        $this->assertFalse($oArgument->hasBeenHandled());
+        $this->assertSame('test', $oArgument->name);
+        $this->assertSame('', $oArgument->description);
+        $this->assertNull($oArgument->defaultValue);
+        $this->assertFalse($oArgument->isRequired);
+        $this->assertFalse($oArgument->noValue);
+        $this->assertSame('string', $oArgument->castTo);
+        $this->assertSame('', $oArgument->prefix);
+        $this->assertSame('', $oArgument->longPrefix);
+        $this->assertFalse($oArgument->hasBeenHandled);
 
         $oArgument = new Argument('test', ['description' => 'testDescription']);
-        $this->assertSame('testDescription', $oArgument->getDescription());
+        $this->assertSame('testDescription', $oArgument->description);
 
         $oArgument = new Argument('test', ['required' => true]);
-        $this->assertTrue($oArgument->isRequired());
+        $this->assertTrue($oArgument->isRequired);
 
         $oArgument = new Argument('test', ['noValue' => true]);
-        $this->assertTrue($oArgument->hasNoValue());
+        $this->assertTrue($oArgument->noValue);
 
         $oArgument = new Argument('test', ['prefix' => 't']);
-        $this->assertSame('t', $oArgument->getPrefix());
+        $this->assertSame('t', $oArgument->prefix);
 
         $oArgument = new Argument('test', ['longPrefix' => 'test']);
-        $this->assertSame('test', $oArgument->getLongPrefix());
+        $this->assertSame('test', $oArgument->longPrefix);
 
         // castTo to integer
         $oArgument = new Argument('test', ['castTo' => 'int']);
-        $this->assertSame('integer', $oArgument->getCastTo());
+        $this->assertSame('integer', $oArgument->castTo);
 
         $oArgument = new Argument('test', ['castTo' => 'integer']);
-        $this->assertSame('integer', $oArgument->getCastTo());
+        $this->assertSame('integer', $oArgument->castTo);
 
         // castTo to double
         $oArgument = new Argument('test', ['castTo' => 'float']);
-        $this->assertSame('double', $oArgument->getCastTo());
+        $this->assertSame('double', $oArgument->castTo);
 
         $oArgument = new Argument('test', ['castTo' => 'double']);
-        $this->assertSame('double', $oArgument->getCastTo());
+        $this->assertSame('double', $oArgument->castTo);
 
         // castTo to string
         $oArgument = new Argument('test', ['castTo' => 'string']);
-        $this->assertSame('string', $oArgument->getCastTo());
+        $this->assertSame('string', $oArgument->castTo);
 
         // castTo to boolean => exception throw
         try {
@@ -140,28 +140,28 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
     {
         // integer
         $oArgument = new Argument('test', ['castTo' => 'int', 'defaultValue' => 10]);
-        $this->assertIsInt($oArgument->getDefaultValue());
-        $this->assertSame(10, $oArgument->getDefaultValue());
+        $this->assertIsInt($oArgument->defaultValue);
+        $this->assertSame(10, $oArgument->defaultValue);
 
         // float
         $oArgument = new Argument('test', ['castTo' => 'float', 'defaultValue' => 5.5]);
-        $this->assertIsFloat($oArgument->getDefaultValue());
-        $this->assertSame(5.5, $oArgument->getDefaultValue());
+        $this->assertIsFloat($oArgument->defaultValue);
+        $this->assertSame(5.5, $oArgument->defaultValue);
 
         // string
         $oArgument = new Argument('test', ['defaultValue' => 'defaultValue']);
-        $this->assertIsString($oArgument->getDefaultValue());
-        $this->assertSame('defaultValue', $oArgument->getDefaultValue());
+        $this->assertIsString($oArgument->defaultValue);
+        $this->assertSame('defaultValue', $oArgument->defaultValue);
 
         // no value set = NULL
         $oArgument = new Argument('test');
-        $this->assertNull($oArgument->getDefaultValue());
+        $this->assertNull($oArgument->defaultValue);
 
         // we recover every incorrect PHP type = does not assign the value
         foreach ([true, false, [], new \stdClass(), fopen(__FILE__, 'r')] as $incorrectValue) {
             $oArgument = new Argument('test', ['defaultValue' => $incorrectValue]);
 
-            $this->assertNull($oArgument->getDefaultValue());
+            $this->assertNull($oArgument->defaultValue);
         }
 
         // castTo string and defaultValue string OK
@@ -252,7 +252,7 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         $oArgument->setValueParsed('value');
 
         $this->assertSame('value', $oArgument->getValue());
-        $this->assertTrue($oArgument->hasBeenHandled());
+        $this->assertTrue($oArgument->hasBeenHandled);
     }
 
     /** ->setValueParsed() with an integer argument */
@@ -265,7 +265,7 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
 
         $this->assertIsInt($oArgument->getValue());
         $this->assertSame(12, $oArgument->getValue());
-        $this->assertTrue($oArgument->hasBeenHandled());
+        $this->assertTrue($oArgument->hasBeenHandled);
 
         // parses a non numeric string argument with castTo integer => throws an exception
         $oArgument = new Argument('test', ['castTo' => 'integer']);
@@ -290,7 +290,7 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
 
         $this->assertIsFloat($oArgument->getValue());
         $this->assertSame(12.0, $oArgument->getValue());
-        $this->assertTrue($oArgument->hasBeenHandled());
+        $this->assertTrue($oArgument->hasBeenHandled);
 
         // parses a numeric string argument with castTo float => value float
         $oArgument = new Argument('test', ['castTo' => 'float']);
@@ -298,7 +298,7 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
 
         $this->assertIsFloat($oArgument->getValue());
         $this->assertSame(12.8, $oArgument->getValue());
-        $this->assertTrue($oArgument->hasBeenHandled());
+        $this->assertTrue($oArgument->hasBeenHandled);
 
         // parses a numeric string argument with castTo float avec virgule => throws exception
         $oArgument = new Argument('test', ['castTo' => 'float']);
