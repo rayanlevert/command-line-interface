@@ -1,5 +1,5 @@
-FROM composer:2.7.7 AS composer
-FROM php:8.4.0RC1-cli
+FROM composer:2.8.4 AS composer
+FROM php:8.4-cli
 
 LABEL maintainer="Rayan Levert <rayanlevert@msn.com>"
 
@@ -9,8 +9,8 @@ RUN apt-get update -y && \
     git \
     zip
 
-# Enabling xdebug (not supported yet for php8.4)
-# RUN pecl install xdebug && docker-php-ext-enable xdebug
+# Enabling xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
 
 # Creates the app directory
 RUN mkdir /app
