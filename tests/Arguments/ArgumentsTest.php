@@ -186,8 +186,8 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
         // A required argument
         $oArguments = new Arguments($oArgument = new Argument('test', ['required' => true]));
 
-        $this->assertTrue($oArgument->isRequired());
-        $this->assertFalse($oArgument->hasBeenHandled());
+        $this->assertTrue($oArgument->isRequired);
+        $this->assertFalse($oArgument->hasBeenHandled);
         $this->assertNull($oArguments->get('test'));
 
         // Parses 0 argument => throws an exception
@@ -379,19 +379,19 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
             $oArguments = new Arguments(new Argument('test', [$optionName => 't', 'noValue' => true]));
 
             $oArguments->parse();
-            $this->assertSame(false, $oArguments->get('test'));
+            $this->assertFalse($oArguments->get('test'));
 
             $oArguments = new Arguments(new Argument('test', [$optionName => 't', 'noValue' => true]));
 
             // Argument noValue with a reverse prefix from the iterator => false
             $oArguments->parse($optionName === 'prefix' ? '--t' : '-t');
-            $this->assertSame(false, $oArguments->get('test'));
+            $this->assertFalse($oArguments->get('test'));
 
             // Argument noValue => true
             $oArguments = new Arguments(new Argument('test', [$optionName => 't', 'noValue' => true]));
 
             $oArguments->parse($optionValue);
-            $this->assertSame(true, $oArguments->get('test'));
+            $this->assertTrue($oArguments->get('test'));
         }
     }
 

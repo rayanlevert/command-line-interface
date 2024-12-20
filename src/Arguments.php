@@ -35,7 +35,7 @@ class Arguments implements \IteratorAggregate, \Countable
     public function __construct(Argument ...$oArguments)
     {
         foreach ($oArguments as $oArgument) {
-            $this->data[$oArgument->getName()] = $oArgument;
+            $this->data[$oArgument->name] = $oArgument;
         }
 
         $this->assertOrderRequired();
@@ -54,7 +54,7 @@ class Arguments implements \IteratorAggregate, \Countable
      */
     public function set(Argument $oArgument): void
     {
-        $this->data[$oArgument->getName()] = $oArgument;
+        $this->data[$oArgument->name] = $oArgument;
 
         $this->assertOrderRequired();
     }
@@ -70,7 +70,7 @@ class Arguments implements \IteratorAggregate, \Countable
             throw new Exception("Argument $argumentName does not exist in the collection");
         }
 
-        return $oArgument->getValue();
+        return $oArgument->value;
     }
 
     /**
@@ -121,7 +121,7 @@ class Arguments implements \IteratorAggregate, \Countable
 
         // Loops to recover required arguments and set their values
         foreach ($this as $name => $oArgument) {
-            if (!$oArgument->isRequired()) {
+            if (!$oArgument->isRequired) {
                 continue;
             }
 
@@ -129,7 +129,7 @@ class Arguments implements \IteratorAggregate, \Countable
                 throw new ParseException("Argument $name is required");
             }
 
-            $oArgument->setValueParsed($argValue);
+            $oArgument->value = $argValue;
 
             unset($arguments[key($arguments)]);
         }
@@ -147,11 +147,11 @@ class Arguments implements \IteratorAggregate, \Countable
             $arg = current($arguments);
 
             // Skips prefixes arguments, already handled in the first loop
-            if ($oArgument->getLongPrefix() || $oArgument->getPrefix()) {
+            if ($oArgument->longPrefix || $oArgument->prefix) {
                 continue;
             }
 
-            $oArgument->setValueParsed($arg);
+            $oArgument->value = $arg;
 
             if (!next($arguments)) {
                 return;
@@ -171,7 +171,7 @@ class Arguments implements \IteratorAggregate, \Countable
         $oSelf = new self();
 
         foreach ($this as $oArgument) {
-            if ($oArgument->isRequired()) {
+            if ($oArgument->isRequired) {
                 $oSelf->set($oArgument);
             }
         }
@@ -215,7 +215,7 @@ class Arguments implements \IteratorAggregate, \Countable
     protected function getByShortPrefix(string $name): ?Argument
     {
         foreach ($this as $oArgument) {
-            if ($oArgument->getPrefix() === $name) {
+            if ($oArgument->prefix === $name) {
                 return $oArgument;
             }
         }
@@ -229,7 +229,7 @@ class Arguments implements \IteratorAggregate, \Countable
     protected function getByLongPrefix(string $name): ?Argument
     {
         foreach ($this as $oArgument) {
-            if ($oArgument->getLongPrefix() === $name) {
+            if ($oArgument->longPrefix === $name) {
                 return $oArgument;
             }
         }
@@ -245,7 +245,7 @@ class Arguments implements \IteratorAggregate, \Countable
         $oSelf = new self();
 
         foreach ($this as $oArgument) {
-            if (!$oArgument->hasBeenHandled()) {
+            if (!$oArgument->hasBeenHandled) {
                 $oSelf->set($oArgument);
             }
         }
@@ -269,15 +269,15 @@ class Arguments implements \IteratorAggregate, \Countable
         $argHasNotRequired = false;
 
         foreach ($this as $name => $oArgument) {
-            if ($oArgument->getPrefix() || $oArgument->getLongPrefix()) {
+            if ($oArgument->prefix || $oArgument->longPrefix) {
                 continue;
             }
 
-            if (!$oArgument->isRequired()) {
+            if (!$oArgument->isRequired) {
                 $argHasNotRequired = true;
             }
 
-            if ($argHasNotRequired && $oArgument->isRequired()) {
+            if ($argHasNotRequired && $oArgument->isRequired) {
                 throw new Exception("Required argument $name follows a not required argument");
             }
         }
@@ -308,8 +308,8 @@ class Arguments implements \IteratorAggregate, \Countable
         }
 
         // If the argument is a noValue one -> parses it
-        if ($oArgument->hasNoValue()) {
-            $oArgument->setValueParsed(true);
+        if ($oArgument->noValue) {
+            $oArgument->value = true;
 
             return true;
         }
@@ -319,7 +319,7 @@ class Arguments implements \IteratorAggregate, \Countable
             throw new ParseException("Prefixed argument starting with $prefix ($arg) has no = sign");
         }
 
-        $oArgument->setValueParsed($substrCallable($arg, $equalPosition + 1));
+        $oArgument->value = $substrCallable($arg, $equalPosition + 1);
 
         return true;
     }

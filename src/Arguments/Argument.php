@@ -17,7 +17,7 @@ class Argument
     public private(set) string|int|float|null $defaultValue = null;
 
     /** Returns the value of the argument after parsed, if not returns the default value */
-    public string|int|float|null $value = null {
+    public string|int|float|bool|null $value = null {
         get {
             if (!$this->hasBeenHandled) {
                 return $this->noValue ? false : $this->defaultValue;
@@ -32,9 +32,8 @@ class Argument
          * @throws \RayanLevert\Cli\Arguments\ParseException If the parsed value is not of casted type
          */
         set {
-            if (is_bool($value) && $this->noValue) {
-                $this->value          = $value;
-                $this->hasBeenHandled = true;
+            if ($this->noValue) {
+                $this->value = $this->hasBeenHandled = true;
 
                 return;
             } elseif ($this->castTo === 'string') {
