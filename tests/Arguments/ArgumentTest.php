@@ -243,15 +243,15 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         new Argument('test', ['castTo' => 'incorrect-type']);
     }
 
-    /** ->setValueParsed() with a string argument */
+    /** ->value with a string argument */
     #[Test]
     public function parseArgumentString(): void
     {
         // parses a string argument without castTo => string
         $oArgument = new Argument('test');
-        $oArgument->setValueParsed('value');
+        $oArgument->value = 'value';
 
-        $this->assertSame('value', $oArgument->getValue());
+        $this->assertSame('value', $oArgument->value);
         $this->assertTrue($oArgument->hasBeenHandled);
     }
 
@@ -261,17 +261,17 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
     {
         // parses a numeric string argument with castTo integer => value int
         $oArgument = new Argument('test', ['castTo' => 'integer']);
-        $oArgument->setValueParsed('12');
+        $oArgument->value = '12';
 
-        $this->assertIsInt($oArgument->getValue());
-        $this->assertSame(12, $oArgument->getValue());
+        $this->assertIsInt($oArgument->value);
+        $this->assertSame(12, $oArgument->value);
         $this->assertTrue($oArgument->hasBeenHandled);
 
         // parses a non numeric string argument with castTo integer => throws an exception
         $oArgument = new Argument('test', ['castTo' => 'integer']);
 
         try {
-            $oArgument->setValueParsed('stringwithnonumber');
+            $oArgument->value = 'stringwithnonumber';
 
             $this->fail('expected exception');
         } catch (\Exception $e) {
@@ -286,25 +286,25 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
     {
         // parses a integer string with castTo float => value float
         $oArgument = new Argument('test', ['castTo' => 'float']);
-        $oArgument->setValueParsed('12');
+        $oArgument->value = '12';
 
-        $this->assertIsFloat($oArgument->getValue());
-        $this->assertSame(12.0, $oArgument->getValue());
+        $this->assertIsFloat($oArgument->value);
+        $this->assertSame(12.0, $oArgument->value);
         $this->assertTrue($oArgument->hasBeenHandled);
 
         // parses a numeric string argument with castTo float => value float
         $oArgument = new Argument('test', ['castTo' => 'float']);
-        $oArgument->setValueParsed('12.8');
+        $oArgument->value = '12.8';
 
-        $this->assertIsFloat($oArgument->getValue());
-        $this->assertSame(12.8, $oArgument->getValue());
+        $this->assertIsFloat($oArgument->value);
+        $this->assertSame(12.8, $oArgument->value);
         $this->assertTrue($oArgument->hasBeenHandled);
 
         // parses a numeric string argument with castTo float avec virgule => throws exception
         $oArgument = new Argument('test', ['castTo' => 'float']);
 
         try {
-            $oArgument->setValueParsed('12,8');
+            $oArgument->value = '12,8';
 
             $this->fail('expected exception');
         } catch (\Exception $e) {
@@ -320,7 +320,7 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         $oArgument = new Argument('test', ['castTo' => 'float']);
 
         try {
-            $oArgument->setValueParsed('stringwithnonumber');
+            $oArgument->value = 'stringwithnonumber';
 
             $this->fail('expected exception');
         } catch (\Exception $e) {
