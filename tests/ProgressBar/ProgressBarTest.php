@@ -2,66 +2,57 @@
 
 namespace RayanLevert\Cli\Tests\ProgressBar;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use RayanLevert\Cli\ProgressBar;
 use RayanLevert\Cli\Style;
 use RayanLevert\Cli\Style\Foreground;
 
+#[CoversClass(ProgressBar::class)]
 class ProgressBarTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @test __construct()
-     */
-    public function testConstruct(): void
+    #[Test]
+    public function construct(): void
     {
         $oProgressBar = new ProgressBar(10);
 
         $this->assertSame(0, $oProgressBar->getCurrent());
     }
 
-    /**
-     * @test __construct() with a negative max value
-     */
-    public function testMaxNegative(): void
+    #[Test]
+    public function maxNegative(): void
     {
         $this->expectExceptionMessage('The max value must be positive');
 
         new ProgressBar(-1);
     }
 
-    /**
-     * @test __construct() with a max value at 0
-     */
-    public function testMax0(): void
+    #[Test]
+    public function max0(): void
     {
         $this->expectExceptionMessage('The max value must be positive');
 
         new ProgressBar(0);
     }
 
-    /**
-     * @test __construct() with a negative number of symbols
-     */
-    public function testNumberOfSymbolsNegative(): void
+    #[Test]
+    public function numberOfSymbolsNegative(): void
     {
         $this->expectExceptionMessage('The number of symbols must be positive');
 
         new ProgressBar(1, -1);
     }
 
-    /**
-     * @test __construct() with 0 symbol
-     */
-    public function testNumberOfSymbols0(): void
+    #[Test]
+    public function numberOfSymbols0(): void
     {
         $this->expectExceptionMessage('The number of symbols must be positive');
 
         new ProgressBar(1, 0);
     }
 
-    /**
-     * @test ->start() with a title
-     */
-    public function testStartWithTitle(): void
+    #[Test]
+    public function startWithTitle(): void
     {
         (new ProgressBar(5))->setTitle('Titre in blue')->start();
 
@@ -76,10 +67,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
     }
 
-    /**
-     * @test ->start() with a title from a different color
-     */
-    public function testStartWithTitleDifferentColor(): void
+    #[Test]
+    public function startWithTitleDifferentColor(): void
     {
         (new ProgressBar(5))->setTitle('Titre in green', Style\Foreground::GREEN)->start();
 
@@ -94,10 +83,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
     }
 
-    /**
-     * @test ->advance() without calling ->start() -> does not do anything
-     */
-    public function testAdvanceWithoutStarting(): void
+    #[Test]
+    public function advanceWithoutStarting(): void
     {
         $this->expectOutputString('');
 
@@ -106,10 +93,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, $oProgressBar->getCurrent());
     }
 
-    /**
-     * @test Display from 1 to 10
-     */
-    public function testAdvance1Until10(): void
+    #[Test]
+    public function advance1Until10(): void
     {
         $oProgressBar = new ProgressBar(10);
         $oProgressBar->start();
@@ -144,10 +129,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
     }
 
-    /**
-     * @test Display from 1 to 2 every 2 iteration
-     */
-    public function testAdvance2Until10(): void
+    #[Test]
+    public function advance2Until10(): void
     {
         $oProgressBar = new ProgressBar(10);
         $oProgressBar->start();
@@ -182,10 +165,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
     }
 
-    /**
-     * @test ->advance() with the iteration has already maxed out
-     */
-    public function testAdvanceMoreThanMax(): void
+    #[Test]
+    public function advanceMoreThanMax(): void
     {
         $oProgressBar = new ProgressBar(2);
         $oProgressBar->start();
@@ -207,10 +188,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $oProgressBar->advance(1);
     }
 
-    /**
-     * @test __construct() with a number of symbols below the max value
-     */
-    public function testNumberOfSymbolsBelowMax(): void
+    #[Test]
+    public function numberOfSymbolsBelowMax(): void
     {
         // 1 symbol every 2 iterations (even, 10 / 2)
         $oProgressBar = new ProgressBar(10, 2);
@@ -274,10 +253,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
     }
 
-    /**
-     * @test __construct() with a number of sumbol above the max value
-     */
-    public function testNumberOfSymbolsAboveMax(): void
+    #[Test]
+    public function numberOfSymbolsAboveMax(): void
     {
         $oProgressBar = new ProgressBar(20, 25);
         $oProgressBar->start();
@@ -303,10 +280,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
     }
 
-    /**
-     * @test Display from 1 to 1000
-     */
-    public function testMax1000Step1(): void
+    #[Test]
+    public function max1000Step1(): void
     {
         $oProgressBar = new ProgressBar(1000, 100);
         $oProgressBar->start();
@@ -363,10 +338,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
     }
 
-    /**
-     * @test ->finish() without calling ->start() -> does not do anything
-     */
-    public function testFinishWithoutStarting(): void
+    #[Test]
+    public function finishWithoutStarting(): void
     {
         $oProgressBar = new ProgressBar(10);
         $oProgressBar->finish();
@@ -375,10 +348,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $oProgressBar->advance();
     }
 
-    /**
-     * @test ->finish()
-     */
-    public function testFinishWithAdvance(): void
+    #[Test]
+    public function finishWithAdvance(): void
     {
         $oProgressBar = new ProgressBar(10);
         $oProgressBar->start();
@@ -402,10 +373,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
     }
 
-    /**
-     * @test ->setMax()
-     */
-    public function testSetMax(): void
+    #[Test]
+    public function setMax(): void
     {
         $oProgressBar = new ProgressBar(10);
         $oProgressBar->start();
@@ -432,7 +401,8 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
     }
 
-    public function testGetFormattedTime(): void
+    #[Test]
+    public function getFormattedTime(): void
     {
         $this->assertSame('1ms', ProgressBar::getFormattedTime(1));
         $this->assertSame('99ms', ProgressBar::getFormattedTime(99));
@@ -458,10 +428,9 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('1h23min20s', ProgressBar::getFormattedTime(5000000));
     }
 
-    /**
-     * Include functional.php, does not test anything, only displays progress bars
-     */
-    public function testFunctional(): void
+    /** Include functional.php, does not test anything, only displays progress bars */
+    #[Test]
+    public function functional(): void
     {
         if (getenv('display_functional') !== 'true') {
             $this->markTestSkipped(
