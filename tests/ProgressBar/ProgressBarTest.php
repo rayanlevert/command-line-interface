@@ -54,7 +54,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     #[Test]
     public function startWithTitle(): void
     {
-        (new ProgressBar(5))->setTitle('Titre in blue')->start();
+        new ProgressBar(5)->setTitle('Titre in blue')->start();
 
         $this->assertStringStartsWith(
             "\n\n\e[1A\e[1000D\33[2K" . Style::stylize("\tTitre in blue", fg: Foreground::BLUE)
@@ -70,7 +70,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     #[Test]
     public function startWithTitleDifferentColor(): void
     {
-        (new ProgressBar(5))->setTitle('Titre in green', Style\Foreground::GREEN)->start();
+        new ProgressBar(5)->setTitle('Titre in green', Style\Foreground::GREEN)->start();
 
         $this->assertStringStartsWith(
             "\n\n\e[1A\e[1000D\33[2K" . Style::stylize("\tTitre in green", fg: Foreground::GREEN)

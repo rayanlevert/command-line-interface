@@ -337,16 +337,16 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
     #[Test]
     public function getInfosOptionsEmpty(): void
     {
-        $this->assertSame('test (type: string)', (new Argument('test'))->getInfos());
+        $this->assertSame('test (type: string)', new Argument('test')->getInfos());
     }
 
     /** ->getInfos() with required arguments */
     #[Test]
     public function getInfosRequired(): void
     {
-        $this->assertSame('test (type: string)', (new Argument('test'))->getInfos());
+        $this->assertSame('test (type: string)', new Argument('test')->getInfos());
 
-        $this->assertSame('test (type: double)', (new Argument('test', ['castTo' => 'float']))->getInfos());
+        $this->assertSame('test (type: double)', new Argument('test', ['castTo' => 'float'])->getInfos());
     }
 
     /** ->getInfos() with only prefixes */
