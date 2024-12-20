@@ -17,9 +17,8 @@ use function str_replace;
  */
 class Style
 {
-    public const START_TAG = "\e[";
-
-    public const END_TAG = "\e[0m";
+    public const string START_TAG = "\e[";
+    public const string END_TAG = "\e[0m";
 
     /**
      * Prints a string of a background color, text color and/or an attribute
