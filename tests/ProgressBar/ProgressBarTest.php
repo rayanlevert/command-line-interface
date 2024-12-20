@@ -16,7 +16,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     {
         $oProgressBar = new ProgressBar(10);
 
-        $this->assertSame(0, $oProgressBar->getCurrent());
+        $this->assertSame(0, $oProgressBar->iteration);
     }
 
     #[Test]
@@ -90,7 +90,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
 
         $oProgressBar = new ProgressBar(10);
         $oProgressBar->advance(1);
-        $this->assertSame(0, $oProgressBar->getCurrent());
+        $this->assertSame(0, $oProgressBar->iteration);
     }
 
     #[Test]
@@ -114,12 +114,12 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
             );
 
             if ($step === 10) {
-                $this->assertTrue($oProgressBar->isFinished());
+                $this->assertTrue($oProgressBar->isFinished);
             } else {
-                $this->assertFalse($oProgressBar->isFinished());
+                $this->assertFalse($oProgressBar->isFinished);
             }
 
-            $this->assertSame($step, $oProgressBar->getCurrent());
+            $this->assertSame($step, $oProgressBar->iteration);
 
             $this->assertMemoryInOutput();
         }
@@ -150,12 +150,12 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
             );
 
             if ($step === 10) {
-                $this->assertTrue($oProgressBar->isFinished());
+                $this->assertTrue($oProgressBar->isFinished);
             } else {
-                $this->assertFalse($oProgressBar->isFinished());
+                $this->assertFalse($oProgressBar->isFinished);
             }
 
-            $this->assertSame($step, $oProgressBar->getCurrent());
+            $this->assertSame($step, $oProgressBar->iteration);
 
             $this->assertMemoryInOutput();
         }
@@ -180,7 +180,7 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $this->assertMemoryInOutput();
         ob_clean();
 
-        $this->assertTrue($oProgressBar->isFinished());
+        $this->assertTrue($oProgressBar->isFinished);
 
         // Nothing is displayed
         $this->expectOutputString('');
@@ -378,20 +378,25 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     {
         $oProgressBar = new ProgressBar(10);
         $oProgressBar->start();
-        $this->assertSame(10, $oProgressBar->getMax());
+        $this->assertSame(10, $oProgressBar->max);
 
         ob_clean();
         $oProgressBar->finish();
         $this->assertStringStartsWith("\e[1000D\33[2K\t10 / 10 [##########] 100%", ob_get_contents());
         ob_clean();
 
-        $oProgressBar->setMax(5)->start();
-        $this->assertSame(5, $oProgressBar->getMax());
+        $oProgressBar->max = 5;
+        $oProgressBar->start();
+
+        $this->assertSame(5, $oProgressBar->max);
         $this->assertStringStartsWith("\e[1000D\33[2K\t0 / 5 [     ] 0%", ob_get_contents());
 
         ob_clean();
-        $oProgressBar->setMax(3, 2)->start();
-        $this->assertSame(3, $oProgressBar->getMax());
+        $oProgressBar->max = 3;
+        $oProgressBar->numberOfSymbols = 2;
+        $this->assertSame(3, $oProgressBar->max);
+
+        $oProgressBar->start();
         $this->assertStringStartsWith("\e[1000D\33[2K\t0 / 3 [  ] 0%", ob_get_contents());
         ob_clean();
 

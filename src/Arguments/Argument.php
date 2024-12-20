@@ -2,7 +2,6 @@
 
 namespace RayanLevert\Cli\Arguments;
 
-use function is_bool;
 use function gettype;
 use function is_numeric;
 use function implode;
