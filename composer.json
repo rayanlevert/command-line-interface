@@ -3,6 +3,7 @@
     "description": "Dependency-free command line interface (CLI) handling arguments and easily personalizing output in the PHP userland",
     "type": "library",
     "license": "BSD-3-Clause",
+    "version": "3.0.0",
     "authors": [
         {
             "name": "Rayan Levert",
@@ -17,10 +18,13 @@
         "phpstan/phpstan": "^1.9",
         "squizlabs/php_codesniffer": "^3.7"
     },
-    "autoload": {
+        "autoload": {
         "psr-4": {
             "RayanLevert\\Cli\\": "src/"
-        }
+        },
+        "exclude-from-classmap": [
+            "tests/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
