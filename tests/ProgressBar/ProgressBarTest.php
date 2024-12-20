@@ -400,7 +400,6 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         $this->assertStringStartsWith("\e[1000D\33[2K\t0 / 3 [  ] 0%", ob_get_contents());
         ob_clean();
 
-        ob_clean();
         $oProgressBar->finish();
         $this->assertStringStartsWith("\e[1000D\33[2K\t3 / 3 [##] 100%", ob_get_contents());
         ob_clean();

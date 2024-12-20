@@ -14,9 +14,7 @@ use function ceil;
 use function round;
 use function memory_get_usage;
 
-/**
- * Displays progression output through a progress bar
- */
+/** Displays progression output through a progress bar */
 class ProgressBar
 {
     public const string UP     = "\e[%dA";
