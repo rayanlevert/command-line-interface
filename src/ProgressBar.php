@@ -22,9 +22,28 @@ class ProgressBar
     public const string RIGHT  = "\e[%dC";
     public const string LEFT   = "\e[%dD";
 
-    /** Number of required iterations to add a character */
-    public int $numberOfEachIterations {
-        get => intval(ceil($this->max / $this->numberOfSymbols));
+    public int $max {
+        set {
+            if ($value <= 0) {
+                throw new UnexpectedValueException('The max value must be positive');
+            }
+
+            $this->max = $value;
+        }
+        get => $this->max;
+    }
+
+    public int $numberOfSymbols {
+        set {
+            if ($value <= 0) {
+                throw new UnexpectedValueException('The number of symbols must be positive');
+            }
+
+            $this->numberOfSymbols = $value;
+        }
+        get {
+            return $this->max <= $this->numberOfSymbols ? $this->max : $this->numberOfSymbols;
+        }
     }
 
     /** Current iteration */
@@ -84,29 +103,11 @@ class ProgressBar
      *
      * @throws UnexpectedValueException If `$max` or `$numberOfSymbols` are negative values
      */
-    public function __construct(
-        public int $max {
-            set {
-                if ($value <= 0) {
-                    throw new UnexpectedValueException('The max value must be positive');
-                }
-
-                $this->max = $value;
-            }
-        },
-        public int $numberOfSymbols = 50 {
-            set {
-                if ($value <= 0) {
-                    throw new UnexpectedValueException('The number of symbols must be positive');
-                }
-
-                $this->numberOfSymbols = $value;
-            }
-            get {
-                return $this->max <= $this->numberOfSymbols ? $this->max : $this->numberOfSymbols;
-            }
-        }
-    ) {}
+    public function __construct(int $max, int $numberOfSymbols = 50)
+    {
+        $this->max             = $max;
+        $this->numberOfSymbols = $numberOfSymbols;
+    }
 
     /**
      * Starts the progress bar (or restarts it, if not breaks two lines)
@@ -168,7 +169,7 @@ class ProgressBar
         } elseif ($this->max === $this->numberOfSymbols) {
             print str_repeat('#', $this->iteration) . str_repeat(' ', $this->max - $this->iteration);
         } else {
-            $actualDiezes = intval(floor($this->iteration / $this->numberOfEachIterations));
+            $actualDiezes = intval(floor($this->iteration / intval(ceil($this->max / $this->numberOfSymbols))));
 
             print str_repeat('#', $actualDiezes) . str_repeat(' ', ($this->numberOfSymbols - $actualDiezes));
         }

@@ -31,13 +31,14 @@ class Argument
          * @throws \RayanLevert\Cli\Arguments\ParseException If the parsed value is not of casted type
          */
         set {
+            $this->hasBeenHandled = true;
+
             if ($this->noValue) {
-                $this->value = $this->hasBeenHandled = true;
+                $this->value = true;
 
                 return;
             } elseif ($this->castTo === 'string') {
-                $this->value          = $value;
-                $this->hasBeenHandled = true;
+                $this->value = $value;
 
                 return;
             }
@@ -49,6 +50,8 @@ class Argument
                 }
 
                 $this->value = intval($value);
+
+                return;
             } elseif ($this->castTo === 'double') {
                 if (!is_numeric($value)) {
                     throw new ParseException(
@@ -57,9 +60,11 @@ class Argument
                 }
 
                 $this->value = floatval($value);
+
+                return;
             }
 
-            $this->hasBeenHandled = true;
+            $this->value = $value;
         }
     }
 
