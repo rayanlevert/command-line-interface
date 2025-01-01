@@ -4,6 +4,7 @@
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/rayanlevert/command-line-interface)](https://packagist.org/packages/rayanlevert/command-line-interface)
 [![codecov](https://codecov.io/gh/rayanlevert/command-line-interface/branch/main/graph/badge.svg)](https://codecov.io/gh/rayanlevert/command-line-interface)
 
+> Version >= **3.0** supports only **php8.4** with all brand new features, for >= **php8.1**, version **2.0** is still supported.
 ### **RayanLevert\Cli\Arguments\Argument** defines what is an Argument
 An argument has a name and different options and can only be of type `integer`, `double` ou `string` (if the option `noValue` is used, it will be `bool`)
 

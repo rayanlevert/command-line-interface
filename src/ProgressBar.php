@@ -3,6 +3,7 @@
 namespace RayanLevert\Cli;
 
 use RayanLevert\Cli\Style\Foreground;
+use UnexpectedValueException;
 
 use function microtime;
 use function sprintf;
@@ -13,42 +14,48 @@ use function ceil;
 use function round;
 use function memory_get_usage;
 
-/**
- * Displays progression output through a progress bar
- */
+/** Displays progression output through a progress bar */
 class ProgressBar
 {
-    public const UP = "\e[%dA";
+    public const string UP     = "\e[%dA";
+    public const string DOWN   = "\e[%dB";
+    public const string RIGHT  = "\e[%dC";
+    public const string LEFT   = "\e[%dD";
 
-    public const DOWN = "\e[%dB";
+    public int $max {
+        set {
+            if ($value <= 0) {
+                throw new UnexpectedValueException('The max value must be positive');
+            }
 
-    public const RIGHT = "\e[%dC";
+            $this->max = $value;
+        }
+        get => $this->max;
+    }
 
-    public const LEFT = "\e[%dD";
+    public int $numberOfSymbols {
+        set {
+            if ($value <= 0) {
+                throw new UnexpectedValueException('The number of symbols must be positive');
+            }
 
-    /**
-     * Number of required iterations to add a character
-     */
-    protected int $numberOfEachIterations;
+            $this->numberOfSymbols = $value;
+        }
+        get {
+            return $this->max <= $this->numberOfSymbols ? $this->max : $this->numberOfSymbols;
+        }
+    }
 
-    /**
-     * Current iteration
-     */
-    protected int $iteration = 0;
+    /** Current iteration */
+    public protected(set) int $iteration = 0;
 
-    /**
-     * If the progress bar has been started
-     */
+    /** If the progress bar has been started */
     protected bool $hasBeenStartedOnce = false;
 
-    /**
-     * If the progress bar has been finished (exceeded the max value)
-     */
-    protected bool $isFinished = true;
+    /** If the progress bar has been finished (exceeded the max value) */
+    public protected(set) bool $isFinished = true;
 
-    /**
-     * Title of the current progress bar
-     */
+    /** Title of the current progress bar */
     protected string $title = '';
 
     protected float $startTime = 0.0;
@@ -94,11 +101,12 @@ class ProgressBar
      * @param int $max Maximum value of iterations
      * @param int $numberOfSymbols Number of symbols added after each iteration
      *
-     * @throws \UnexpectedValueException Si `$max` ou `$numberOfSymbols` sont négatifs
+     * @throws UnexpectedValueException If `$max` or `$numberOfSymbols` are negative values
      */
-    public function __construct(protected int $max, protected int $numberOfSymbols = 50)
+    public function __construct(int $max, int $numberOfSymbols = 50)
     {
-        $this->setMax($max, $numberOfSymbols);
+        $this->max             = $max;
+        $this->numberOfSymbols = $numberOfSymbols;
     }
 
     /**
@@ -161,7 +169,7 @@ class ProgressBar
         } elseif ($this->max === $this->numberOfSymbols) {
             print str_repeat('#', $this->iteration) . str_repeat(' ', $this->max - $this->iteration);
         } else {
-            $actualDiezes = intval(floor($this->iteration / $this->numberOfEachIterations));
+            $actualDiezes = intval(floor($this->iteration / intval(ceil($this->max / $this->numberOfSymbols))));
 
             print str_repeat('#', $actualDiezes) . str_repeat(' ', ($this->numberOfSymbols - $actualDiezes));
         }
@@ -180,9 +188,7 @@ class ProgressBar
         $this->lastIterationTime = microtime(true);
     }
 
-    /**
-     * Finishes the progress bar (advances to the max value)
-     */
+    /** Finishes the progress bar (advances to the max value) */
     public function finish(): void
     {
         if ($this->isFinished) {
@@ -204,58 +210,7 @@ class ProgressBar
         return $this;
     }
 
-    /**
-     * Max value of iterations to set
-     *
-     * @throws \UnexpectedValueException If `$max` or `$numberOfSymbols` are nagative values
-     */
-    public function setMax(int $max, int $numberOfSymbols = 50): self
-    {
-        if ($max <= 0) {
-            throw new \UnexpectedValueException('The max value must be positive');
-        } elseif ($numberOfSymbols <= 0) {
-            throw new \UnexpectedValueException('The number of symbols must be positive');
-        }
-
-        $this->max              = $max;
-        $this->numberOfSymbols  = $numberOfSymbols;
-
-        if ($max <= $this->numberOfSymbols) {
-            $this->numberOfSymbols = $max;
-        }
-
-        $this->numberOfEachIterations = intval(ceil($this->max / $this->numberOfSymbols));
-
-        return $this;
-    }
-
-    /**
-     * Returns the maximum value of iterations
-     */
-    public function getMax(): int
-    {
-        return $this->max;
-    }
-
-    /**
-     * If the progress bar reached its max value or hasn't started yet
-     */
-    public function isFinished(): bool
-    {
-        return $this->isFinished;
-    }
-
-    /**
-     * Returns the current iteration
-     */
-    public function getCurrent(): int
-    {
-        return $this->iteration;
-    }
-
-    /**
-     * Displays the total time of the progression and PHP memory on bottom of the progress bar
-     */
+    /** Displays the total time of the progression and PHP memory on bottom of the progress bar */
     private function printTime(): void
     {
         // Time color by its total time

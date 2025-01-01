@@ -2,7 +2,6 @@
 
 namespace RayanLevert\Cli\Arguments;
 
-use function is_bool;
 use function gettype;
 use function is_numeric;
 use function implode;
@@ -12,23 +11,74 @@ use function implode;
  */
 class Argument
 {
-    private string $description = '';
+    public private(set) string $description = '';
 
-    private string|int|float|null $defaultValue = null;
+    public private(set) string|int|float|null $defaultValue = null;
 
-    private bool $isRequired = false;
+    /** Returns the value of the argument after parsed, if not returns the default value */
+    public string|int|float|bool|null $value = null {
+        get {
+            if (!$this->hasBeenHandled) {
+                return $this->noValue ? false : $this->defaultValue;
+            }
 
-    private bool $noValue = false;
+            return $this->value;
+        }
 
-    private string $castTo = 'string';
+        /**
+         * Parses the argument setting its value
+         *
+         * @throws \RayanLevert\Cli\Arguments\ParseException If the parsed value is not of casted type
+         */
+        set {
+            $this->hasBeenHandled = true;
 
-    private string $prefix = '';
+            if ($this->noValue) {
+                $this->value = true;
 
-    private string $longPrefix = '';
+                return;
+            } elseif ($this->castTo === 'string') {
+                $this->value = $value;
 
-    private string|int|float|bool $valueParsed = '';
+                return;
+            }
 
-    private bool $hasBeenHandled = false;
+            // Throws an exception if the value is not of casted type
+            if ($this->castTo === 'integer') {
+                if (!is_numeric($value)) {
+                    throw new ParseException("Argument {$this->name} is not a numeric string (must cast to integer)");
+                }
+
+                $this->value = intval($value);
+
+                return;
+            } elseif ($this->castTo === 'double') {
+                if (!is_numeric($value)) {
+                    throw new ParseException(
+                        "Argument {$this->name} is not a floating point number (must cast to float)"
+                    );
+                }
+
+                $this->value = floatval($value);
+
+                return;
+            }
+
+            $this->value = $value;
+        }
+    }
+
+    public private(set) bool $isRequired = false;
+
+    public private(set) bool $noValue = false;
+
+    public private(set) string $castTo = 'string';
+
+    public private(set) string $prefix = '';
+
+    public private(set) string $longPrefix = '';
+
+    public private(set) bool $hasBeenHandled = false;
 
     /**
      * Creates an argument with a name and different options
@@ -37,7 +87,7 @@ class Argument
      *
      * @throws \RayanLevert\Cli\Arguments\Exception If options are incompatible or incorrect
      */
-    public function __construct(protected readonly string $name, array $options = [])
+    public function __construct(public protected(set) readonly string $name, array $options = [])
     {
         foreach ($options as $name => $value) {
             if (!($option = Option::tryFrom($name)) || !$option->verifiesType($value)) {
@@ -72,57 +122,6 @@ class Argument
     }
 
     /**
-     * Returns the value of the argument after parsed, if not returns the default value
-     */
-    public function getValue(): string|int|float|bool|null
-    {
-        if (!$this->hasBeenHandled) {
-            return $this->noValue ? false : $this->defaultValue;
-        }
-
-        return $this->valueParsed;
-    }
-
-    /**
-     * Parses the argument setting its value
-     *
-     * @param bool|string $value If string -> tries to cast, if bool -> must have its noValue option
-     *
-     * @throws \RayanLevert\Cli\Arguments\ParseException If the parsed value is not of casted type
-     */
-    public function setValueParsed(bool|string $value): void
-    {
-        if (is_bool($value) && $this->noValue) {
-            $this->valueParsed    = $value;
-            $this->hasBeenHandled = true;
-
-            return;
-        } elseif ($this->castTo === 'string') {
-            $this->valueParsed    = $value;
-            $this->hasBeenHandled = true;
-
-            return;
-        }
-
-        // Throws an exception if the value is not of casted type
-        if ($this->castTo === 'integer') {
-            if (!is_numeric($value)) {
-                throw new ParseException("Argument {$this->name} is not a numeric string (must cast to integer)");
-            }
-
-            $this->valueParsed = intval($value);
-        } elseif ($this->castTo === 'double') {
-            if (!is_numeric($value)) {
-                throw new ParseException("Argument {$this->name} is not a floating point number (must cast to float)");
-            }
-
-            $this->valueParsed = floatval($value);
-        }
-
-        $this->hasBeenHandled = true;
-    }
-
-    /**
      * Returns necessary informations of thr argument to display
      */
     public function getInfos(): string
@@ -152,50 +151,5 @@ class Argument
         }
 
         return $this->name . $toPrint;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getLongPrefix(): string
-    {
-        return $this->longPrefix;
-    }
-
-    public function getPrefix(): string
-    {
-        return $this->prefix;
-    }
-
-    public function hasNoValue(): bool
-    {
-        return $this->noValue;
-    }
-
-    public function getCastTo(): string
-    {
-        return $this->castTo;
-    }
-
-    public function isRequired(): bool
-    {
-        return $this->isRequired;
-    }
-
-    public function getDefaultValue(): string|int|float|null
-    {
-        return $this->defaultValue;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function hasBeenHandled(): bool
-    {
-        return $this->hasBeenHandled;
     }
 }

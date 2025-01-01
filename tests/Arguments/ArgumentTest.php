@@ -2,16 +2,18 @@
 
 namespace RayanLevert\Cli\Tests\Arguments;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use RayanLevert\Cli\Arguments\Argument;
 use RayanLevert\Cli\Arguments\Exception;
 use RayanLevert\Cli\Arguments\ParseException;
 
+#[CoversClass(Argument::class)]
 class ArgumentTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @test __construct() and exception throws of incompatible options
-     */
-    public function testConstructIncompatiblesOptions(): void
+    /** __construct() and exception throws of incompatible options */
+    #[Test]
+    public function constructIncompatiblesOptions(): void
     {
         try {
             new Argument('testArgument', [
@@ -62,56 +64,55 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @test __construct() each option with getters
-     */
-    public function testConstructGetters(): void
+    /** __construct() each option with getters */
+    #[Test]
+    public function constructGetters(): void
     {
         // with no option
         $oArgument = new Argument('test');
 
-        $this->assertSame('test', $oArgument->getName());
-        $this->assertSame('', $oArgument->getDescription());
-        $this->assertNull($oArgument->getDefaultValue());
-        $this->assertFalse($oArgument->isRequired());
-        $this->assertFalse($oArgument->hasNoValue());
-        $this->assertSame('string', $oArgument->getCastTo());
-        $this->assertSame('', $oArgument->getPrefix());
-        $this->assertSame('', $oArgument->getLongPrefix());
-        $this->assertFalse($oArgument->hasBeenHandled());
+        $this->assertSame('test', $oArgument->name);
+        $this->assertSame('', $oArgument->description);
+        $this->assertNull($oArgument->defaultValue);
+        $this->assertFalse($oArgument->isRequired);
+        $this->assertFalse($oArgument->noValue);
+        $this->assertSame('string', $oArgument->castTo);
+        $this->assertSame('', $oArgument->prefix);
+        $this->assertSame('', $oArgument->longPrefix);
+        $this->assertFalse($oArgument->hasBeenHandled);
 
         $oArgument = new Argument('test', ['description' => 'testDescription']);
-        $this->assertSame('testDescription', $oArgument->getDescription());
+        $this->assertSame('testDescription', $oArgument->description);
 
         $oArgument = new Argument('test', ['required' => true]);
-        $this->assertTrue($oArgument->isRequired());
+        $this->assertTrue($oArgument->isRequired);
 
         $oArgument = new Argument('test', ['noValue' => true]);
-        $this->assertTrue($oArgument->hasNoValue());
+        $this->assertTrue($oArgument->noValue);
 
         $oArgument = new Argument('test', ['prefix' => 't']);
-        $this->assertSame('t', $oArgument->getPrefix());
+        $this->assertSame('t', $oArgument->prefix);
 
         $oArgument = new Argument('test', ['longPrefix' => 'test']);
-        $this->assertSame('test', $oArgument->getLongPrefix());
+        $this->assertSame('test', $oArgument->longPrefix);
 
         // castTo to integer
         $oArgument = new Argument('test', ['castTo' => 'int']);
-        $this->assertSame('integer', $oArgument->getCastTo());
+        $this->assertSame('integer', $oArgument->castTo);
 
         $oArgument = new Argument('test', ['castTo' => 'integer']);
-        $this->assertSame('integer', $oArgument->getCastTo());
+        $this->assertSame('integer', $oArgument->castTo);
 
         // castTo to double
         $oArgument = new Argument('test', ['castTo' => 'float']);
-        $this->assertSame('double', $oArgument->getCastTo());
+        $this->assertSame('double', $oArgument->castTo);
 
         $oArgument = new Argument('test', ['castTo' => 'double']);
-        $this->assertSame('double', $oArgument->getCastTo());
+        $this->assertSame('double', $oArgument->castTo);
 
         // castTo to string
         $oArgument = new Argument('test', ['castTo' => 'string']);
-        $this->assertSame('string', $oArgument->getCastTo());
+        $this->assertSame('string', $oArgument->castTo);
 
         // castTo to boolean => exception throw
         try {
@@ -133,35 +134,34 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @test option defaultValue
-     */
-    public function testDefaultValue(): void
+    /** option defaultValue */
+    #[Test]
+    public function defaultValue(): void
     {
         // integer
         $oArgument = new Argument('test', ['castTo' => 'int', 'defaultValue' => 10]);
-        $this->assertIsInt($oArgument->getDefaultValue());
-        $this->assertSame(10, $oArgument->getDefaultValue());
+        $this->assertIsInt($oArgument->defaultValue);
+        $this->assertSame(10, $oArgument->defaultValue);
 
         // float
         $oArgument = new Argument('test', ['castTo' => 'float', 'defaultValue' => 5.5]);
-        $this->assertIsFloat($oArgument->getDefaultValue());
-        $this->assertSame(5.5, $oArgument->getDefaultValue());
+        $this->assertIsFloat($oArgument->defaultValue);
+        $this->assertSame(5.5, $oArgument->defaultValue);
 
         // string
         $oArgument = new Argument('test', ['defaultValue' => 'defaultValue']);
-        $this->assertIsString($oArgument->getDefaultValue());
-        $this->assertSame('defaultValue', $oArgument->getDefaultValue());
+        $this->assertIsString($oArgument->defaultValue);
+        $this->assertSame('defaultValue', $oArgument->defaultValue);
 
         // no value set = NULL
         $oArgument = new Argument('test');
-        $this->assertNull($oArgument->getDefaultValue());
+        $this->assertNull($oArgument->defaultValue);
 
         // we recover every incorrect PHP type = does not assign the value
         foreach ([true, false, [], new \stdClass(), fopen(__FILE__, 'r')] as $incorrectValue) {
             $oArgument = new Argument('test', ['defaultValue' => $incorrectValue]);
 
-            $this->assertNull($oArgument->getDefaultValue());
+            $this->assertNull($oArgument->defaultValue);
         }
 
         // castTo string and defaultValue string OK
@@ -234,47 +234,44 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @test __construct with an incorrect castTo
-     */
-    public function testCastToNotCorrectType(): void
+    /** __construct with an incorrect castTo */
+    #[Test]
+    public function castToNotCorrectType(): void
     {
         $this->expectExceptionObject(new Exception('incorrect-type is not a native PHP type'));
 
         new Argument('test', ['castTo' => 'incorrect-type']);
     }
 
-    /**
-     * @test ->setValueParsed() with a string argument
-     */
-    public function testParseArgumentString(): void
+    /** ->value with a string argument */
+    #[Test]
+    public function parseArgumentString(): void
     {
         // parses a string argument without castTo => string
         $oArgument = new Argument('test');
-        $oArgument->setValueParsed('value');
+        $oArgument->value = 'value';
 
-        $this->assertSame('value', $oArgument->getValue());
-        $this->assertTrue($oArgument->hasBeenHandled());
+        $this->assertSame('value', $oArgument->value);
+        $this->assertTrue($oArgument->hasBeenHandled);
     }
 
-    /**
-     * @test ->setValueParsed() with an integer argument
-     */
-    public function testParseArgumentInteger(): void
+    /** ->setValueParsed() with an integer argument */
+    #[Test]
+    public function parseArgumentInteger(): void
     {
         // parses a numeric string argument with castTo integer => value int
         $oArgument = new Argument('test', ['castTo' => 'integer']);
-        $oArgument->setValueParsed('12');
+        $oArgument->value = '12';
 
-        $this->assertIsInt($oArgument->getValue());
-        $this->assertSame(12, $oArgument->getValue());
-        $this->assertTrue($oArgument->hasBeenHandled());
+        $this->assertIsInt($oArgument->value);
+        $this->assertSame(12, $oArgument->value);
+        $this->assertTrue($oArgument->hasBeenHandled);
 
         // parses a non numeric string argument with castTo integer => throws an exception
         $oArgument = new Argument('test', ['castTo' => 'integer']);
 
         try {
-            $oArgument->setValueParsed('stringwithnonumber');
+            $oArgument->value = 'stringwithnonumber';
 
             $this->fail('expected exception');
         } catch (\Exception $e) {
@@ -283,32 +280,31 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @test ->setValueParsed() with a float argument
-     */
-    public function testParseArgumentFloat(): void
+    /** ->setValueParsed() with a float argument */
+    #[Test]
+    public function parseArgumentFloat(): void
     {
         // parses a integer string with castTo float => value float
         $oArgument = new Argument('test', ['castTo' => 'float']);
-        $oArgument->setValueParsed('12');
+        $oArgument->value = '12';
 
-        $this->assertIsFloat($oArgument->getValue());
-        $this->assertSame(12.0, $oArgument->getValue());
-        $this->assertTrue($oArgument->hasBeenHandled());
+        $this->assertIsFloat($oArgument->value);
+        $this->assertSame(12.0, $oArgument->value);
+        $this->assertTrue($oArgument->hasBeenHandled);
 
         // parses a numeric string argument with castTo float => value float
         $oArgument = new Argument('test', ['castTo' => 'float']);
-        $oArgument->setValueParsed('12.8');
+        $oArgument->value = '12.8';
 
-        $this->assertIsFloat($oArgument->getValue());
-        $this->assertSame(12.8, $oArgument->getValue());
-        $this->assertTrue($oArgument->hasBeenHandled());
+        $this->assertIsFloat($oArgument->value);
+        $this->assertSame(12.8, $oArgument->value);
+        $this->assertTrue($oArgument->hasBeenHandled);
 
         // parses a numeric string argument with castTo float avec virgule => throws exception
         $oArgument = new Argument('test', ['castTo' => 'float']);
 
         try {
-            $oArgument->setValueParsed('12,8');
+            $oArgument->value = '12,8';
 
             $this->fail('expected exception');
         } catch (\Exception $e) {
@@ -324,7 +320,7 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         $oArgument = new Argument('test', ['castTo' => 'float']);
 
         try {
-            $oArgument->setValueParsed('stringwithnonumber');
+            $oArgument->value = 'stringwithnonumber';
 
             $this->fail('expected exception');
         } catch (\Exception $e) {
@@ -337,28 +333,25 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @test ->getInfos() with no option
-     */
-    public function testGetInfosOptionsEmpty(): void
+    /** ->getInfos() with no option */
+    #[Test]
+    public function getInfosOptionsEmpty(): void
     {
-        $this->assertSame('test (type: string)', (new Argument('test'))->getInfos());
+        $this->assertSame('test (type: string)', new Argument('test')->getInfos());
     }
 
-    /**
-     * @test ->getInfos() with required arguments
-     */
-    public function testGetInfosRequired(): void
+    /** ->getInfos() with required arguments */
+    #[Test]
+    public function getInfosRequired(): void
     {
-        $this->assertSame('test (type: string)', (new Argument('test'))->getInfos());
+        $this->assertSame('test (type: string)', new Argument('test')->getInfos());
 
-        $this->assertSame('test (type: double)', (new Argument('test', ['castTo' => 'float']))->getInfos());
+        $this->assertSame('test (type: double)', new Argument('test', ['castTo' => 'float'])->getInfos());
     }
 
-    /**
-     * @test ->getInfos() with only prefixes
-     */
-    public function testGetInfosWithPrefixes(): void
+    /** ->getInfos() with only prefixes */
+    #[Test]
+    public function getInfosWithPrefixes(): void
     {
         // Only shortPrefix
         $oArgument = new Argument('test', ['prefix' => 't']);
@@ -385,40 +378,36 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('test -t, --longtest', $oArgument->getInfos());
     }
 
-    /**
-     * @test ->getInfos() with a description
-     */
-    public function testGetInfosDescription(): void
+    /** ->getInfos() with a description */
+    #[Test]
+    public function getInfosDescription(): void
     {
         $oArgument = new Argument('test', ['description' => 'Test description']);
 
         $this->assertSame("test (type: string)\n\t  Test description", $oArgument->getInfos());
     }
 
-    /**
-     * @test ->getInfos() with a default value
-     */
-    public function testGetInfosDefaultValue(): void
+    /** ->getInfos() with a default value */
+    #[Test]
+    public function getInfosDefaultValue(): void
     {
         $oArgument = new Argument('test', ['castTo' => 'float', 'defaultValue' => 56.56]);
 
         $this->assertSame('test (type: double) (default: 56.56)', $oArgument->getInfos());
     }
 
-    /**
-     * @test ->getInfos() with a cast type
-     */
-    public function testGetInfosCastTo(): void
+    /** ->getInfos() with a cast type */
+    #[Test]
+    public function getInfosCastTo(): void
     {
         $oArgument = new Argument('test', ['castTo' => 'float']);
 
         $this->assertSame('test (type: double)', $oArgument->getInfos());
     }
 
-    /**
-     * @test ->getInfos() with every option mixed
-     */
-    public function testGetInfosAllOptions(): void
+    /** ->getInfos() with every option mixed */
+    #[Test]
+    public function getInfosAllOptions(): void
     {
         // With prefix noValue
         $oArgument = new Argument('test', [
