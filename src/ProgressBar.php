@@ -145,7 +145,10 @@ class ProgressBar
         }
 
         if ($this->title) {
-            print sprintf(self::UP . self::LEFT . "\33[2K" . $this->title . self::DOWN, 1, 1000, 1);
+            // Escape percentage signs in the title to prevent sprintf errors
+            $escapedTitle = str_replace('%', '%%', $this->title);
+
+            print sprintf(self::UP . self::LEFT . "\33[2K" . $escapedTitle . self::DOWN, 1, 1000, 1);
         }
 
         // Resets the line placing the cursor leftmost + the current iteration / max
