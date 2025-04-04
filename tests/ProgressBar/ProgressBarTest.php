@@ -94,9 +94,48 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
         ob_clean();
     }
 
-    /**
-     * @test ->advance() without calling ->start() -> does not do anything
-     */
+    public function testTitleWithSinglePercentageSign(): void
+    {
+        // Test with a single percentage sign
+        (new ProgressBar(5))->setTitle('Progress: 50%', Foreground::GREEN)->start();
+
+        $this->assertStringStartsWith(
+            "\n\n\e[1A\e[1000D\33[2K" . Style::stylize("\tProgress: 50%", fg: Foreground::GREEN)
+                . "\e[1B\e[1000D\33[2K\t0 / 5 [     ] 0%",
+            ob_get_contents()
+        );
+
+        ob_clean();
+    }
+
+    public function testTitleWithDoublePercentageSign(): void
+    {
+        // Test with a double percentage sign
+        (new ProgressBar(5))->setTitle('Progress: 100%%')->start();
+
+        $this->assertStringStartsWith(
+            "\n\n\e[1A\e[1000D\33[2K" . Style::stylize("\tProgress: 100%%", fg: Foreground::BLUE)
+                . "\e[1B\e[1000D\33[2K\t0 / 5 [     ] 0%",
+            ob_get_contents()
+        );
+
+        ob_clean();
+    }
+
+    public function testTitleWithMultiplePercentageSigns(): void
+    {
+        // Test with multiple percentage signs
+        (new ProgressBar(5))->setTitle('Progress: 25% and 75%')->start();
+
+        $this->assertStringStartsWith(
+            "\n\n\e[1A\e[1000D\33[2K" . Style::stylize("\tProgress: 25% and 75%", fg: Foreground::BLUE)
+                . "\e[1B\e[1000D\33[2K\t0 / 5 [     ] 0%",
+            ob_get_contents()
+        );
+
+        ob_clean();
+    }
+
     public function testAdvanceWithoutStarting(): void
     {
         $this->expectOutputString('');
