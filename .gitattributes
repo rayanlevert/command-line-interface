@@ -3,6 +3,6 @@
 /docker-compose.yml export-ignore
 /phpcs.xml export-ignore
 /phpunit.xml export-ignore
-/.github
-/docker
-/tests
+/.github export-ignore
+/docker export-ignore
+/tests export-ignore
