@@ -6,4 +6,4 @@ services:
     stdin_open: true
     working_dir: /app
     volumes:
-      - .:/app
+      - .:/app:z
