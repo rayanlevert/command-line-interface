@@ -30,33 +30,6 @@ jobs:
           - name: Ensure that dependencies can be installed
             run: composer install --no-ansi --dry-run
 
-    coding-guidelines:
-        name: Coding Guidelines
-
-        needs:
-            - dependency-validation
-
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-
-            - name: Install PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                php-version: 8.4
-                extensions: mbstring
-                coverage: none
-                tools: none
-
-            - name: Install dependencies with Composer
-              run: composer install --no-ansi
-
-              # phpcs is not php8.4 compatible for now.
-              # - name: Run PHP-CS-Fixer
-              # run: vendor/bin/phpcs src
-
     static-analysis:
         name: Static analysis
 
