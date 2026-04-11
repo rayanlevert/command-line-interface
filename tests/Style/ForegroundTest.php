@@ -2,91 +2,129 @@
 
 namespace RayanLevert\Cli\Tests\Style;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use RayanLevert\Cli\Style\Foreground;
 
+#[CoversClass(Foreground::class)]
 class ForegroundTest extends \PHPUnit\Framework\TestCase
 {
-    public function testBlack(): void
+    #[Test]
+    #[TestDox('fgblack returns Foreground::BLACK')]
+    public function black(): void
     {
         $this->assertSame(Foreground::BLACK, Foreground::tryFromTag('fgblack'));
     }
 
-    public function testRed(): void
+    #[Test]
+    #[TestDox('fgred returns Foreground::RED')]
+    public function red(): void
     {
         $this->assertSame(Foreground::RED, Foreground::tryFromTag('fgred'));
     }
 
-    public function testGreen(): void
+    #[Test]
+    #[TestDox('fggreen returns Foreground::GREEN')]
+    public function green(): void
     {
         $this->assertSame(Foreground::GREEN, Foreground::tryFromTag('fggreen'));
     }
 
-    public function testYellow(): void
+    #[Test]
+    #[TestDox('fgyellow returns Foreground::YELLOW')]
+    public function yellow(): void
     {
         $this->assertSame(Foreground::YELLOW, Foreground::tryFromTag('fgyellow'));
     }
 
-    public function testBlue(): void
+    #[Test]
+    #[TestDox('fgblue returns Foreground::BLUE')]
+    public function blue(): void
     {
         $this->assertSame(Foreground::BLUE, Foreground::tryFromTag('fgblue'));
     }
 
-    public function testCyan(): void
+    #[Test]
+    #[TestDox('fgcyan returns Foreground::CYAN')]
+    public function cyan(): void
     {
         $this->assertSame(Foreground::CYAN, Foreground::tryFromTag('fgcyan'));
     }
 
-    public function testDarkgray(): void
+    #[Test]
+    #[TestDox('fgdarkgray returns Foreground::DARK_GRAY')]
+    public function darkgray(): void
     {
         $this->assertSame(Foreground::DARK_GRAY, Foreground::tryFromTag('fgdarkgray'));
     }
 
-    public function testLightred(): void
+    #[Test]
+    #[TestDox('fglightred returns Foreground::LIGHT_RED')]
+    public function lightred(): void
     {
         $this->assertSame(Foreground::LIGHT_RED, Foreground::tryFromTag('fglightred'));
     }
 
-    public function testLightgreen(): void
+    #[Test]
+    #[TestDox('fglightgreen returns Foreground::LIGHT_GREEN')]
+    public function lightgreen(): void
     {
         $this->assertSame(Foreground::LIGHT_GREEN, Foreground::tryFromTag('fglightgreen'));
     }
 
-    public function testBrown(): void
+    #[Test]
+    #[TestDox('fgbrown returns Foreground::BROWN')]
+    public function brown(): void
     {
         $this->assertSame(Foreground::BROWN, Foreground::tryFromTag('fgbrown'));
     }
 
-    public function testLightblue(): void
+    #[Test]
+    #[TestDox('fglightblue returns Foreground::LIGHT_BLUE')]
+    public function lightblue(): void
     {
         $this->assertSame(Foreground::LIGHT_BLUE, Foreground::tryFromTag('fglightblue'));
     }
 
-    public function testPurple(): void
+    #[Test]
+    #[TestDox('fgpurple returns Foreground::PURPLE')]
+    public function purple(): void
     {
         $this->assertSame(Foreground::PURPLE, Foreground::tryFromTag('fgpurple'));
     }
 
-    public function testLightpurple(): void
+    #[Test]
+    #[TestDox('fglightpurple returns Foreground::LIGHT_PURPLE')]
+    public function lightpurple(): void
     {
         $this->assertSame(Foreground::LIGHT_PURPLE, Foreground::tryFromTag('fglightpurple'));
     }
 
-    public function testLightcyan(): void
+    #[Test]
+    #[TestDox('fglightcyan returns Foreground::LIGHT_CYAN')]
+    public function lightcyan(): void
     {
         $this->assertSame(Foreground::LIGHT_CYAN, Foreground::tryFromTag('fglightcyan'));
     }
 
-    public function testLightgray(): void
+    #[Test]
+    #[TestDox('fglightgray returns Foreground::LIGHT_GRAY')]
+    public function lightgray(): void
     {
         $this->assertSame(Foreground::LIGHT_GRAY, Foreground::tryFromTag('fglightgray'));
     }
 
-    public function testWhite(): void
+    #[Test]
+    #[TestDox('fgwhite returns Foreground::WHITE')]
+    public function white(): void
     {
         $this->assertSame(Foreground::WHITE, Foreground::tryFromTag('fgwhite'));
     }
 
-    public function testNull(): void
+    #[Test]
+    #[TestDox('Returns null for invalid tags')]
+    public function null(): void
     {
         $this->assertNull(Foreground::tryFromTag('test'));
         $this->assertNull(Foreground::tryFromTag('bgred'));

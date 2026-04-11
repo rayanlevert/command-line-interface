@@ -2,54 +2,76 @@
 
 namespace RayanLevert\Cli\Tests\Style;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use RayanLevert\Cli\Style\Attribute;
 
+#[CoversClass(Attribute::class)]
 class AttributeTest extends \PHPUnit\Framework\TestCase
 {
-    public function testBold(): void
+    #[Test]
+    #[TestDox('Attribute::tryFromTag() returns Attribute::BOLD for "b" and "bold"')]
+    public function bold(): void
     {
         $this->assertSame(Attribute::BOLD, Attribute::tryFromTag('b'));
         $this->assertSame(Attribute::BOLD, Attribute::tryFromTag('bold'));
     }
 
-    public function testItalic(): void
+    #[Test]
+    #[TestDox('Attribute::tryFromTag() returns Attribute::ITALIC for "i" and "italic"')]
+    public function italic(): void
     {
         $this->assertSame(Attribute::ITALIC, Attribute::tryFromTag('i'));
         $this->assertSame(Attribute::ITALIC, Attribute::tryFromTag('italic'));
     }
 
-    public function testUnderline(): void
+    #[Test]
+    #[TestDox('Attribute::tryFromTag() returns Attribute::UNDERLINE for "u" and "underline"')]
+    public function underline(): void
     {
         $this->assertSame(Attribute::UNDERLINE, Attribute::tryFromTag('u'));
         $this->assertSame(Attribute::UNDERLINE, Attribute::tryFromTag('underline'));
     }
 
-    public function testBlink(): void
+    #[Test]
+    #[TestDox('Attribute::tryFromTag() returns Attribute::BLINK for "blink"')]
+    public function blink(): void
     {
         $this->assertSame(Attribute::BLINK, Attribute::tryFromTag('blink'));
     }
 
-    public function testOutline(): void
+    #[Test]
+    #[TestDox('Attribute::tryFromTag() returns Attribute::OUTLINE for "outline"')]
+    public function outline(): void
     {
         $this->assertSame(Attribute::OUTLINE, Attribute::tryFromTag('outline'));
     }
 
-    public function testReverse(): void
+    #[Test]
+    #[TestDox('Attribute::tryFromTag() returns Attribute::REVERSE for "reverse"')]
+    public function reverse(): void
     {
         $this->assertSame(Attribute::REVERSE, Attribute::tryFromTag('reverse'));
     }
 
-    public function testNondisp(): void
+    #[Test]
+    #[TestDox('Attribute::tryFromTag() returns Attribute::NONDISP for "nondisp"')]
+    public function nondisp(): void
     {
         $this->assertSame(Attribute::NONDISP, Attribute::tryFromTag('nondisp'));
     }
 
-    public function testStrike(): void
+    #[Test]
+    #[TestDox('Attribute::tryFromTag() returns Attribute::STRIKE for "strike"')]
+    public function strike(): void
     {
         $this->assertSame(Attribute::STRIKE, Attribute::tryFromTag('strike'));
     }
 
-    public function testNull(): void
+    #[Test]
+    #[TestDox('Attribute::tryFromTag() returns null for unknown tags')]
+    public function null(): void
     {
         $this->assertNull(Attribute::tryFromTag('test'));
         $this->assertNull(Attribute::tryFromTag('red'));

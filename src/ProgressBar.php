@@ -255,6 +255,12 @@ class ProgressBar
         return $this->iteration;
     }
 
+    /** Returns the memory usage in bytes (`memory_get_usage(true)`) */
+    protected function getMemoryUsage(): int
+    {
+        return memory_get_usage(true);
+    }
+
     /**
      * Displays the total time of the progression and PHP memory on bottom of the progress bar
      */
@@ -268,7 +274,7 @@ class ProgressBar
         });
 
         // Allocated memory by its usage
-        $memoryUsage = memory_get_usage(true);
+        $memoryUsage = $this->getMemoryUsage();
         $memory      = Style::stylize(self::getFormattedMemory($memoryUsage), fg: match (true) {
             $memoryUsage <= 268435456  => Foreground::LIGHT_GREEN, // 256MB
             $memoryUsage <= 536870912  => Foreground::YELLOW, // 512MB
