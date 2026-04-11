@@ -3,8 +3,8 @@
 namespace RayanLevert\Cli\Arguments;
 
 use function gettype;
-use function is_numeric;
 use function implode;
+use function is_numeric;
 
 /**
  * An argument from a console application viewpoint
@@ -13,10 +13,10 @@ class Argument
 {
     public private(set) string $description = '';
 
-    public private(set) string|int|float|null $defaultValue = null;
+    public private(set) null|float|int|string $defaultValue = null;
 
     /** Returns the value of the argument after parsed, if not returns the default value */
-    public string|int|float|bool|null $value = null {
+    public null|bool|float|int|string $value = null {
         get {
             if (!$this->hasBeenHandled) {
                 return $this->noValue ? false : $this->defaultValue;
@@ -49,7 +49,7 @@ class Argument
                     throw new ParseException("Argument {$this->name} is not a numeric string (must cast to integer)");
                 }
 
-                $this->value = intval($value);
+                $this->value = (int) $value;
 
                 return;
             } elseif ($this->castTo === 'double') {
@@ -59,7 +59,7 @@ class Argument
                     );
                 }
 
-                $this->value = floatval($value);
+                $this->value = (float) $value;
 
                 return;
             }
@@ -83,7 +83,7 @@ class Argument
     /**
      * Creates an argument with a name and different options
      *
-     * @param array<string, string|bool|int|float> $options See Arguments\Option cases for more informations
+     * @param array<string, bool|float|int|string> $options See Arguments\Option cases for more informations
      *
      * @throws \RayanLevert\Cli\Arguments\Exception If options are incompatible or incorrect
      */
