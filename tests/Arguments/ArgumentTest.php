@@ -449,4 +449,26 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
             $oArgument->getInfos()
         );
     }
+
+    #[Test]
+    public function getValueNotParsed(): void
+    {
+        $oArgument = new Argument('test', ['castTo' => 'int', 'defaultValue' => 12]);
+
+        $this->assertSame(12, $oArgument->value);
+
+        $oArgument = new Argument('test', ['noValue' => true]);
+
+        $this->assertFalse($oArgument->value);
+    }
+
+    #[Test]
+    public function setValueParsedBoolNoValue(): void
+    {
+        $oArgument = new Argument('test', ['noValue' => true]);
+        $oArgument->value = true;
+
+        $this->assertTrue($oArgument->value);
+        $this->assertTrue($oArgument->hasBeenHandled);
+    }
 }
