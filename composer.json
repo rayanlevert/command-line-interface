@@ -26,5 +26,10 @@
         "psr-4": {
             "RayanLevert\\Cli\\Tests\\": "tests/"
         }
+    },
+    "config": {
+        "platform": {
+            "php": "8.1.34"
+        }
     }
 }

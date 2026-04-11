@@ -21,4 +21,4 @@ VOLUME ["/app"]
 # Composer
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 
-CMD ["php-fpm"]
+CMD ["php"]
