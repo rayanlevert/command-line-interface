@@ -56,6 +56,9 @@ jobs:
             - name: PHPStan analysis
               run: vendor/bin/phpstan analyze src --level=5
 
+            - name: PHP-CS-Fixer analysis
+              run: vendor/bin/php-cs-fixer check --show-progress=dots --verbose
+
     unit-tests:
         name: Unit tests
 
