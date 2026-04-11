@@ -3,10 +3,10 @@
 namespace RayanLevert\Cli\Tests\Style;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use RayanLevert\Cli\Style;
 use RayanLevert\Cli\Style\Attribute;
 use RayanLevert\Cli\Style\Background;
 use RayanLevert\Cli\Style\Foreground;
-use RayanLevert\Cli\Style;
 
 use const E_USER_NOTICE;
 

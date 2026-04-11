@@ -3,6 +3,7 @@
 namespace RayanLevert\Cli\Tests\Arguments;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use RayanLevert\Cli\Arguments\Argument;
 use RayanLevert\Cli\Arguments\Exception;
 use RayanLevert\Cli\Arguments\ParseException;
@@ -244,6 +245,34 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionObject(new Exception('incorrect-type is not a native PHP type'));
 
         new Argument('test', ['castTo' => 'incorrect-type']);
+    }
+
+    #[Test]
+    public function getValueNotParsed(): void
+    {
+        $oArgument = new Argument('test', ['castTo' => 'int', 'defaultValue' => 12]);
+
+        $this->assertSame(12, $oArgument->getValue());
+
+        $oArgument = new Argument('test', ['noValue' => true]);
+
+        $this->assertFalse($oArgument->getValue());
+    }
+
+    #[Test]
+    public function setValueParsedBoolNoValue(): void
+    {
+        $oArgument = new Argument('test', ['noValue' => true]);
+        $oArgument->setValueParsed(true);
+
+        $this->assertTrue($oArgument->getValue());
+        $this->assertTrue($oArgument->hasBeenHandled());
+
+        $oArgument = new Argument('test', ['noValue' => true]);
+        $oArgument->setValueParsed(false);
+
+        $this->assertFalse($oArgument->getValue());
+        $this->assertTrue($oArgument->hasBeenHandled());
     }
 
     /**
