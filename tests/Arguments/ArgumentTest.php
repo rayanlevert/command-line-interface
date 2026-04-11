@@ -4,6 +4,7 @@ namespace RayanLevert\Cli\Tests\Arguments;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use RayanLevert\Cli\Arguments\Argument;
 use RayanLevert\Cli\Arguments\Exception;
 use RayanLevert\Cli\Arguments\ParseException;
@@ -11,10 +12,9 @@ use RayanLevert\Cli\Arguments\ParseException;
 #[CoversClass(Argument::class)]
 class ArgumentTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @test __construct() and exception throws of incompatible options
-     */
-    public function testConstructIncompatiblesOptions(): void
+    #[Test]
+    #[TestDox('__construct() and exception throws of incompatible options')]
+    public function constructIncompatiblesOptions(): void
     {
         try {
             new Argument('testArgument', [
@@ -65,10 +65,9 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @test __construct() each option with getters
-     */
-    public function testConstructGetters(): void
+    #[Test]
+    #[TestDox('__construct() each option with getters')]
+    public function constructGetters(): void
     {
         // with no option
         $oArgument = new Argument('test');
@@ -136,10 +135,9 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @test option defaultValue
-     */
-    public function testDefaultValue(): void
+    #[Test]
+    #[TestDox('option defaultValue')]
+    public function defaultValue(): void
     {
         // integer
         $oArgument = new Argument('test', ['castTo' => 'int', 'defaultValue' => 10]);
@@ -237,10 +235,9 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @test __construct with an incorrect castTo
-     */
-    public function testCastToNotCorrectType(): void
+    #[Test]
+    #[TestDox('__construct with an incorrect castTo')]
+    public function castToNotCorrectType(): void
     {
         $this->expectExceptionObject(new Exception('incorrect-type is not a native PHP type'));
 
@@ -275,10 +272,9 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($oArgument->hasBeenHandled());
     }
 
-    /**
-     * @test ->setValueParsed() with a string argument
-     */
-    public function testParseArgumentString(): void
+    #[Test]
+    #[TestDox('->setValueParsed() with a string argument')]
+    public function parseArgumentString(): void
     {
         // parses a string argument without castTo => string
         $oArgument = new Argument('test');
@@ -288,10 +284,9 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($oArgument->hasBeenHandled());
     }
 
-    /**
-     * @test ->setValueParsed() with an integer argument
-     */
-    public function testParseArgumentInteger(): void
+    #[Test]
+    #[TestDox('->setValueParsed() with an integer argument')]
+    public function parseArgumentInteger(): void
     {
         // parses a numeric string argument with castTo integer => value int
         $oArgument = new Argument('test', ['castTo' => 'integer']);
@@ -314,10 +309,9 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @test ->setValueParsed() with a float argument
-     */
-    public function testParseArgumentFloat(): void
+    #[Test]
+    #[TestDox('->setValueParsed() with a float argument')]
+    public function parseArgumentFloat(): void
     {
         // parses a integer string with castTo float => value float
         $oArgument = new Argument('test', ['castTo' => 'float']);
@@ -368,28 +362,25 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @test ->getInfos() with no option
-     */
-    public function testGetInfosOptionsEmpty(): void
+    #[Test]
+    #[TestDox('->getInfos() with no option')]
+    public function getInfosOptionsEmpty(): void
     {
         $this->assertSame('test (type: string)', (new Argument('test'))->getInfos());
     }
 
-    /**
-     * @test ->getInfos() with required arguments
-     */
-    public function testGetInfosRequired(): void
+    #[Test]
+    #[TestDox('->getInfos() with required arguments')]
+    public function getInfosRequired(): void
     {
         $this->assertSame('test (type: string)', (new Argument('test'))->getInfos());
 
         $this->assertSame('test (type: double)', (new Argument('test', ['castTo' => 'float']))->getInfos());
     }
 
-    /**
-     * @test ->getInfos() with only prefixes
-     */
-    public function testGetInfosWithPrefixes(): void
+    #[Test]
+    #[TestDox('->getInfos() with only prefixes')]
+    public function getInfosWithPrefixes(): void
     {
         // Only shortPrefix
         $oArgument = new Argument('test', ['prefix' => 't']);
@@ -416,40 +407,36 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('test -t, --longtest', $oArgument->getInfos());
     }
 
-    /**
-     * @test ->getInfos() with a description
-     */
-    public function testGetInfosDescription(): void
+    #[Test]
+    #[TestDox('->getInfos() with a description')]
+    public function getInfosDescription(): void
     {
         $oArgument = new Argument('test', ['description' => 'Test description']);
 
         $this->assertSame("test (type: string)\n\t  Test description", $oArgument->getInfos());
     }
 
-    /**
-     * @test ->getInfos() with a default value
-     */
-    public function testGetInfosDefaultValue(): void
+    #[Test]
+    #[TestDox('->getInfos() with a default value')]
+    public function getInfosDefaultValue(): void
     {
         $oArgument = new Argument('test', ['castTo' => 'float', 'defaultValue' => 56.56]);
 
         $this->assertSame('test (type: double) (default: 56.56)', $oArgument->getInfos());
     }
 
-    /**
-     * @test ->getInfos() with a cast type
-     */
-    public function testGetInfosCastTo(): void
+    #[Test]
+    #[TestDox('->getInfos() with a cast type')]
+    public function getInfosCastTo(): void
     {
         $oArgument = new Argument('test', ['castTo' => 'float']);
 
         $this->assertSame('test (type: double)', $oArgument->getInfos());
     }
 
-    /**
-     * @test ->getInfos() with every option mixed
-     */
-    public function testGetInfosAllOptions(): void
+    #[Test]
+    #[TestDox('->getInfos() with every option mixed')]
+    public function getInfosAllOptions(): void
     {
         // With prefix noValue
         $oArgument = new Argument('test', [

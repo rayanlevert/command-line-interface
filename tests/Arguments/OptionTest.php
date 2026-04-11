@@ -4,12 +4,14 @@ namespace RayanLevert\Cli\Tests\Arguments;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use RayanLevert\Cli\Arguments\Option;
 
 #[CoversClass(Option::class)]
 class OptionTest extends \PHPUnit\Framework\TestCase
 {
     #[Test]
+    #[TestDox('Option cases return expected enum and values')]
     public function cases(): void
     {
         $this->assertSame(Option::DESCRIPTION, Option::tryFrom('description'));
@@ -35,6 +37,7 @@ class OptionTest extends \PHPUnit\Framework\TestCase
     }
 
     #[Test]
+    #[TestDox('verifiesType() returns correct boolean for allowed values')]
     public function verifiesType(): void
     {
         $this->assertTrue(Option::DESCRIPTION->verifiesType('test'));
@@ -54,6 +57,7 @@ class OptionTest extends \PHPUnit\Framework\TestCase
     }
 
     #[Test]
+    #[TestDox('getPhpProperty() returns expected PHP property names')]
     public function getPhpProperty(): void
     {
         $this->assertSame('description', Option::DESCRIPTION->getPhpProperty());
