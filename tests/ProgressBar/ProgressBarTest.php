@@ -496,6 +496,94 @@ class ProgressBarTest extends \PHPUnit\Framework\TestCase
     }
 
     #[Test]
+    public function withYellowMemoryUsage(): void
+    {
+        $oProgressBar = new class(10) extends ProgressBar {
+            protected function getMemoryUsage(): int
+            {
+                return 536870912;
+            }
+        };
+
+        $oProgressBar->start();
+        $oProgressBar->advance(7);
+
+        $this->assertStringContainsString(
+            Style::stylize('512 MB', fg: Foreground::YELLOW),
+            ob_get_contents()
+        );
+
+        ob_clean();
+    }
+
+    #[Test]
+    public function withRedMemoryUsage(): void
+    {
+        $oProgressBar = new class(10) extends ProgressBar {
+            protected function getMemoryUsage(): int
+            {
+                return 1073741824;
+            }
+        };
+
+        $oProgressBar->start();
+        $oProgressBar->advance(7);
+
+        $this->assertStringContainsString(
+            Style::stylize('1024 MB', fg: Foreground::RED),
+            ob_get_contents()
+        );
+
+        ob_clean();
+    }
+
+    #[Test]
+    public function withTotalTimeYellow(): void
+    {
+        $oProgressBar = new class(10) extends ProgressBar {
+            public function advance(int $toAdvance = 1): void
+            {
+                $this->totalTime += 1500;
+
+                parent::advance($toAdvance);
+            }
+        };
+
+        $oProgressBar->start();
+        $oProgressBar->advance(7);
+
+        $this->assertStringContainsString(
+            Style::stylize('1.5sec', fg: Foreground::YELLOW),
+            ob_get_contents()
+        );
+
+        ob_clean();
+    }
+
+    #[Test]
+    public function withTotalTimeRed(): void
+    {
+        $oProgressBar = new class(10) extends ProgressBar {
+            public function advance(int $toAdvance = 1): void
+            {
+                $this->totalTime += 2000;
+
+                parent::advance($toAdvance);
+            }
+        };
+
+        $oProgressBar->start();
+        $oProgressBar->advance(7);
+
+        $this->assertStringContainsString(
+            Style::stylize('2sec', fg: Foreground::RED),
+            ob_get_contents()
+        );
+
+        ob_clean();
+    }
+
+    #[Test]
     #[TestDox('Include functional.php, does not test anything, only displays progress bars')]
     public function functional(): void
     {
