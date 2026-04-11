@@ -7,22 +7,22 @@ use RayanLevert\Cli\Arguments\Exception;
 use RayanLevert\Cli\Arguments\ParseException;
 
 use function count;
-use function substr;
-use function strncmp;
 use function current;
-use function key;
-use function reset;
-use function next;
-use function strlen;
-use function str_replace;
 use function function_exists;
+use function key;
+use function next;
+use function reset;
+use function str_replace;
+use function strlen;
+use function strncmp;
+use function substr;
 
 /**
  * Collection of `Arguments\Argument` possessing arguments of an CLI application (`$argv`)
  *
  * @implements \IteratorAggregate<string, Argument>
  */
-class Arguments implements \IteratorAggregate, \Countable
+class Arguments implements \Countable, \IteratorAggregate
 {
     /**
      * @var array<string, Argument>
@@ -64,7 +64,7 @@ class Arguments implements \IteratorAggregate, \Countable
      *
      * @throws \RayanLevert\Cli\Arguments\Exception If the argument doesn't exist in the collection
      */
-    public function get(string $argumentName): string|int|float|bool|null
+    public function get(string $argumentName): null|bool|float|int|string
     {
         if (!$oArgument = $this->retrieve($argumentName)) {
             throw new Exception("Argument $argumentName does not exist in the collection");
@@ -189,7 +189,7 @@ class Arguments implements \IteratorAggregate, \Countable
 
         // Prints required arguments
         if ($oArgs->count()) {
-            print "Required arguments:";
+            print 'Required arguments:';
 
             foreach ($oArgs as $name => $oArg) {
                 print "\n\t" . $oArg->getInfos();
@@ -298,6 +298,7 @@ class Arguments implements \IteratorAggregate, \Countable
 
         // Recovers the name of the argument (if an = is found, we slice before the sign, if not the complete value)
         $argName = $arg;
+
         if (($equalPosition = $strposCallable($arg, '=')) !== false) {
             $argName = $substrCallable($arg, 0, $equalPosition);
         }

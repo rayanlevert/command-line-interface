@@ -2,9 +2,9 @@
 
 namespace RayanLevert\Cli\Arguments;
 
-use function is_string;
 use function is_bool;
 use function is_float;
+use function is_string;
 
 /**
  * Enumeration of all defined options for Arguments\Argument

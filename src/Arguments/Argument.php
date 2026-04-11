@@ -2,10 +2,10 @@
 
 namespace RayanLevert\Cli\Arguments;
 
-use function is_bool;
 use function gettype;
-use function is_numeric;
 use function implode;
+use function is_bool;
+use function is_numeric;
 
 /**
  * An argument from a console application viewpoint
@@ -14,7 +14,7 @@ class Argument
 {
     private string $description = '';
 
-    private string|int|float|null $defaultValue = null;
+    private null|float|int|string $defaultValue = null;
 
     private bool $isRequired = false;
 
@@ -26,14 +26,14 @@ class Argument
 
     private string $longPrefix = '';
 
-    private string|int|float|bool $valueParsed = '';
+    private bool|float|int|string $valueParsed = '';
 
     private bool $hasBeenHandled = false;
 
     /**
      * Creates an argument with a name and different options
      *
-     * @param array<string, string|bool|int|float> $options See Arguments\Option cases for more informations
+     * @param array<string, bool|float|int|string> $options See Arguments\Option cases for more informations
      *
      * @throws \RayanLevert\Cli\Arguments\Exception If options are incompatible or incorrect
      */
@@ -74,7 +74,7 @@ class Argument
     /**
      * Returns the value of the argument after parsed, if not returns the default value
      */
-    public function getValue(): string|int|float|bool|null
+    public function getValue(): null|bool|float|int|string
     {
         if (!$this->hasBeenHandled) {
             return $this->noValue ? false : $this->defaultValue;
@@ -110,13 +110,13 @@ class Argument
                 throw new ParseException("Argument {$this->name} is not a numeric string (must cast to integer)");
             }
 
-            $this->valueParsed = intval($value);
+            $this->valueParsed = (int) $value;
         } elseif ($this->castTo === 'double') {
             if (!is_numeric($value)) {
                 throw new ParseException("Argument {$this->name} is not a floating point number (must cast to float)");
             }
 
-            $this->valueParsed = floatval($value);
+            $this->valueParsed = (float) $value;
         }
 
         $this->hasBeenHandled = true;
@@ -184,7 +184,7 @@ class Argument
         return $this->isRequired;
     }
 
-    public function getDefaultValue(): string|int|float|null
+    public function getDefaultValue(): null|float|int|string
     {
         return $this->defaultValue;
     }

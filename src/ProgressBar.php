@@ -4,14 +4,13 @@ namespace RayanLevert\Cli;
 
 use RayanLevert\Cli\Style\Foreground;
 
+use function ceil;
+use function floor;
+use function memory_get_usage;
 use function microtime;
+use function round;
 use function sprintf;
 use function str_repeat;
-use function intval;
-use function floor;
-use function ceil;
-use function round;
-use function memory_get_usage;
 
 /**
  * Displays progression output through a progress bar
@@ -78,7 +77,7 @@ class ProgressBar
      */
     public static function getFormattedTime(float $time): string
     {
-        return strval(match (true) {
+        return (string) (match (true) {
             $time < 1000   => round($time, 2) . 'ms',
             $time < 60000  => round($time / 1000, 2) . 'sec',
             $time < 3.6e+6 => round((int) ($time / 1000 / 60) % 60, 2) . 'min' . round((int) ($time / 1000) % 60) . 's',
@@ -164,7 +163,7 @@ class ProgressBar
         } elseif ($this->max === $this->numberOfSymbols) {
             print str_repeat('#', $this->iteration) . str_repeat(' ', $this->max - $this->iteration);
         } else {
-            $actualDiezes = intval(floor($this->iteration / $this->numberOfEachIterations));
+            $actualDiezes = (int) (floor($this->iteration / $this->numberOfEachIterations));
 
             print str_repeat('#', $actualDiezes) . str_repeat(' ', ($this->numberOfSymbols - $actualDiezes));
         }
@@ -176,7 +175,7 @@ class ProgressBar
         }
 
         // Displays the pourcentage of iterations, the time and allocated memory
-        print '] ' . round($this->iteration / $this->max * 100, 2)  . '%';
+        print '] ' . round($this->iteration / $this->max * 100, 2) . '%';
 
         $this->printTime();
 
@@ -227,7 +226,7 @@ class ProgressBar
             $this->numberOfSymbols = $max;
         }
 
-        $this->numberOfEachIterations = intval(ceil($this->max / $this->numberOfSymbols));
+        $this->numberOfEachIterations = (int) (ceil($this->max / $this->numberOfSymbols));
 
         return $this;
     }

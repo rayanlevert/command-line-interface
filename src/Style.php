@@ -2,15 +2,15 @@
 
 namespace RayanLevert\Cli;
 
-use function str_repeat;
-use function strlen;
-use function sprintf;
-use function get_class;
 use function preg_match_all;
+use function sprintf;
+use function str_repeat;
+use function str_replace;
+use function strlen;
 use function substr;
 use function trigger_error;
-use function get_called_class;
-use function str_replace;
+
+use const PHP_EOL;
 
 /**
  * Personalizes the command line interface by changing the color and formatting displayed text
@@ -134,8 +134,8 @@ class Style
 
         // Displays the exception infos in a line of red colored text
         self::error(sprintf(
-            "%s thrown in file %s (line n°%d)",
-            get_class($e),
+            '%s thrown in file %s (line n°%d)',
+            $e::class,
             $e->getFile(),
             $e->getLine()
         ));
@@ -184,7 +184,7 @@ class Style
             };
 
             if (!$oAnsi) {
-                trigger_error(get_called_class() . " : tag name '$tagName' is incorrect");
+                trigger_error(static::class . " : tag name '$tagName' is incorrect");
 
                 continue;
             }

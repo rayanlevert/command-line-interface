@@ -342,7 +342,7 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetInfosOptionsEmpty(): void
     {
-        $this->assertSame('test (type: string)', (new Argument('test'))->getInfos());
+        $this->assertSame('test (type: string)', new Argument('test')->getInfos());
     }
 
     /**
@@ -350,9 +350,9 @@ class ArgumentTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetInfosRequired(): void
     {
-        $this->assertSame('test (type: string)', (new Argument('test'))->getInfos());
+        $this->assertSame('test (type: string)', new Argument('test')->getInfos());
 
-        $this->assertSame('test (type: double)', (new Argument('test', ['castTo' => 'float']))->getInfos());
+        $this->assertSame('test (type: double)', new Argument('test', ['castTo' => 'float'])->getInfos());
     }
 
     /**

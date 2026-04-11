@@ -336,7 +336,7 @@ class ArgumentsTest extends \PHPUnit\Framework\TestCase
 
             // Parses arguments with a prefix reverse from the iterator => defaultValue
             $oArguments = new Arguments(new Argument('test', [$optionName => 't']));
-            $oArguments->parse($optionName === 'prefix' ? '--t' : '-t' . '=value');
+            $oArguments->parse($optionName === 'prefix' ? '--t' : '-t=value');
             $this->assertSame(null, $oArguments->get('test'));
 
             // Parses arguments with a prefix without a value from an argument with value => throws exception
