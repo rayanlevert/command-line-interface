@@ -325,7 +325,7 @@ class StyleTest extends \PHPUnit\Framework\TestCase
     #[TestDox('Outputs when unknown tag is used')]
     public function tagNotKnown(): void
     {
-        $oldError = set_error_handler(function (int $errorCode, string $errorMessage): void {
+        set_error_handler(function (int $errorCode, string $errorMessage): void {
             $this->assertSame('RayanLevert\Cli\Style : tag name \'fgorange\' is incorrect', $errorMessage);
             $this->assertSame(E_USER_NOTICE, $errorCode);
         });
@@ -334,7 +334,7 @@ class StyleTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(2, $this->getCount(), 'A user notice has not been handled');
 
-        set_error_handler($oldError);
+        restore_error_handler();
 
         ob_clean();
     }
