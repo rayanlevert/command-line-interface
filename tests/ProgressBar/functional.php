@@ -105,7 +105,7 @@ foreach (range(1, 3) as $range) {
     } elseif ($range === 2) {
         $oProgressBar->setTitle("Bar n°$range longer", Foreground::RED);
     } else {
-        $oProgressBar->setTitle("Bar", Foreground::LIGHT_PURPLE);
+        $oProgressBar->setTitle('Bar', Foreground::LIGHT_PURPLE);
     }
 
     $oProgressBar->start();
@@ -128,11 +128,11 @@ $oProgressBar->start();
 
 foreach (range(1, 100) as $range) {
     if ($range >= 25 && $range <= 50) {
-        $oProgressBar->setTitle("Bar from 25 to 50", Foreground::GREEN);
+        $oProgressBar->setTitle('Bar from 25 to 50', Foreground::GREEN);
     } elseif ($range >= 50 && $range <= 75) {
-        $oProgressBar->setTitle("Bar from 50 to 75", Foreground::RED);
+        $oProgressBar->setTitle('Bar from 50 to 75', Foreground::RED);
     } else {
-        $oProgressBar->setTitle("Bar", Foreground::LIGHT_PURPLE);
+        $oProgressBar->setTitle('Bar', Foreground::LIGHT_PURPLE);
     }
 
     $oProgressBar->advance(1);
@@ -155,7 +155,8 @@ foreach (range(1, 3) as $range) {
         $max = 50;
     }
 
-    $oProgressBar->setMax($max, 30)->setTitle("Max $max")->start();
+    $oProgressBar->max = $max;
+    $oProgressBar->setTitle("Max $max")->start();
 
     foreach (range(1, $max) as $range) {
         $oProgressBar->advance();

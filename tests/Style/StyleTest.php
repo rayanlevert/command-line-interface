@@ -9,6 +9,8 @@ use RayanLevert\Cli\Style\Attribute;
 use RayanLevert\Cli\Style\Background;
 use RayanLevert\Cli\Style\Foreground;
 
+use const E_USER_NOTICE;
+
 #[CoversClass(Style::class)]
 class StyleTest extends \PHPUnit\Framework\TestCase
 {
@@ -217,7 +219,7 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         $e = new \Exception('Exception message test');
 
         $this->expectOutputString(
-            "\n\e[1;31m  (◍•﹏•) Exception thrown in file " . $e->getFile() . " (line n°217)\e[0m"
+            "\n\e[1;31m  (◍•﹏•) Exception thrown in file " . $e->getFile() . " (line n°219)\e[0m"
                 . "\n\e[1m          Exception message test\e[0m\n"
         );
 
@@ -232,7 +234,7 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->exception($e);
 
         $this->assertStringStartsWith(
-            "\n\e[1;31m  (◍•﹏•) Exception thrown in file " . $e->getFile() . " (line n°230)\e[0m"
+            "\n\e[1;31m  (◍•﹏•) Exception thrown in file " . $e->getFile() . " (line n°232)\e[0m"
                 . "\n\e[1m          Exception message test\e[0m\n",
             $this->getActualOutputForAssertion()
         );
@@ -289,7 +291,7 @@ class StyleTest extends \PHPUnit\Framework\TestCase
     #[Test]
     public function tagNotKnown(): void
     {
-        set_error_handler(function (int $errorCode, string $errorMessage) {
+        set_error_handler(function (int $errorCode, string $errorMessage): void {
             $this->assertSame('RayanLevert\Cli\Style : tag name \'fgorange\' is incorrect', $errorMessage);
             $this->assertSame(E_USER_NOTICE, $errorCode);
         });
@@ -340,7 +342,7 @@ class StyleTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString("texte sans tag. \e[1;35mtexte en light purple\e[0m");
 
-        self::$oStyle->tag("texte sans tag. <fglightpurple>texte en light purple</fglightpurple>");
+        self::$oStyle->tag('texte sans tag. <fglightpurple>texte en light purple</fglightpurple>');
     }
 
     #[Test]
@@ -348,7 +350,7 @@ class StyleTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectOutputString("\e[1;35mtexte en light purple\e[0m. texte sans tag");
 
-        self::$oStyle->tag("<fglightpurple>texte en light purple</fglightpurple>. texte sans tag");
+        self::$oStyle->tag('<fglightpurple>texte en light purple</fglightpurple>. texte sans tag');
     }
 
     #[Test]
@@ -359,7 +361,7 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         );
 
         self::$oStyle->tag(
-            "<fglightpurple>texte en light purple</fglightpurple>. texte sans tag. <fgred>texte en red</fgred>"
+            '<fglightpurple>texte en light purple</fglightpurple>. texte sans tag. <fgred>texte en red</fgred>'
         );
     }
 }
