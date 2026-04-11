@@ -2,8 +2,10 @@
 
 namespace RayanLevert\Cli\Tests\Style;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use RayanLevert\Cli\Style\Foreground;
 
+#[CoversClass(Foreground::class)]
 class ForegroundTest extends \PHPUnit\Framework\TestCase
 {
     public function testBlack(): void

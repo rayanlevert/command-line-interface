@@ -2,10 +2,12 @@
 
 namespace RayanLevert\Cli\Tests\ProgressBar;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use RayanLevert\Cli\ProgressBar;
 use RayanLevert\Cli\Style;
 use RayanLevert\Cli\Style\Foreground;
 
+#[CoversClass(ProgressBar::class)]
 class ProgressBarTest extends \PHPUnit\Framework\TestCase
 {
     /**

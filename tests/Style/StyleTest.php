@@ -2,19 +2,22 @@
 
 namespace RayanLevert\Cli\Tests\Style;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use RayanLevert\Cli\Style\Attribute;
 use RayanLevert\Cli\Style\Background;
 use RayanLevert\Cli\Style\Foreground;
+use RayanLevert\Cli\Style;
 
 use const E_USER_NOTICE;
 
+#[CoversClass(Style::class)]
 class StyleTest extends \PHPUnit\Framework\TestCase
 {
-    protected static \RayanLevert\Cli\Style $oStyle;
+    protected static Style $oStyle;
 
     public static function setUpBeforeClass(): void
     {
-        self::$oStyle = new \RayanLevert\Cli\Style();
+        self::$oStyle = new Style();
     }
 
     public function testInlineNoStyle(): void
@@ -190,7 +193,7 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         $e = new \Exception('Exception message test');
 
         $this->expectOutputString(
-            "\n\e[1;31m  (◍•﹏•) Exception thrown in file " . $e->getFile() . " (line n°190)\e[0m"
+            "\n\e[1;31m  (◍•﹏•) Exception thrown in file " . $e->getFile() . " (line n°193)\e[0m"
                 . "\n\e[1m          Exception message test\e[0m\n"
         );
 
@@ -204,7 +207,7 @@ class StyleTest extends \PHPUnit\Framework\TestCase
         self::$oStyle->exception($e);
 
         $this->assertStringStartsWith(
-            "\n\e[1;31m  (◍•﹏•) Exception thrown in file " . $e->getFile() . " (line n°202)\e[0m"
+            "\n\e[1;31m  (◍•﹏•) Exception thrown in file " . $e->getFile() . " (line n°205)\e[0m"
                 . "\n\e[1m          Exception message test\e[0m\n",
             $this->getActualOutputForAssertion()
         );

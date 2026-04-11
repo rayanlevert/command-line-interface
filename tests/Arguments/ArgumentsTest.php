@@ -2,11 +2,13 @@
 
 namespace RayanLevert\Cli\Tests\Arguments;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use RayanLevert\Cli\Arguments;
 use RayanLevert\Cli\Arguments\Argument;
 use RayanLevert\Cli\Arguments\Exception;
 use RayanLevert\Cli\Arguments\ParseException;
 
+#[CoversClass(Arguments::class)]
 class ArgumentsTest extends \PHPUnit\Framework\TestCase
 {
     /**

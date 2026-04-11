@@ -2,8 +2,10 @@
 
 namespace RayanLevert\Cli\Tests\Style;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use RayanLevert\Cli\Style\Attribute;
 
+#[CoversClass(Attribute::class)]
 class AttributeTest extends \PHPUnit\Framework\TestCase
 {
     public function testBold(): void
